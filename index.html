@@ -24,12 +24,38 @@
             }
         }
     </script>
+    <style>
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 8px rgba(6, 182, 212, 0.4); }
+            50% { box-shadow: 0 0 20px rgba(6, 182, 212, 0.8); }
+        }
+        .pulse-current { animation: pulse-glow 2s ease-in-out infinite; }
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .markdown-content h1 { font-size: 1.5rem; font-weight: 700; margin: 1rem 0 0.5rem; color: #67e8f9; }
+        .markdown-content h2 { font-size: 1.25rem; font-weight: 600; margin: 0.75rem 0 0.5rem; color: #67e8f9; }
+        .markdown-content h3 { font-size: 1.1rem; font-weight: 600; margin: 0.5rem 0 0.25rem; color: #a5f3fc; }
+        .markdown-content strong { color: #f0f9ff; font-weight: 600; }
+        .markdown-content ul, .markdown-content ol { padding-left: 1.5rem; margin: 0.5rem 0; }
+        .markdown-content li { margin: 0.25rem 0; }
+        .markdown-content ul li { list-style-type: disc; }
+        .markdown-content ol li { list-style-type: decimal; }
+        .markdown-content code { background: #0f172a; padding: 0.125rem 0.375rem; border-radius: 0.25rem; font-size: 0.875rem; color: #f59e0b; }
+        .markdown-content pre { background: #0f172a; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin: 0.5rem 0; }
+        .markdown-content pre code { background: none; padding: 0; color: #cbd5e1; }
+        .markdown-content a { color: #06b6d4; text-decoration: underline; }
+        .markdown-content p { margin: 0.375rem 0; }
+        .markdown-content hr { border-color: #334155; margin: 1rem 0; }
+    </style>
 </head>
 <body class="bg-dark-bg text-white min-h-screen">
     <!-- Header -->
-    <header class="bg-dark-surface border-b border-dark-surface-2 px-6 py-4">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <h1 class="text-3xl font-bold text-accent">Alfred's Command Center 🎩</h1>
+    <header class="bg-dark-surface border-b border-dark-surface-2 px-4 sm:px-6 py-4">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-bold text-accent">Alfred's Command Center 🎩</h1>
+                <div id="days-remaining" class="text-sm text-warning font-semibold mt-1"></div>
+            </div>
             <div class="text-right">
                 <div id="current-time" class="text-xl font-mono text-accent-light"></div>
                 <div id="current-date" class="text-sm text-gray-400"></div>
@@ -38,138 +64,140 @@
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
-        <!-- $1M Tracker -->
-        <section class="bg-dark-surface rounded-lg p-6 border border-dark-surface-2">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-2xl font-bold flex items-center gap-2">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 sm:space-y-8">
+        <!-- $1M Revenue Tracker -->
+        <section class="bg-dark-surface rounded-lg p-4 sm:p-6 border border-dark-surface-2 fade-in">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-2">
+                <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2">
                     🎯 $1M Revenue Target
                 </h2>
                 <div class="text-right">
-                    <div id="total-revenue" class="text-2xl font-bold text-accent">$80,000</div>
+                    <div id="total-revenue" class="text-2xl font-bold text-accent">$0</div>
                     <div id="revenue-target" class="text-sm text-gray-400">of $1,000,000 by March 2027</div>
                 </div>
             </div>
-            
-            <!-- Main Progress Bar -->
             <div class="mb-6">
                 <div class="flex justify-between text-sm mb-2">
                     <span>Overall Progress</span>
-                    <span id="total-progress">8%</span>
+                    <span id="total-progress">0%</span>
                 </div>
                 <div class="w-full bg-dark-surface-2 rounded-full h-4">
-                    <div id="total-progress-bar" class="bg-gradient-to-r from-accent to-success h-4 rounded-full transition-all duration-500" style="width: 8%"></div>
+                    <div id="total-progress-bar" class="bg-gradient-to-r from-accent to-success h-4 rounded-full transition-all duration-500" style="width: 0%"></div>
                 </div>
             </div>
-
-            <!-- Revenue Streams -->
-            <div id="revenue-streams" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- Populated by JavaScript -->
-            </div>
+            <div id="revenue-streams" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </section>
 
-        <!-- Current Integrations Status -->
-        <section class="bg-dark-surface rounded-lg p-6 border border-dark-surface-2">
-            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-                🔌 Current Integrations Status
-            </h2>
-            <div id="integrations-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <!-- Populated by JavaScript -->
-            </div>
+        <!-- Integrations Grid -->
+        <section class="bg-dark-surface rounded-lg p-4 sm:p-6 border border-dark-surface-2 fade-in">
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">🔌 Current Integrations Status</h2>
+            <div id="integrations-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
         </section>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
             <!-- Today's Schedule -->
-            <section class="bg-dark-surface rounded-lg p-6 border border-dark-surface-2">
-                <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-                    📅 Today's Schedule
-                </h2>
-                <div id="schedule-list" class="space-y-3">
-                    <!-- Populated by JavaScript -->
-                </div>
+            <section class="bg-dark-surface rounded-lg p-4 sm:p-6 border border-dark-surface-2 fade-in">
+                <h2 class="text-xl font-bold mb-4 flex items-center gap-2">📅 Today's Schedule</h2>
+                <div id="schedule-list" class="space-y-3"></div>
             </section>
 
             <!-- Action Items -->
-            <section class="bg-dark-surface rounded-lg p-6 border border-dark-surface-2">
-                <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-                    ✅ Action Items for Nhat
-                </h2>
-                <div id="action-items-list" class="space-y-3">
-                    <!-- Populated by JavaScript -->
-                </div>
-                
+            <section class="bg-dark-surface rounded-lg p-4 sm:p-6 border border-dark-surface-2 fade-in">
+                <h2 class="text-xl font-bold mb-4 flex items-center gap-2">✅ Action Items for Nhat</h2>
+                <!-- Urgent -->
+                <div id="action-urgent" class="mb-3"></div>
+                <!-- Normal -->
+                <div id="action-normal" class="mb-3"></div>
+                <!-- Done -->
+                <div id="action-done" class="mb-3"></div>
                 <div class="mt-4 pt-4 border-t border-dark-surface-2">
-                    <div id="action-items-progress-text" class="text-sm text-gray-400">Progress: 5/12 completed</div>
+                    <div id="action-items-progress-text" class="text-sm text-gray-400"></div>
                     <div class="w-full bg-dark-surface-2 rounded-full h-2 mt-1">
-                        <div id="action-items-progress-bar" class="bg-accent h-2 rounded-full transition-all duration-500" style="width: 42%"></div>
+                        <div id="action-items-progress-bar" class="bg-accent h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
                     </div>
                 </div>
             </section>
         </div>
 
         <!-- Active Projects -->
-        <section class="bg-dark-surface rounded-lg p-6 border border-dark-surface-2">
-            <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
-                🚧 Active Projects
-            </h2>
-            <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                <!-- Populated by JavaScript -->
+        <section class="bg-dark-surface rounded-lg p-4 sm:p-6 border border-dark-surface-2 fade-in">
+            <h2 class="text-xl font-bold mb-6 flex items-center gap-2">🚧 Active Projects</h2>
+            <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+        </section>
+
+        <!-- Completed Tasks (collapsed by default) -->
+        <section class="bg-dark-surface rounded-lg border border-dark-surface-2 fade-in">
+            <button onclick="toggleSection('completed-tasks-body')" class="w-full p-4 sm:p-6 text-left flex justify-between items-center hover:bg-dark-surface-2/30 rounded-lg transition-colors">
+                <h2 class="text-xl font-bold flex items-center gap-2">
+                    🏆 Completed Tasks
+                    <span id="completed-tasks-count" class="text-sm bg-success/20 text-success px-2 py-1 rounded-full">0</span>
+                </h2>
+                <svg id="icon-completed-tasks-body" class="w-5 h-5 text-gray-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+            <div id="completed-tasks-body" class="hidden px-4 sm:px-6 pb-4 sm:pb-6">
+                <div id="completed-tasks-list" class="space-y-3"></div>
             </div>
         </section>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Active Sub-agents -->
-            <section class="bg-dark-surface rounded-lg p-6 border border-dark-surface-2">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+            <!-- Sub-Agent Activity -->
+            <section class="bg-dark-surface rounded-lg p-4 sm:p-6 border border-dark-surface-2 fade-in">
                 <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-                    🤖 Active Sub-agents
-                    <span id="subagents-count" class="text-sm bg-accent/20 text-accent px-2 py-1 rounded-full">1/8 slots</span>
+                    🤖 Sub-Agent Activity
+                    <span id="subagents-count" class="text-sm bg-accent/20 text-accent px-2 py-1 rounded-full">0 active</span>
                 </h2>
-                <div id="subagents-list" class="space-y-3">
-                    <!-- Populated by JavaScript -->
-                </div>
+                <div id="subagents-list" class="space-y-3"></div>
             </section>
 
             <!-- Sprint Timeline -->
-            <section class="bg-dark-surface rounded-lg p-6 border border-dark-surface-2">
+            <section class="bg-dark-surface rounded-lg p-4 sm:p-6 border border-dark-surface-2 fade-in">
                 <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
                     📊 Sprint Timeline
-                    <span id="sprint-info" class="text-sm text-gray-400">(6-week sprint)</span>
+                    <span id="sprint-info" class="text-sm text-gray-400"></span>
                 </h2>
-                <div id="sprint-timeline" class="space-y-4">
-                    <!-- Populated by JavaScript -->
-                </div>
-
+                <div id="sprint-timeline" class="space-y-4"></div>
                 <div class="mt-6 pt-4 border-t border-dark-surface-2">
                     <div class="text-sm text-gray-400 mb-2">Sprint Progress</div>
                     <div class="w-full bg-dark-surface-2 rounded-full h-3">
-                        <div id="sprint-progress-bar" class="bg-gradient-to-r from-success to-accent h-3 rounded-full transition-all duration-500" style="width: 17%"></div>
+                        <div id="sprint-progress-bar" class="bg-gradient-to-r from-success to-accent h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
                     </div>
-                    <div id="sprint-progress-text" class="text-xs text-gray-500 mt-1">Week 1 of 6 completed</div>
+                    <div id="sprint-progress-text" class="text-xs text-gray-500 mt-1"></div>
                 </div>
             </section>
         </div>
 
-        <!-- Documents Section -->
-        <section class="bg-dark-surface rounded-lg p-6 border border-dark-surface-2">
-            <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
-                📚 Documents & Knowledge Base
-            </h2>
-            <div id="documents-container">
-                <!-- Populated by JavaScript -->
+        <!-- Documents Viewer -->
+        <section class="bg-dark-surface rounded-lg p-4 sm:p-6 border border-dark-surface-2 fade-in">
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">📚 Documents & Knowledge Base</h2>
+            <!-- Search bar -->
+            <div class="mb-6">
+                <input type="text" id="doc-search" placeholder="Search documents..." oninput="filterDocuments()" class="w-full bg-dark-surface-2 border border-dark-surface-2 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent">
             </div>
+            <div id="documents-container"></div>
         </section>
     </main>
 
-    <footer class="bg-dark-surface border-t border-dark-surface-2 px-6 py-4 mt-12">
-        <div class="max-w-7xl mx-auto text-center text-gray-400 text-sm">
-            <p>🎩 Alfred's Command Center | Auto-refreshes every 60 seconds | <span id="data-last-updated">Last updated: Loading...</span></p>
+    <!-- Footer -->
+    <footer class="bg-dark-surface border-t border-dark-surface-2 px-4 sm:px-6 py-4 mt-12">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center text-gray-400 text-sm gap-2">
+            <div class="flex items-center gap-4">
+                <span id="footer-projects">Projects: 0</span>
+                <span id="footer-completed">Completed today: 0</span>
+                <span id="footer-agents">Active agents: 0</span>
+            </div>
+            <div>
+                <span>🎩 Alfred's Command Center v2.0 | Auto-refreshes every 60s | </span>
+                <span id="data-last-updated">Last updated: Loading...</span>
+            </div>
         </div>
     </footer>
 
     <script>
         let dashboardData = null;
-        
-        // Load dashboard data
+
+        // ---- Data Loading ----
         async function loadDashboardData() {
             try {
                 const response = await fetch('./dashboard-data.json?t=' + Date.now());
@@ -180,379 +208,474 @@
             }
         }
 
+        // ---- PST Time Helpers ----
+        function getPSTDate() {
+            return new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }));
+        }
+
+        function getPSTMinutes() {
+            const pst = getPSTDate();
+            return pst.getHours() * 60 + pst.getMinutes();
+        }
+
+        // ---- Main Render ----
         function renderDashboard() {
             if (!dashboardData) return;
 
-            // Update last updated
             const lastUpdated = new Date(dashboardData.lastUpdated);
-            document.getElementById('data-last-updated').textContent = 'Last updated: ' + lastUpdated.toLocaleString();
-            document.getElementById('last-updated-header').textContent = 'Data: ' + lastUpdated.toLocaleDateString();
+            document.getElementById('data-last-updated').textContent = 'Last updated: ' + lastUpdated.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' });
+            document.getElementById('last-updated-header').textContent = 'Data: ' + lastUpdated.toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles' });
 
-            // Revenue tracker
             renderRevenueTracker();
-            
-            // Integrations
             renderIntegrations();
-            
-            // Schedule
             renderSchedule();
-            
-            // Action items
             renderActionItems();
-            
-            // Projects
             renderProjects();
-            
-            // Sub-agents
+            renderCompletedTasks();
             renderSubagents();
-            
-            // Sprint timeline
             renderSprint();
-            
-            // Documents
             renderDocuments();
+            renderFooter();
         }
 
+        // ---- Revenue Tracker ----
         function renderRevenueTracker() {
             const revenue = dashboardData.revenue;
-            const totalCurrent = revenue.streams.reduce((sum, stream) => sum + stream.current, 0);
-            const totalProgress = Math.round((totalCurrent / revenue.target) * 100);
-            
+            const totalCurrent = revenue.streams.reduce((sum, s) => sum + s.current, 0);
+            const totalProgress = revenue.target > 0 ? Math.round((totalCurrent / revenue.target) * 100) : 0;
+
             document.getElementById('total-revenue').textContent = '$' + totalCurrent.toLocaleString();
-            document.getElementById('revenue-target').textContent = 'of $' + revenue.target.toLocaleString() + ' by ' + new Date(revenue.targetDate).toLocaleDateString();
+            document.getElementById('revenue-target').textContent = 'of $' + revenue.target.toLocaleString() + ' by March 2027';
             document.getElementById('total-progress').textContent = totalProgress + '%';
             document.getElementById('total-progress-bar').style.width = totalProgress + '%';
-            
-            const streamsHTML = revenue.streams.map(stream => {
+
+            document.getElementById('revenue-streams').innerHTML = revenue.streams.map(stream => {
                 const progress = stream.target > 0 ? Math.round((stream.current / stream.target) * 100) : 0;
-                const statusColor = stream.status === 'active' ? 'success' : 'gray-400';
-                
+                const targetLabel = stream.target > 0 ? '$' + stream.target.toLocaleString() : 'TBD';
+                const barColor = stream.status === 'active' ? 'bg-emerald-500' : 'bg-gray-500';
+                const nameColor = stream.status === 'active' ? 'text-emerald-400' : 'text-gray-400';
                 return `
                     <div class="bg-dark-surface-2 rounded-lg p-4">
                         <div class="flex justify-between items-center mb-2">
-                            <h3 class="font-semibold text-${statusColor}">${stream.emoji} ${stream.name}</h3>
+                            <h3 class="font-semibold ${nameColor}">${stream.emoji} ${stream.name}</h3>
                             <span class="text-sm text-gray-400">${progress}%</span>
                         </div>
                         <div class="text-lg font-bold">$${stream.current.toLocaleString()}</div>
-                        <div class="text-sm text-gray-400">Target: $${stream.target.toLocaleString()}</div>
+                        <div class="text-sm text-gray-400">Target: ${targetLabel}</div>
                         <div class="w-full bg-dark-bg rounded-full h-2 mt-2">
-                            <div class="bg-${statusColor} h-2 rounded-full transition-all duration-500" style="width: ${progress}%"></div>
+                            <div class="${barColor} h-2 rounded-full transition-all duration-500" style="width: ${Math.max(progress, 0)}%"></div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             }).join('');
-            
-            document.getElementById('revenue-streams').innerHTML = streamsHTML;
         }
 
+        // ---- Integrations ----
         function renderIntegrations() {
-            const integrations = dashboardData.integrations;
-            
-            const integrationsHTML = integrations.map(integration => {
-                let statusClass, statusIcon, statusText;
-                
-                switch (integration.status) {
-                    case 'active':
-                        statusClass = 'success';
-                        statusIcon = '✅';
-                        statusText = 'Working';
-                        break;
-                    case 'pending':
-                        statusClass = 'warning';
-                        statusIcon = '⏳';
-                        statusText = 'Pending';
-                        break;
-                    case 'inactive':
-                        statusClass = 'danger';
-                        statusIcon = '❌';
-                        statusText = 'Not set up';
-                        break;
-                }
-                
+            const statusMap = {
+                active:   { cls: 'border-emerald-500', icon: '✅', text: 'Active',   color: 'text-emerald-400' },
+                pending:  { cls: 'border-yellow-500',  icon: '⏳', text: 'Pending',  color: 'text-yellow-400' },
+                inactive: { cls: 'border-red-500',     icon: '❌', text: 'Inactive', color: 'text-red-400' }
+            };
+            document.getElementById('integrations-grid').innerHTML = dashboardData.integrations.map(ig => {
+                const s = statusMap[ig.status] || statusMap.inactive;
                 return `
-                    <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-${statusClass}">
+                    <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 ${s.cls}">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm font-semibold text-${statusClass}">${integration.name}</span>
-                            <span class="text-xl">${statusIcon}</span>
+                            <span class="text-sm font-semibold ${s.color}">${ig.name}</span>
+                            <span class="text-xl">${s.icon}</span>
                         </div>
-                        <div class="text-xs text-gray-400">${integration.detail}</div>
-                        <div class="text-xs text-${statusClass} mt-1">${statusText}</div>
-                    </div>
-                `;
+                        <div class="text-xs text-gray-400">${ig.detail}</div>
+                        <div class="text-xs ${s.color} mt-1">${s.text}</div>
+                    </div>`;
             }).join('');
-            
-            document.getElementById('integrations-grid').innerHTML = integrationsHTML;
         }
 
+        // ---- Schedule with REAL PST Time ----
         function renderSchedule() {
             const schedule = dashboardData.schedule;
-            const now = new Date();
-            const currentHour = now.getHours();
-            const currentMinutes = now.getMinutes();
-            const currentTime = currentHour * 60 + currentMinutes;
-            
-            const scheduleHTML = schedule.map(item => {
-                const [hours, minutes] = item.time.split(':').map(Number);
-                const itemTime = hours * 60 + minutes;
-                const timeDiff = Math.abs(currentTime - itemTime);
-                
-                // Highlight current or next item (within 60 minutes)
-                const isHighlighted = timeDiff < 60;
-                const itemClass = isHighlighted ? 'bg-accent/20 border border-accent/30' : 'bg-dark-surface-2';
-                const timeClass = isHighlighted ? 'text-accent font-bold' : 'text-accent';
-                
+            const nowMin = getPSTMinutes();
+
+            // Find current item: the latest schedule item whose time <= now
+            let currentIdx = -1;
+            for (let i = schedule.length - 1; i >= 0; i--) {
+                const [h, m] = schedule[i].time.split(':').map(Number);
+                if (h * 60 + m <= nowMin) { currentIdx = i; break; }
+            }
+
+            document.getElementById('schedule-list').innerHTML = schedule.map((item, idx) => {
+                const [h, m] = item.time.split(':').map(Number);
+                const itemMin = h * 60 + m;
+                const nextMin = idx < schedule.length - 1
+                    ? schedule[idx + 1].time.split(':').map(Number).reduce((a, b, i) => i === 0 ? a + b * 60 : a + b, 0)
+                    : 1440;
+
+                let cls, dotCls, textCls;
+                if (idx === currentIdx) {
+                    // Current/active item
+                    cls = 'bg-accent/20 border border-accent/50 pulse-current';
+                    dotCls = 'bg-accent animate-pulse';
+                    textCls = 'text-accent font-bold';
+                } else if (itemMin < nowMin && idx !== currentIdx) {
+                    // Past
+                    cls = 'bg-dark-surface-2 opacity-40';
+                    dotCls = 'bg-gray-600';
+                    textCls = 'text-gray-500';
+                } else {
+                    // Upcoming
+                    cls = 'bg-dark-surface-2';
+                    dotCls = 'bg-gray-500';
+                    textCls = 'text-accent';
+                }
+
+                const displayTime = formatTime12h(h, m);
                 return `
-                    <div class="flex justify-between items-center p-3 ${itemClass} rounded-lg">
+                    <div class="flex justify-between items-center p-3 ${cls} rounded-lg transition-all">
                         <div class="flex items-center gap-3">
-                            <span class="${timeClass} font-mono">${item.time}</span>
+                            <span class="${textCls} font-mono text-sm w-20">${displayTime}</span>
                             <span>${item.emoji} ${item.label}</span>
                         </div>
-                        <div class="w-2 h-2 ${isHighlighted ? 'bg-accent animate-pulse' : 'bg-gray-500'} rounded-full"></div>
-                    </div>
-                `;
+                        <div class="w-2.5 h-2.5 ${dotCls} rounded-full"></div>
+                    </div>`;
             }).join('');
-            
-            document.getElementById('schedule-list').innerHTML = scheduleHTML;
         }
 
+        function formatTime12h(h, m) {
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            const h12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
+            return h12 + ':' + String(m).padStart(2, '0') + ' ' + ampm;
+        }
+
+        // ---- Action Items (grouped: Urgent, Normal, Done) ----
         function renderActionItems() {
-            const actionItems = dashboardData.actionItems;
-            const completedCount = actionItems.filter(item => item.done).length;
-            const totalCount = actionItems.length;
-            const progressPercent = Math.round((completedCount / totalCount) * 100);
-            
-            const itemsHTML = actionItems.map(item => {
-                const containerClass = item.done ? 'bg-success/20 border border-success/30' : 'bg-dark-surface-2 hover:bg-dark-surface-2/80';
-                const textClass = item.done ? 'line-through text-gray-400' : '';
-                const checkboxClass = item.done ? 'text-success' : 'text-accent';
-                
-                return `
-                    <label class="flex items-center space-x-3 p-3 ${containerClass} rounded-lg cursor-pointer">
-                        <input type="checkbox" ${item.done ? 'checked' : ''} class="form-checkbox h-5 w-5 ${checkboxClass} bg-dark-bg border-gray-600 rounded focus:ring-accent focus:ring-2">
-                        <span class="${textClass}">${item.task}</span>
-                    </label>
-                `;
-            }).join('');
-            
-            document.getElementById('action-items-list').innerHTML = itemsHTML;
-            document.getElementById('action-items-progress-text').textContent = `Progress: ${completedCount}/${totalCount} completed`;
-            document.getElementById('action-items-progress-bar').style.width = progressPercent + '%';
-        }
+            const items = dashboardData.actionItems;
+            const urgent = items.filter(i => !i.done && i.priority === 'urgent');
+            const normal = items.filter(i => !i.done && i.priority === 'normal');
+            const done = items.filter(i => i.done);
+            const completedCount = done.length;
+            const totalCount = items.length;
+            const pct = Math.round((completedCount / totalCount) * 100);
 
-        function renderProjects() {
-            const projects = dashboardData.projects;
-            
-            const projectsHTML = projects.map(project => {
-                let statusColor;
-                
-                if (project.progress >= 90) statusColor = 'success';
-                else if (project.progress >= 50) statusColor = 'accent';
-                else if (project.progress >= 25) statusColor = 'warning';
-                else statusColor = 'gray-400';
-                
-                return `
-                    <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-${statusColor}">
-                        <h3 class="font-bold text-lg mb-2">${project.name}</h3>
-                        <p class="text-sm text-gray-400 mb-3">${project.phase} — ${project.status}</p>
-                        <div class="w-full bg-dark-bg rounded-full h-2">
-                            <div class="bg-${statusColor} h-2 rounded-full transition-all duration-500" style="width: ${project.progress}%"></div>
-                        </div>
-                        <div class="text-xs text-gray-500 mt-1">${project.status}</div>
-                    </div>
-                `;
-            }).join('');
-            
-            document.getElementById('projects-grid').innerHTML = projectsHTML;
-        }
-
-        function renderSubagents() {
-            const subagents = dashboardData.subagents;
-            const activeCount = subagents.filter(agent => agent.status === 'active').length;
-            
-            document.getElementById('subagents-count').textContent = `${activeCount}/8 slots`;
-            
-            const agentsHTML = subagents.map(agent => {
-                const isActive = agent.status === 'active';
-                const statusColor = agent.status === 'completed' ? 'success' : (isActive ? 'accent' : 'gray-500');
-                const statusText = agent.status === 'completed' ? 'COMPLETE' : (isActive ? 'ACTIVE' : 'IDLE');
-                const pulseClass = isActive ? 'animate-pulse' : '';
-                
-                return `
-                    <div class="flex justify-between items-center p-3 ${isActive ? 'bg-accent/20 border border-accent/30' : (agent.status === 'completed' ? 'bg-success/20 border border-success/30' : 'bg-dark-surface-2')} rounded-lg">
-                        <div class="flex items-center gap-3">
-                            <div class="w-3 h-3 bg-${statusColor} rounded-full ${pulseClass}"></div>
-                            <span class="font-mono text-sm">${agent.name}</span>
-                            <span class="text-sm text-gray-400">${agent.task}</span>
-                        </div>
-                        <span class="text-xs bg-${statusColor}/20 text-${statusColor} px-2 py-1 rounded">${statusText}</span>
-                    </div>
-                `;
-            }).join('');
-            
-            // Add empty slots
-            for (let i = subagents.length; i < 8; i++) {
-                agentsHTML += `
-                    <div class="flex justify-between items-center p-3 bg-dark-surface-2 rounded-lg">
-                        <div class="flex items-center gap-3">
-                            <div class="w-3 h-3 bg-gray-500 rounded-full"></div>
-                            <span class="font-mono text-sm text-gray-500">slot-${i + 1}</span>
-                        </div>
-                        <span class="text-xs text-gray-500">IDLE</span>
-                    </div>
-                `;
+            function renderGroup(arr, label, labelColor, borderColor) {
+                if (arr.length === 0) return '';
+                return `<div class="mb-2"><div class="text-xs font-semibold ${labelColor} uppercase tracking-wider mb-2">${label}</div>` +
+                    arr.map(item => {
+                        const isDone = item.done;
+                        const bg = isDone ? 'bg-dark-surface-2/50' : (item.priority === 'urgent' ? 'bg-red-500/10 border border-red-500/30' : 'bg-dark-surface-2');
+                        const txt = isDone ? 'line-through text-gray-500' : '';
+                        const check = isDone ? 'text-emerald-500' : (item.priority === 'urgent' ? 'text-red-400' : 'text-accent');
+                        return `<div class="flex items-center gap-3 p-3 ${bg} rounded-lg mb-2">
+                            <span class="${check} text-lg">${isDone ? '☑' : '☐'}</span>
+                            <span class="${txt}">${item.task}</span>
+                        </div>`;
+                    }).join('') + '</div>';
             }
-            
-            document.getElementById('subagents-list').innerHTML = agentsHTML;
+
+            document.getElementById('action-urgent').innerHTML = renderGroup(urgent, '🔴 Urgent', 'text-red-400', 'border-red-500');
+            document.getElementById('action-normal').innerHTML = renderGroup(normal, 'Normal', 'text-gray-400', 'border-gray-500');
+            document.getElementById('action-done').innerHTML = renderGroup(done, '✓ Done', 'text-gray-500', 'border-gray-700');
+            document.getElementById('action-items-progress-text').textContent = `Progress: ${completedCount}/${totalCount} completed`;
+            document.getElementById('action-items-progress-bar').style.width = pct + '%';
         }
 
-        function renderSprint() {
-            const sprint = dashboardData.sprint;
-            
-            const timelineHTML = sprint.weeks.map(week => {
-                let statusClass, statusIcon;
-                
-                if (week.status === 'completed') {
-                    statusClass = 'success';
-                    statusIcon = '✓';
-                } else if (week.status === 'active') {
-                    statusClass = 'accent';
-                    statusIcon = week.week.toString();
+        // ---- Projects with progress bars ----
+        function renderProjects() {
+            document.getElementById('projects-grid').innerHTML = dashboardData.projects.map(project => {
+                let borderColor, barColor, phaseColor;
+                if (project.progress >= 90) {
+                    borderColor = 'border-emerald-500'; barColor = 'bg-emerald-500'; phaseColor = 'text-emerald-400';
+                } else if (project.progress >= 50) {
+                    borderColor = 'border-cyan-500'; barColor = 'bg-cyan-500'; phaseColor = 'text-cyan-400';
+                } else if (project.progress >= 10) {
+                    borderColor = 'border-yellow-500'; barColor = 'bg-yellow-500'; phaseColor = 'text-yellow-400';
                 } else {
-                    statusClass = 'gray-400';
-                    statusIcon = week.week.toString();
+                    borderColor = 'border-gray-500'; barColor = 'bg-gray-500'; phaseColor = 'text-gray-400';
                 }
-                
-                const pulseClass = week.status === 'active' ? 'animate-pulse' : '';
-                const circleClass = week.status === 'completed' ? 'bg-success' : (week.status === 'active' ? 'bg-accent' : 'bg-dark-surface-2 border border-gray-600');
-                
+
                 return `
-                    <div class="flex items-center gap-4">
-                        <div class="w-8 text-center">
-                            <div class="w-8 h-8 ${circleClass} rounded-full flex items-center justify-center text-sm font-bold ${week.status === 'active' ? 'text-accent' : (week.status === 'completed' ? 'text-white' : 'text-gray-400')} ${pulseClass}">${statusIcon}</div>
+                    <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 ${borderColor}">
+                        <h3 class="font-bold text-lg mb-1">${project.name}</h3>
+                        <p class="text-sm text-gray-400 mb-1">${project.status}</p>
+                        <span class="inline-block text-xs ${phaseColor} bg-dark-bg px-2 py-0.5 rounded mb-3">${project.phase}</span>
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-gray-400">Progress</span>
+                            <span class="${phaseColor} font-semibold">${project.progress}%</span>
                         </div>
-                        <div class="flex-1">
-                            <div class="text-sm font-semibold ${week.status === 'active' ? 'text-accent' : (week.status === 'completed' ? 'text-success' : 'text-gray-400')}">${week.label}</div>
-                            <div class="text-xs text-gray-400">Week ${week.week}</div>
-                            <div class="text-xs ${week.status === 'active' ? 'text-accent' : (week.status === 'completed' ? 'text-success' : 'text-gray-500')}">${week.status === 'completed' ? 'Completed' : (week.status === 'active' ? 'Current Week' : 'Upcoming')}</div>
+                        <div class="w-full bg-dark-bg rounded-full h-2.5">
+                            <div class="${barColor} h-2.5 rounded-full transition-all duration-500" style="width: ${project.progress}%"></div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             }).join('');
-            
-            document.getElementById('sprint-timeline').innerHTML = timelineHTML;
-            
-            const progressPercent = Math.round((sprint.currentWeek / sprint.totalWeeks) * 100);
-            document.getElementById('sprint-progress-bar').style.width = progressPercent + '%';
-            document.getElementById('sprint-progress-text').textContent = `Week ${sprint.currentWeek} of ${sprint.totalWeeks} completed`;
         }
 
-        function renderDocuments() {
-            const documents = dashboardData.documents;
-            
-            // Group documents by category
-            const categories = {};
-            documents.forEach(doc => {
-                if (!categories[doc.category]) {
-                    categories[doc.category] = [];
+        // ---- Completed Tasks (auto-hide after 24h) ----
+        function renderCompletedTasks() {
+            const tasks = dashboardData.completedTasks || [];
+            const now = Date.now();
+            const oneDayMs = 24 * 60 * 60 * 1000;
+            const recentTasks = tasks.filter(t => (now - new Date(t.completedAt).getTime()) < oneDayMs);
+
+            document.getElementById('completed-tasks-count').textContent = recentTasks.length + ' recent';
+
+            if (recentTasks.length === 0) {
+                document.getElementById('completed-tasks-list').innerHTML = '<p class="text-gray-500 text-sm">No tasks completed in the last 24 hours.</p>';
+                return;
+            }
+
+            document.getElementById('completed-tasks-list').innerHTML = recentTasks.map(task => {
+                const time = new Date(task.completedAt).toLocaleString('en-US', { timeZone: 'America/Los_Angeles', hour: 'numeric', minute: '2-digit', hour12: true });
+                return `
+                    <div class="flex items-center justify-between p-3 bg-success/10 border border-success/20 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <span class="text-emerald-400 text-lg">✅</span>
+                            <span class="text-gray-300">${task.task}</span>
+                        </div>
+                        <span class="text-xs text-gray-500 whitespace-nowrap">${time} PST</span>
+                    </div>`;
+            }).join('');
+        }
+
+        // ---- Sub-Agents ----
+        function renderSubagents() {
+            const agents = dashboardData.subagents || [];
+            const running = agents.filter(a => a.status === 'running');
+            const others = agents.filter(a => a.status !== 'running');
+            const sorted = [...running, ...others];
+
+            document.getElementById('subagents-count').textContent = running.length + ' active';
+
+            document.getElementById('subagents-list').innerHTML = sorted.map(agent => {
+                const isRunning = agent.status === 'running';
+                const isCompleted = agent.status === 'completed';
+                const isFailed = agent.status === 'failed';
+                let bg, dotCls, badge, badgeColor;
+
+                if (isRunning) {
+                    bg = 'bg-accent/15 border border-accent/30';
+                    dotCls = 'bg-accent animate-pulse';
+                    badge = '⟳ Running';
+                    badgeColor = 'bg-accent/20 text-accent';
+                } else if (isCompleted) {
+                    bg = 'bg-success/10 border border-success/20';
+                    dotCls = 'bg-emerald-500';
+                    badge = '✅ Done';
+                    badgeColor = 'bg-emerald-500/20 text-emerald-400';
+                } else {
+                    bg = 'bg-red-500/10 border border-red-500/20';
+                    dotCls = 'bg-red-500';
+                    badge = '❌ Failed';
+                    badgeColor = 'bg-red-500/20 text-red-400';
                 }
-                categories[doc.category].push(doc);
-            });
-            
-            const categoriesHTML = Object.entries(categories).map(([category, docs]) => {
-                const docsHTML = docs.map(doc => `
-                    <div class="document-item border border-dark-surface-2 rounded-lg mb-3">
-                        <button class="w-full px-4 py-3 text-left flex justify-between items-center hover:bg-dark-surface-2/50 rounded-lg transition-colors" onclick="toggleDocument('doc-${doc.name.replace(/[^a-zA-Z0-9]/g, '')}')">
-                            <span class="font-semibold text-accent">${doc.name}</span>
-                            <span class="text-gray-400">
-                                <svg id="icon-doc-${doc.name.replace(/[^a-zA-Z0-9]/g, '')}" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                </svg>
-                            </span>
-                        </button>
-                        <div id="doc-${doc.name.replace(/[^a-zA-Z0-9]/g, '')}" class="hidden px-4 pb-4">
-                            <div class="text-xs text-gray-500 mb-3">Path: ${doc.path}</div>
-                            <div class="bg-dark-bg rounded-lg p-4 max-h-96 overflow-y-auto">
-                                <pre class="whitespace-pre-wrap text-sm text-gray-300 font-mono">${doc.content}</pre>
+
+                const time = new Date(agent.timestamp).toLocaleTimeString('en-US', { timeZone: 'America/Los_Angeles', hour: 'numeric', minute: '2-digit', hour12: true });
+                return `
+                    <div class="flex justify-between items-center p-3 ${bg} rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <div class="w-3 h-3 ${dotCls} rounded-full"></div>
+                            <div>
+                                <div class="font-mono text-sm">${agent.name} <span class="text-xs text-gray-500">(${agent.type})</span></div>
+                                <div class="text-xs text-gray-400">${agent.task}</div>
                             </div>
                         </div>
-                    </div>
-                `).join('');
-                
-                return `
-                    <div class="mb-6">
-                        <h3 class="text-lg font-bold text-accent mb-4 flex items-center gap-2">
-                            ${getCategoryIcon(category)} ${category}
-                            <span class="text-sm bg-accent/20 text-accent px-2 py-1 rounded-full">${docs.length} docs</span>
-                        </h3>
-                        <div class="space-y-3">
-                            ${docsHTML}
+                        <div class="text-right">
+                            <span class="text-xs px-2 py-1 rounded ${badgeColor}">${badge}</span>
+                            <div class="text-xs text-gray-500 mt-1">${time}</div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             }).join('');
-            
-            document.getElementById('documents-container').innerHTML = categoriesHTML;
         }
 
-        function getCategoryIcon(category) {
-            const icons = {
-                'GFREQ': '💹',
-                'Personal': '🏠',
-                'Salon': '💄',
-                'E-commerce': '🛒',
-                'Agents425': '🤖'
-            };
-            return icons[category] || '📄';
+        // ---- Sprint Timeline ----
+        function renderSprint() {
+            const sprint = dashboardData.sprint;
+            document.getElementById('sprint-info').textContent = `(${sprint.totalWeeks}-week sprint)`;
+
+            document.getElementById('sprint-timeline').innerHTML = sprint.weeks.map(week => {
+                let circleClass, labelColor, statusLabel;
+                if (week.status === 'completed') {
+                    circleClass = 'bg-emerald-500 text-white';
+                    labelColor = 'text-emerald-400';
+                    statusLabel = 'Completed';
+                } else if (week.status === 'active') {
+                    circleClass = 'bg-accent text-white animate-pulse';
+                    labelColor = 'text-accent';
+                    statusLabel = 'Current Week';
+                } else {
+                    circleClass = 'bg-dark-surface-2 border border-gray-600 text-gray-400';
+                    labelColor = 'text-gray-400';
+                    statusLabel = 'Upcoming';
+                }
+                const icon = week.status === 'completed' ? '✓' : week.week;
+                return `
+                    <div class="flex items-center gap-4">
+                        <div class="w-8 h-8 ${circleClass} rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">${icon}</div>
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold ${labelColor}">${week.label}</div>
+                            <div class="text-xs text-gray-500">${week.startDate} — ${week.endDate}</div>
+                            <div class="text-xs ${labelColor}">${statusLabel}</div>
+                        </div>
+                    </div>`;
+            }).join('');
+
+            const pct = Math.round((sprint.currentWeek / sprint.totalWeeks) * 100);
+            document.getElementById('sprint-progress-bar').style.width = pct + '%';
+            document.getElementById('sprint-progress-text').textContent = `Week ${sprint.currentWeek} of ${sprint.totalWeeks}`;
         }
 
-        function toggleDocument(docId) {
-            const element = document.getElementById(docId);
-            const icon = document.getElementById('icon-' + docId);
-            
-            if (element.classList.contains('hidden')) {
-                element.classList.remove('hidden');
-                icon.style.transform = 'rotate(180deg)';
+        // ---- Documents Viewer ----
+        function renderDocuments() {
+            const documents = dashboardData.documents || [];
+            const categories = {};
+            documents.forEach(doc => {
+                if (!categories[doc.category]) categories[doc.category] = [];
+                categories[doc.category].push(doc);
+            });
+
+            const categoryIcons = { GFREQ: '💹', Personal: '🏠', Salon: '💄', 'E-commerce': '🛒', Agents425: '🤖', OpenClaw: '🐾', 'Mobile Apps': '📱' };
+
+            document.getElementById('documents-container').innerHTML = Object.entries(categories).map(([cat, docs]) => {
+                const icon = categoryIcons[cat] || '📄';
+                const catId = cat.replace(/[^a-zA-Z0-9]/g, '');
+                const docsHTML = docs.map((doc, i) => {
+                    const docId = 'doc-' + catId + '-' + i;
+                    return `
+                        <div class="doc-item border border-dark-surface-2 rounded-lg mb-2">
+                            <button class="w-full px-4 py-3 text-left flex justify-between items-center hover:bg-dark-surface-2/50 rounded-lg transition-colors" onclick="toggleSection('${docId}')">
+                                <span class="font-semibold text-accent text-sm">${doc.title}</span>
+                                <svg id="icon-${docId}" class="w-4 h-4 text-gray-400 transform transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div id="${docId}" class="hidden px-4 pb-4">
+                                <div class="text-xs text-gray-600 mb-2 font-mono">${doc.path}</div>
+                                <div class="bg-dark-bg rounded-lg p-4 max-h-96 overflow-y-auto markdown-content text-sm text-gray-300">${renderMarkdown(doc.content)}</div>
+                            </div>
+                        </div>`;
+                }).join('');
+
+                return `
+                    <div class="mb-4 doc-category">
+                        <button class="w-full text-left flex items-center gap-2 mb-3 hover:text-accent transition-colors" onclick="toggleSection('cat-${catId}')">
+                            <svg id="icon-cat-${catId}" class="w-4 h-4 text-gray-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                            <h3 class="text-lg font-bold text-accent">${icon} ${cat}</h3>
+                            <span class="text-xs bg-accent/20 text-accent px-2 py-0.5 rounded-full">${docs.length}</span>
+                        </button>
+                        <div id="cat-${catId}" class="hidden pl-2">${docsHTML}</div>
+                    </div>`;
+            }).join('');
+        }
+
+        // ---- Simple Markdown Renderer ----
+        function renderMarkdown(text) {
+            if (!text) return '';
+            // Escape HTML first
+            let html = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+            // Code blocks (``` ... ```)
+            html = html.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
+
+            // Headers
+            html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+            html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+            html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+
+            // Bold
+            html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+            // Inline code
+            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+            // Horizontal rules
+            html = html.replace(/^---$/gm, '<hr>');
+
+            // Unordered lists
+            html = html.replace(/^(\s*)[-*] (.+)$/gm, function(match, indent, content) {
+                return '<li>' + content + '</li>';
+            });
+            // Wrap consecutive <li> in <ul>
+            html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
+
+            // Ordered lists
+            html = html.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+
+            // Links
+            html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+
+            // Paragraphs: wrap remaining lines
+            html = html.replace(/^(?!<[hupol]|<li|<hr|<pre|<code)(.+)$/gm, '<p>$1</p>');
+
+            return html;
+        }
+
+        // ---- Document Search/Filter ----
+        function filterDocuments() {
+            const query = document.getElementById('doc-search').value.toLowerCase();
+            document.querySelectorAll('.doc-item').forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(query) ? '' : 'none';
+            });
+            // Show parent categories that have visible items
+            document.querySelectorAll('.doc-category').forEach(cat => {
+                const visibleItems = cat.querySelectorAll('.doc-item[style=""], .doc-item:not([style])');
+                // If searching, expand categories
+                const catBody = cat.querySelector('[id^="cat-"]');
+                if (query && catBody) {
+                    catBody.classList.remove('hidden');
+                }
+            });
+        }
+
+        // ---- Toggle Section ----
+        function toggleSection(id) {
+            const el = document.getElementById(id);
+            const icon = document.getElementById('icon-' + id);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                if (icon) icon.style.transform = 'rotate(180deg)';
             } else {
-                element.classList.add('hidden');
-                icon.style.transform = 'rotate(0deg)';
+                el.classList.add('hidden');
+                if (icon) icon.style.transform = 'rotate(0deg)';
             }
         }
 
-        function updateDateTime() {
-            const now = new Date();
-            
-            // Convert to PST
-            const pstTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Los_Angeles"}));
-            
-            // Update time
-            const timeOptions = {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: false,
-                timeZone: 'America/Los_Angeles'
-            };
-            document.getElementById('current-time').textContent = pstTime.toLocaleTimeString('en-US', timeOptions) + ' PST';
-            
-            // Update date
-            const dateOptions = {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                timeZone: 'America/Los_Angeles'
-            };
-            document.getElementById('current-date').textContent = pstTime.toLocaleDateString('en-US', dateOptions);
+        // ---- Footer Stats ----
+        function renderFooter() {
+            const projects = dashboardData.projects || [];
+            const completedTasks = (dashboardData.completedTasks || []).filter(t => (Date.now() - new Date(t.completedAt).getTime()) < 86400000);
+            const activeAgents = (dashboardData.subagents || []).filter(a => a.status === 'running');
+
+            document.getElementById('footer-projects').textContent = 'Projects: ' + projects.length;
+            document.getElementById('footer-completed').textContent = 'Completed today: ' + completedTasks.length;
+            document.getElementById('footer-agents').textContent = 'Active agents: ' + activeAgents.length;
         }
 
-        // Initialize dashboard
+        // ---- DateTime + Days Remaining ----
+        function updateDateTime() {
+            const pst = getPSTDate();
+
+            document.getElementById('current-time').textContent = pst.toLocaleTimeString('en-US', {
+                hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+            }) + ' PST';
+
+            document.getElementById('current-date').textContent = pst.toLocaleDateString('en-US', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+
+            // Days remaining until March 2027
+            const target = new Date('2027-03-05');
+            const diffMs = target - pst;
+            const daysLeft = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+            document.getElementById('days-remaining').textContent = daysLeft + ' days remaining to $1M target';
+
+            // Re-render schedule to update highlighting
+            if (dashboardData) renderSchedule();
+        }
+
+        // ---- Init ----
         updateDateTime();
         setInterval(updateDateTime, 1000);
-        
-        // Load dashboard data
         loadDashboardData();
-        
-        // Auto-refresh every 60 seconds
         setInterval(loadDashboardData, 60000);
     </script>
 </body>
