@@ -137,6 +137,86 @@
             </div>
         </section>
 
+        <!-- Current Integrations Status -->
+        <section class="bg-dark-surface rounded-lg p-6 border border-dark-surface-2">
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                🔌 Current Integrations Status
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-success">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-semibold text-success">Gmail</span>
+                        <span class="text-xl">✅</span>
+                    </div>
+                    <div class="text-xs text-gray-400">gfreqalgo@gmail.com</div>
+                    <div class="text-xs text-success mt-1">Working</div>
+                </div>
+                
+                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-success">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-semibold text-success">GitHub</span>
+                        <span class="text-xl">✅</span>
+                    </div>
+                    <div class="text-xs text-gray-400">GFREQALFRED</div>
+                    <div class="text-xs text-success mt-1">Working</div>
+                </div>
+                
+                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-warning">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-semibold text-warning">X/Twitter</span>
+                        <span class="text-xl">⏳</span>
+                    </div>
+                    <div class="text-xs text-gray-400">@GFREQalgo</div>
+                    <div class="text-xs text-warning mt-1">Auth works, billing activating</div>
+                </div>
+                
+                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-success">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-semibold text-success">Google Calendar</span>
+                        <span class="text-xl">✅</span>
+                    </div>
+                    <div class="text-xs text-gray-400">API connected</div>
+                    <div class="text-xs text-success mt-1">Working</div>
+                </div>
+                
+                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-success">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-semibold text-success">Google Drive</span>
+                        <span class="text-xl">✅</span>
+                    </div>
+                    <div class="text-xs text-gray-400">API access</div>
+                    <div class="text-xs text-success mt-1">API enabled</div>
+                </div>
+                
+                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-danger">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-semibold text-danger">Reddit</span>
+                        <span class="text-xl">❌</span>
+                    </div>
+                    <div class="text-xs text-gray-400">No account</div>
+                    <div class="text-xs text-danger mt-1">Not set up</div>
+                </div>
+                
+                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-danger">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-semibold text-danger">Discord Bot</span>
+                        <span class="text-xl">❌</span>
+                    </div>
+                    <div class="text-xs text-gray-400">No bot created</div>
+                    <div class="text-xs text-danger mt-1">Not set up</div>
+                </div>
+                
+                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-success">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-semibold text-success">Vercel</span>
+                        <span class="text-xl">✅</span>
+                    </div>
+                    <div class="text-xs text-gray-400">Deployment</div>
+                    <div class="text-xs text-success mt-1">Connected</div>
+                </div>
+            </div>
+        </section>
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <!-- Today's Schedule -->
             <section class="bg-dark-surface rounded-lg p-6 border border-dark-surface-2">
@@ -208,19 +288,34 @@
                     ✅ Action Items for Nhat
                 </h2>
                 <div class="space-y-3">
-                    <label class="flex items-center space-x-3 p-3 bg-dark-surface-2 rounded-lg cursor-pointer hover:bg-dark-surface-2/80">
-                        <input type="checkbox" class="form-checkbox h-5 w-5 text-accent bg-dark-bg border-gray-600 rounded focus:ring-accent focus:ring-2">
-                        <span>📧 Set up GFREQ Gmail account</span>
+                    <label class="flex items-center space-x-3 p-3 bg-success/20 border border-success/30 rounded-lg cursor-pointer">
+                        <input type="checkbox" checked class="form-checkbox h-5 w-5 text-success bg-dark-bg border-success rounded focus:ring-success focus:ring-2">
+                        <span class="line-through text-gray-400">📧 Set up GFREQ Gmail account</span>
+                    </label>
+                    
+                    <label class="flex items-center space-x-3 p-3 bg-success/20 border border-success/30 rounded-lg cursor-pointer">
+                        <input type="checkbox" checked class="form-checkbox h-5 w-5 text-success bg-dark-bg border-success rounded focus:ring-success focus:ring-2">
+                        <span class="line-through text-gray-400">🐙 Set up GitHub account</span>
+                    </label>
+                    
+                    <label class="flex items-center space-x-3 p-3 bg-success/20 border border-success/30 rounded-lg cursor-pointer">
+                        <input type="checkbox" checked class="form-checkbox h-5 w-5 text-success bg-dark-bg border-success rounded focus:ring-success focus:ring-2">
+                        <span class="line-through text-gray-400">🐦 Set up X/Twitter account</span>
+                    </label>
+                    
+                    <label class="flex items-center space-x-3 p-3 bg-success/20 border border-success/30 rounded-lg cursor-pointer">
+                        <input type="checkbox" checked class="form-checkbox h-5 w-5 text-success bg-dark-bg border-success rounded focus:ring-success focus:ring-2">
+                        <span class="line-through text-gray-400">☁️ Set up Google Cloud project</span>
+                    </label>
+                    
+                    <label class="flex items-center space-x-3 p-3 bg-success/20 border border-success/30 rounded-lg cursor-pointer">
+                        <input type="checkbox" checked class="form-checkbox h-5 w-5 text-success bg-dark-bg border-success rounded focus:ring-success focus:ring-2">
+                        <span class="line-through text-gray-400">🚀 Deploy dashboard to Vercel</span>
                     </label>
                     
                     <label class="flex items-center space-x-3 p-3 bg-dark-surface-2 rounded-lg cursor-pointer hover:bg-dark-surface-2/80">
                         <input type="checkbox" class="form-checkbox h-5 w-5 text-accent bg-dark-bg border-gray-600 rounded focus:ring-accent focus:ring-2">
-                        <span>🐦 Set up GFREQ X account</span>
-                    </label>
-                    
-                    <label class="flex items-center space-x-3 p-3 bg-dark-surface-2 rounded-lg cursor-pointer hover:bg-dark-surface-2/80">
-                        <input type="checkbox" class="form-checkbox h-5 w-5 text-accent bg-dark-bg border-gray-600 rounded focus:ring-accent focus:ring-2">
-                        <span>🔴 Set up GFREQ Reddit account</span>
+                        <span>🔴 Create Reddit account + API credentials</span>
                     </label>
                     
                     <label class="flex items-center space-x-3 p-3 bg-dark-surface-2 rounded-lg cursor-pointer hover:bg-dark-surface-2/80">
@@ -230,7 +325,22 @@
                     
                     <label class="flex items-center space-x-3 p-3 bg-dark-surface-2 rounded-lg cursor-pointer hover:bg-dark-surface-2/80">
                         <input type="checkbox" class="form-checkbox h-5 w-5 text-accent bg-dark-bg border-gray-600 rounded focus:ring-accent focus:ring-2">
-                        <span>📚 Feed Alfred X bookmark articles</span>
+                        <span>🚀 Set up Vercel for GFREQ website</span>
+                    </label>
+                    
+                    <label class="flex items-center space-x-3 p-3 bg-dark-surface-2 rounded-lg cursor-pointer hover:bg-dark-surface-2/80">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-accent bg-dark-bg border-gray-600 rounded focus:ring-accent focus:ring-2">
+                        <span>🎩 Claude CLI authentication</span>
+                    </label>
+                    
+                    <label class="flex items-center space-x-3 p-3 bg-dark-surface-2 rounded-lg cursor-pointer hover:bg-dark-surface-2/80">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-accent bg-dark-bg border-gray-600 rounded focus:ring-accent focus:ring-2">
+                        <span>🌐 Renew geniusfreq.com domain</span>
+                    </label>
+                    
+                    <label class="flex items-center space-x-3 p-3 bg-dark-surface-2 rounded-lg cursor-pointer hover:bg-dark-surface-2/80">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-accent bg-dark-bg border-gray-600 rounded focus:ring-accent focus:ring-2">
+                        <span>🏢 LLC name change filing</span>
                     </label>
                     
                     <label class="flex items-center space-x-3 p-3 bg-warning/20 border border-warning/30 rounded-lg cursor-pointer hover:bg-warning/30">
@@ -240,9 +350,9 @@
                 </div>
                 
                 <div class="mt-4 pt-4 border-t border-dark-surface-2">
-                    <div class="text-sm text-gray-400">Progress: 0/6 completed</div>
+                    <div class="text-sm text-gray-400">Progress: 5/12 completed</div>
                     <div class="w-full bg-dark-surface-2 rounded-full h-2 mt-1">
-                        <div class="bg-accent h-2 rounded-full" style="width: 0%"></div>
+                        <div class="bg-accent h-2 rounded-full" style="width: 42%"></div>
                     </div>
                 </div>
             </section>
@@ -254,40 +364,40 @@
                 🚧 Active Projects
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-warning">
+                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-success">
                     <h3 class="font-bold text-lg mb-2">🌐 GFREQ Website</h3>
-                    <p class="text-sm text-gray-400 mb-3">Week 1/6 — Building</p>
+                    <p class="text-sm text-gray-400 mb-3">Week 1/6 — PRD Complete, ready to build</p>
                     <div class="w-full bg-dark-bg rounded-full h-2">
-                        <div class="bg-warning h-2 rounded-full" style="width: 17%"></div>
+                        <div class="bg-success h-2 rounded-full" style="width: 17%"></div>
                     </div>
-                    <div class="text-xs text-gray-500 mt-1">17% complete</div>
+                    <div class="text-xs text-gray-500 mt-1">Ready to build</div>
                 </div>
 
-                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-accent">
+                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-success">
                     <h3 class="font-bold text-lg mb-2">🔍 NinjaView Replacement</h3>
-                    <p class="text-sm text-gray-400 mb-3">Research phase</p>
+                    <p class="text-sm text-gray-400 mb-3">Research complete</p>
                     <div class="w-full bg-dark-bg rounded-full h-2">
-                        <div class="bg-accent h-2 rounded-full" style="width: 25%"></div>
+                        <div class="bg-success h-2 rounded-full" style="width: 50%"></div>
                     </div>
-                    <div class="text-xs text-gray-500 mt-1">25% complete</div>
+                    <div class="text-xs text-gray-500 mt-1">Research complete</div>
                 </div>
 
-                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-gray-500">
+                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-success">
                     <h3 class="font-bold text-lg mb-2">⚙️ Content Machine</h3>
-                    <p class="text-sm text-gray-400 mb-3">Setup</p>
+                    <p class="text-sm text-gray-400 mb-3">X account ready, email ready</p>
                     <div class="w-full bg-dark-bg rounded-full h-2">
-                        <div class="bg-gray-500 h-2 rounded-full" style="width: 10%"></div>
+                        <div class="bg-success h-2 rounded-full" style="width: 60%"></div>
                     </div>
-                    <div class="text-xs text-gray-500 mt-1">10% complete</div>
+                    <div class="text-xs text-gray-500 mt-1">Infrastructure ready</div>
                 </div>
 
-                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-gray-500">
+                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-warning">
                     <h3 class="font-bold text-lg mb-2">📚 Course</h3>
-                    <p class="text-sm text-gray-400 mb-3">Planning</p>
+                    <p class="text-sm text-gray-400 mb-3">Planning phase</p>
                     <div class="w-full bg-dark-bg rounded-full h-2">
-                        <div class="bg-gray-500 h-2 rounded-full" style="width: 5%"></div>
+                        <div class="bg-warning h-2 rounded-full" style="width: 15%"></div>
                     </div>
-                    <div class="text-xs text-gray-500 mt-1">5% complete</div>
+                    <div class="text-xs text-gray-500 mt-1">Planning phase</div>
                 </div>
 
                 <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-accent">
@@ -299,22 +409,31 @@
                     <div class="text-xs text-gray-500 mt-1">30% complete</div>
                 </div>
 
-                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-success">
-                    <h3 class="font-bold text-lg mb-2">💄 Beauty Salon Turnaround</h3>
-                    <p class="text-sm text-gray-400 mb-3">Research done</p>
+                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-warning">
+                    <h3 class="font-bold text-lg mb-2">💄 Beauty Salon</h3>
+                    <p class="text-sm text-gray-400 mb-3">Research done, website needed</p>
                     <div class="w-full bg-dark-bg rounded-full h-2">
-                        <div class="bg-success h-2 rounded-full" style="width: 40%"></div>
+                        <div class="bg-warning h-2 rounded-full" style="width: 40%"></div>
                     </div>
-                    <div class="text-xs text-gray-500 mt-1">40% complete</div>
+                    <div class="text-xs text-gray-500 mt-1">Research done</div>
                 </div>
 
-                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-gray-500">
+                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-warning">
                     <h3 class="font-bold text-lg mb-2">📔 Alfred's Journal</h3>
                     <p class="text-sm text-gray-400 mb-3">Starting Sunday</p>
                     <div class="w-full bg-dark-bg rounded-full h-2">
-                        <div class="bg-gray-500 h-2 rounded-full" style="width: 0%"></div>
+                        <div class="bg-warning h-2 rounded-full" style="width: 5%"></div>
                     </div>
-                    <div class="text-xs text-gray-500 mt-1">Not started</div>
+                    <div class="text-xs text-gray-500 mt-1">Starting Sunday</div>
+                </div>
+
+                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-success">
+                    <h3 class="font-bold text-lg mb-2">📊 Dashboard</h3>
+                    <p class="text-sm text-gray-400 mb-3">v1 Live ✅</p>
+                    <div class="w-full bg-dark-bg rounded-full h-2">
+                        <div class="bg-success h-2 rounded-full" style="width: 100%"></div>
+                    </div>
+                    <div class="text-xs text-success mt-1">Live and deployed</div>
                 </div>
             </div>
         </section>
