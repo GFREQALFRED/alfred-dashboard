@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alfred's Command Center 🎩</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'dark-bg': '#0f172a',
+                        'dark-surface': '#1e293b',
+                        'dark-surface-2': '#334155',
+                        'accent': '#06b6d4',
+                        'accent-light': '#67e8f9',
+                        'success': '#10b981',
+                        'warning': '#f59e0b',
+                        'danger': '#ef4444'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-dark-bg text-white min-h-screen">
+    <!-- Header -->
+    <header class="bg-dark-surface border-b border-dark-surface-2 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-3xl font-bold text-accent">Alfred's Command Center 🎩</h1>
+            <div class="text-right">
+                <div id="current-time" class="text-xl font-mono text-accent-light"></div>
+                <div id="current-date" class="text-sm text-gray-400"></div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
+        <!-- $1M Tracker -->
+        <section class="bg-dark-surface rounded-lg p-6 border border-dark-surface-2">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold flex items-center gap-2">
+                    🎯 $1M Revenue Target
+                </h2>
+                <div class="text-right">
+                    <div class="text-2xl font-bold text-accent">$80,000</div>
+                    <div class="text-sm text-gray-400">of $1,000,000 by March 2027</div>
+                </div>
+            </div>
+            
+            <!-- Main Progress Bar -->
+            <div class="mb-6">
+                <div class="flex justify-between text-sm mb-2">
+                    <span>Overall Progress</span>
+                    <span>8%</span>
+                </div>
+                <div class="w-full bg-dark-surface-2 rounded-full h-4">
+                    <div class="bg-gradient-to-r from-accent to-success h-4 rounded-full" style="width: 8%"></div>
+                </div>
+            </div>
+
+            <!-- Revenue Streams -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="bg-dark-surface-2 rounded-lg p-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="font-semibold text-success">💹 GFREQ</h3>
+                        <span class="text-sm text-gray-400">50%</span>
+                    </div>
+                    <div class="text-lg font-bold">$80,000</div>
+                    <div class="text-sm text-gray-400">Target: $160,000</div>
+                    <div class="w-full bg-dark-bg rounded-full h-2 mt-2">
+                        <div class="bg-success h-2 rounded-full" style="width: 50%"></div>
+                    </div>
+                </div>
+
+                <div class="bg-dark-surface-2 rounded-lg p-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="font-semibold text-gray-400">🤖 Agents425</h3>
+                        <span class="text-sm text-gray-400">0%</span>
+                    </div>
+                    <div class="text-lg font-bold">$0</div>
+                    <div class="text-sm text-gray-400">Target: TBD</div>
+                    <div class="w-full bg-dark-bg rounded-full h-2 mt-2">
+                        <div class="bg-gray-600 h-2 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="bg-dark-surface-2 rounded-lg p-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="font-semibold text-gray-400">🛒 E-commerce</h3>
+                        <span class="text-sm text-gray-400">0%</span>
+                    </div>
+                    <div class="text-lg font-bold">$0</div>
+                    <div class="text-sm text-gray-400">Target: TBD</div>
+                    <div class="w-full bg-dark-bg rounded-full h-2 mt-2">
+                        <div class="bg-gray-600 h-2 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="bg-dark-surface-2 rounded-lg p-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="font-semibold text-gray-400">📱 Mobile Apps</h3>
+                        <span class="text-sm text-gray-400">0%</span>
+                    </div>
+                    <div class="text-lg font-bold">$0</div>
+                    <div class="text-sm text-gray-400">Target: TBD</div>
+                    <div class="w-full bg-dark-bg rounded-full h-2 mt-2">
+                        <div class="bg-gray-600 h-2 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="bg-dark-surface-2 rounded-lg p-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="font-semibold text-gray-400">🐾 OpenClaw Deploy</h3>
+                        <span class="text-sm text-gray-400">0%</span>
+                    </div>
+                    <div class="text-lg font-bold">$0</div>
+                    <div class="text-sm text-gray-400">Target: TBD</div>
+                    <div class="w-full bg-dark-bg rounded-full h-2 mt-2">
+                        <div class="bg-gray-600 h-2 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="bg-dark-surface-2 rounded-lg p-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="font-semibold text-gray-400">💄 Beauty Salons</h3>
+                        <span class="text-sm text-gray-400">0%</span>
+                    </div>
+                    <div class="text-lg font-bold">$0</div>
+                    <div class="text-sm text-gray-400">Target: TBD</div>
+                    <div class="w-full bg-dark-bg rounded-full h-2 mt-2">
+                        <div class="bg-gray-600 h-2 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Today's Schedule -->
+            <section class="bg-dark-surface rounded-lg p-6 border border-dark-surface-2">
+                <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                    📅 Today's Schedule
+                </h2>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center p-3 bg-dark-surface-2 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <span class="text-accent font-mono">12:00 AM</span>
+                            <span>🌙 Night shift</span>
+                        </div>
+                        <div class="w-2 h-2 bg-gray-500 rounded-full"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center p-3 bg-dark-surface-2 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <span class="text-accent font-mono">06:00 AM</span>
+                            <span>🌅 Morning standup</span>
+                        </div>
+                        <div class="w-2 h-2 bg-warning rounded-full"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center p-3 bg-accent/20 border border-accent/30 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <span class="text-accent font-mono font-bold">07:00 AM</span>
+                            <span>☕ Morning briefing</span>
+                        </div>
+                        <div class="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center p-3 bg-dark-surface-2 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <span class="text-accent font-mono">09:00 AM</span>
+                            <span>🔍 Market intel scan</span>
+                        </div>
+                        <div class="w-2 h-2 bg-gray-500 rounded-full"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center p-3 bg-dark-surface-2 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <span class="text-accent font-mono">01:00 PM</span>
+                            <span>🚀 Midday push</span>
+                        </div>
+                        <div class="w-2 h-2 bg-gray-500 rounded-full"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center p-3 bg-dark-surface-2 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <span class="text-accent font-mono">08:00 PM</span>
+                            <span>🎯 Evening strategy session</span>
+                        </div>
+                        <div class="w-2 h-2 bg-gray-500 rounded-full"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center p-3 bg-dark-surface-2 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <span class="text-accent font-mono">10:00 PM</span>
+                            <span>📝 Daily log</span>
+                        </div>
+                        <div class="w-2 h-2 bg-gray-500 rounded-full"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Action Items for Nhat -->
+            <section class="bg-dark-surface rounded-lg p-6 border border-dark-surface-2">
+                <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                    ✅ Action Items for Nhat
+                </h2>
+                <div class="space-y-3">
+                    <label class="flex items-center space-x-3 p-3 bg-dark-surface-2 rounded-lg cursor-pointer hover:bg-dark-surface-2/80">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-accent bg-dark-bg border-gray-600 rounded focus:ring-accent focus:ring-2">
+                        <span>📧 Set up GFREQ Gmail account</span>
+                    </label>
+                    
+                    <label class="flex items-center space-x-3 p-3 bg-dark-surface-2 rounded-lg cursor-pointer hover:bg-dark-surface-2/80">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-accent bg-dark-bg border-gray-600 rounded focus:ring-accent focus:ring-2">
+                        <span>🐦 Set up GFREQ X account</span>
+                    </label>
+                    
+                    <label class="flex items-center space-x-3 p-3 bg-dark-surface-2 rounded-lg cursor-pointer hover:bg-dark-surface-2/80">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-accent bg-dark-bg border-gray-600 rounded focus:ring-accent focus:ring-2">
+                        <span>🔴 Set up GFREQ Reddit account</span>
+                    </label>
+                    
+                    <label class="flex items-center space-x-3 p-3 bg-dark-surface-2 rounded-lg cursor-pointer hover:bg-dark-surface-2/80">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-accent bg-dark-bg border-gray-600 rounded focus:ring-accent focus:ring-2">
+                        <span>🤖 Create Discord bot + invite to GFREQ server</span>
+                    </label>
+                    
+                    <label class="flex items-center space-x-3 p-3 bg-dark-surface-2 rounded-lg cursor-pointer hover:bg-dark-surface-2/80">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-accent bg-dark-bg border-gray-600 rounded focus:ring-accent focus:ring-2">
+                        <span>📚 Feed Alfred X bookmark articles</span>
+                    </label>
+                    
+                    <label class="flex items-center space-x-3 p-3 bg-warning/20 border border-warning/30 rounded-lg cursor-pointer hover:bg-warning/30">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-warning bg-dark-bg border-warning rounded focus:ring-warning focus:ring-2">
+                        <span>📋 File taxes by April 15, 2026</span>
+                    </label>
+                </div>
+                
+                <div class="mt-4 pt-4 border-t border-dark-surface-2">
+                    <div class="text-sm text-gray-400">Progress: 0/6 completed</div>
+                    <div class="w-full bg-dark-surface-2 rounded-full h-2 mt-1">
+                        <div class="bg-accent h-2 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Active Projects -->
+        <section class="bg-dark-surface rounded-lg p-6 border border-dark-surface-2">
+            <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                🚧 Active Projects
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-warning">
+                    <h3 class="font-bold text-lg mb-2">🌐 GFREQ Website</h3>
+                    <p class="text-sm text-gray-400 mb-3">Week 1/6 — Building</p>
+                    <div class="w-full bg-dark-bg rounded-full h-2">
+                        <div class="bg-warning h-2 rounded-full" style="width: 17%"></div>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">17% complete</div>
+                </div>
+
+                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-accent">
+                    <h3 class="font-bold text-lg mb-2">🔍 NinjaView Replacement</h3>
+                    <p class="text-sm text-gray-400 mb-3">Research phase</p>
+                    <div class="w-full bg-dark-bg rounded-full h-2">
+                        <div class="bg-accent h-2 rounded-full" style="width: 25%"></div>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">25% complete</div>
+                </div>
+
+                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-gray-500">
+                    <h3 class="font-bold text-lg mb-2">⚙️ Content Machine</h3>
+                    <p class="text-sm text-gray-400 mb-3">Setup</p>
+                    <div class="w-full bg-dark-bg rounded-full h-2">
+                        <div class="bg-gray-500 h-2 rounded-full" style="width: 10%"></div>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">10% complete</div>
+                </div>
+
+                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-gray-500">
+                    <h3 class="font-bold text-lg mb-2">📚 Course</h3>
+                    <p class="text-sm text-gray-400 mb-3">Planning</p>
+                    <div class="w-full bg-dark-bg rounded-full h-2">
+                        <div class="bg-gray-500 h-2 rounded-full" style="width: 5%"></div>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">5% complete</div>
+                </div>
+
+                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-accent">
+                    <h3 class="font-bold text-lg mb-2">🤖 Agents425</h3>
+                    <p class="text-sm text-gray-400 mb-3">Landing page in dev</p>
+                    <div class="w-full bg-dark-bg rounded-full h-2">
+                        <div class="bg-accent h-2 rounded-full" style="width: 30%"></div>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">30% complete</div>
+                </div>
+
+                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-success">
+                    <h3 class="font-bold text-lg mb-2">💄 Beauty Salon Turnaround</h3>
+                    <p class="text-sm text-gray-400 mb-3">Research done</p>
+                    <div class="w-full bg-dark-bg rounded-full h-2">
+                        <div class="bg-success h-2 rounded-full" style="width: 40%"></div>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">40% complete</div>
+                </div>
+
+                <div class="bg-dark-surface-2 rounded-lg p-4 border-l-4 border-gray-500">
+                    <h3 class="font-bold text-lg mb-2">📔 Alfred's Journal</h3>
+                    <p class="text-sm text-gray-400 mb-3">Starting Sunday</p>
+                    <div class="w-full bg-dark-bg rounded-full h-2">
+                        <div class="bg-gray-500 h-2 rounded-full" style="width: 0%"></div>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">Not started</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Active Agents -->
+            <section class="bg-dark-surface rounded-lg p-6 border border-dark-surface-2">
+                <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                    🤖 Active Agents
+                    <span class="text-sm bg-accent/20 text-accent px-2 py-1 rounded-full">1/8 slots</span>
+                </h2>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center p-3 bg-success/20 border border-success/30 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <div class="w-3 h-3 bg-success rounded-full animate-pulse"></div>
+                            <span class="font-mono text-sm">subagent-e819</span>
+                            <span class="text-sm text-gray-400">Dashboard Builder</span>
+                        </div>
+                        <span class="text-xs bg-success/20 text-success px-2 py-1 rounded">ACTIVE</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div class="flex justify-between items-center p-3 bg-dark-surface-2 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 bg-gray-500 rounded-full"></div>
+                                <span class="font-mono text-sm text-gray-500">slot-2</span>
+                            </div>
+                            <span class="text-xs text-gray-500">IDLE</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center p-3 bg-dark-surface-2 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 bg-gray-500 rounded-full"></div>
+                                <span class="font-mono text-sm text-gray-500">slot-3</span>
+                            </div>
+                            <span class="text-xs text-gray-500">IDLE</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center p-3 bg-dark-surface-2 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 bg-gray-500 rounded-full"></div>
+                                <span class="font-mono text-sm text-gray-500">slot-4</span>
+                            </div>
+                            <span class="text-xs text-gray-500">IDLE</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center p-3 bg-dark-surface-2 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 bg-gray-500 rounded-full"></div>
+                                <span class="font-mono text-sm text-gray-500">slot-5</span>
+                            </div>
+                            <span class="text-xs text-gray-500">IDLE</span>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <span class="text-xs text-gray-500">... 3 more slots available</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Weekly Timeline -->
+            <section class="bg-dark-surface rounded-lg p-6 border border-dark-surface-2">
+                <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                    📊 Weekly Timeline
+                    <span class="text-sm text-gray-400">(6-week sprint)</span>
+                </h2>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-8 text-center">
+                            <div class="w-8 h-8 bg-success rounded-full flex items-center justify-center text-sm font-bold">✓</div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold">Week 1</div>
+                            <div class="text-xs text-gray-400">Jan 27 - Feb 2, 2026</div>
+                            <div class="text-xs text-success">Completed</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="w-8 text-center">
+                            <div class="w-8 h-8 bg-accent rounded-full flex items-center justify-center text-sm font-bold animate-pulse">2</div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold text-accent">Week 2</div>
+                            <div class="text-xs text-gray-400">Feb 3 - Feb 9, 2026</div>
+                            <div class="text-xs text-accent">Current Week</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="w-8 text-center">
+                            <div class="w-8 h-8 bg-dark-surface-2 border border-gray-600 rounded-full flex items-center justify-center text-sm font-bold text-gray-400">3</div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold text-gray-400">Week 3</div>
+                            <div class="text-xs text-gray-400">Feb 10 - Feb 16, 2026</div>
+                            <div class="text-xs text-gray-500">Upcoming</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="w-8 text-center">
+                            <div class="w-8 h-8 bg-dark-surface-2 border border-gray-600 rounded-full flex items-center justify-center text-sm font-bold text-gray-400">4</div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold text-gray-400">Week 4</div>
+                            <div class="text-xs text-gray-400">Feb 17 - Feb 23, 2026</div>
+                            <div class="text-xs text-gray-500">Upcoming</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="w-8 text-center">
+                            <div class="w-8 h-8 bg-dark-surface-2 border border-gray-600 rounded-full flex items-center justify-center text-sm font-bold text-gray-400">5</div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold text-gray-400">Week 5</div>
+                            <div class="text-xs text-gray-400">Feb 24 - Mar 2, 2026</div>
+                            <div class="text-xs text-gray-500">Upcoming</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="w-8 text-center">
+                            <div class="w-8 h-8 bg-dark-surface-2 border border-gray-600 rounded-full flex items-center justify-center text-sm font-bold text-gray-400">6</div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold text-gray-400">Week 6</div>
+                            <div class="text-xs text-gray-400">Mar 3 - Mar 9, 2026</div>
+                            <div class="text-xs text-gray-500">Upcoming</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-dark-surface-2">
+                        <div class="text-sm text-gray-400 mb-2">Sprint Progress</div>
+                        <div class="w-full bg-dark-surface-2 rounded-full h-3">
+                            <div class="bg-gradient-to-r from-success to-accent h-3 rounded-full" style="width: 17%"></div>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">Week 1 of 6 completed</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="bg-dark-surface border-t border-dark-surface-2 px-6 py-4 mt-12">
+        <div class="max-w-7xl mx-auto text-center text-gray-400 text-sm">
+            <p>🎩 Alfred's Command Center | Last updated: <span id="last-updated"></span></p>
+        </div>
+    </footer>
+
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            
+            // Update time
+            const timeOptions = {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false,
+                timeZone: 'UTC'
+            };
+            document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', timeOptions) + ' UTC';
+            
+            // Update date
+            const dateOptions = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                timeZone: 'UTC'
+            };
+            document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', dateOptions);
+            
+            // Update footer
+            document.getElementById('last-updated').textContent = now.toLocaleString('en-US', {
+                ...dateOptions,
+                ...timeOptions,
+                timeZone: 'UTC'
+            }) + ' UTC';
+        }
+
+        // Update every second
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+
+        // Add interactivity to checkboxes
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            const progressBar = document.querySelector('#action-items-progress');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const checkedCount = document.querySelectorAll('input[type="checkbox"]:checked').length;
+                    const totalCount = checkboxes.length;
+                    const percentage = (checkedCount / totalCount) * 100;
+                    
+                    if (progressBar) {
+                        progressBar.style.width = percentage + '%';
+                        progressBar.parentElement.previousElementSibling.textContent = `Progress: ${checkedCount}/${totalCount} completed`;
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
