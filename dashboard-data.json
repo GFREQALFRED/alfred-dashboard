@@ -231,12 +231,13 @@
       "id": "t8",
       "title": "Fix X/Twitter billing",
       "description": "402 Payment Required - billing added but not propagated",
-      "status": "review",
+      "status": "done",
       "priority": "medium",
       "assignee": "nhat",
       "project": "GFREQ",
       "projectColor": "#22C55E",
-      "createdAt": "2026-03-05T15:00:00Z"
+      "createdAt": "2026-03-05T15:00:00Z",
+      "completedAt": "2026-03-06T15:55:00Z"
     },
     {
       "id": "t9",
@@ -436,8 +437,8 @@
     },
     {
       "name": "X/Twitter",
-      "detail": "@GFREQalgo",
-      "status": "pending",
+      "detail": "@GFREQalgo \u2014 authenticated, ready to post",
+      "status": "active",
       "icon": "twitter"
     },
     {
