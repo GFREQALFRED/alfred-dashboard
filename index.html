@@ -797,7 +797,7 @@ function renderSettings() {
         '<span style="font-size:14px;">Theme</span>',
         `<div style="display:flex; align-items:center; gap:8px;">
           <span style="font-size:12px; color:var(--text3); min-width:32px; text-align:right;">${isDark?'Dark':'Light'}</span>
-          <button onclick="toggleTheme()" style="${toggleStyle(!isDark)}"><div style="${toggleDot(!isDark)}"></div></button>
+          <button onclick="toggleTheme()" style="${toggleStyle(isDark)}"><div style="${toggleDot(isDark)}"></div></button>
         </div>`
       )}
       ${settingRow(
@@ -823,9 +823,9 @@ function renderSettings() {
         '<span style="font-size:14px;">Version</span>',
         `<span class="mono" style="font-size:12px; color:var(--text2);">${esc(DATA.system.openclawVersion)}</span>`
       )}
-      <div onclick="settingsShowAdvanced=!settingsShowAdvanced;renderSettings();" style="display:flex; justify-content:space-between; align-items:center; min-height:44px; padding:4px 0; cursor:pointer; border-top:1px solid var(--border); margin-top:4px;">
+      <div onclick="settingsShowAdvanced=!settingsShowAdvanced;renderSettings();" style="display:flex; justify-content:space-between; align-items:center; min-height:44px; padding:8px 0; cursor:pointer; border-top:1px solid var(--border); margin-top:8px; border-radius:4px;" onmouseover="this.style.background='var(--s1)'" onmouseout="this.style.background='transparent'">
         <span style="font-size:14px; color:var(--text2);">System Details</span>
-        <span style="font-size:12px; color:var(--text3);">${settingsShowAdvanced?'▲':'▼'}</span>
+        <span style="font-size:14px; color:var(--text3); transition:transform 200ms ease; transform:rotate(${settingsShowAdvanced?'180':'0'}deg);">▼</span>
       </div>
       ${settingsShowAdvanced ? `<div style="display:flex; flex-direction:column; gap:8px; font-size:12px; padding:8px 0; border-top:1px solid var(--border);">
         ${[['Container',DATA.system.container],['OS',DATA.system.os],['Node',DATA.system.node],['Hostname',DATA.system.hostname]].map(([k,v]) =>
