@@ -270,6 +270,7 @@
   <nav style="flex:1; padding:12px 0; overflow-y:auto; -webkit-overflow-scrolling:touch;">
     <div class="sidebar-item active" data-page="dashboard" onclick="navigate('dashboard')"><i data-lucide="layout-dashboard" style="width:16px; height:16px;"></i> Dashboard</div>
     <div class="sidebar-item" data-page="tasks" onclick="navigate('tasks')"><i data-lucide="check-square" style="width:16px; height:16px;"></i> Tasks</div>
+    <div class="sidebar-item" data-page="agents" onclick="navigate('agents')"><i data-lucide="bot" style="width:16px; height:16px;"></i> Agents</div>
     <div class="sidebar-item" data-page="calendar" onclick="navigate('calendar')"><i data-lucide="calendar" style="width:16px; height:16px;"></i> Calendar</div>
     <div class="sidebar-item" data-page="projects" onclick="navigate('projects')"><i data-lucide="folder" style="width:16px; height:16px;"></i> Projects</div>
     <div class="sidebar-item" data-page="memory" onclick="navigate('memory')"><i data-lucide="brain" style="width:16px; height:16px;"></i> Memory</div>
@@ -361,26 +362,6 @@ document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
 let searchSelectedIdx = 0;
 let searchResults = [];
 let taskFilter = 'all';
-
-// ═══════════════ ARCHIVE SYSTEM ═══════════════
-function isTaskArchived(task) {
-  if (task.status !== 'done' || !task.completedAt) return false;
-  const completedDate = new Date(task.completedAt);
-  const daysSinceCompleted = (Date.now() - completedDate.getTime()) / (1000 * 60 * 60 * 24);
-  return daysSinceCompleted > 3;
-}
-
-function getFilteredTasks() {
-  if (taskFilter === 'archived') {
-    return DATA.tasks.filter(isTaskArchived);
-  }
-  
-  // For non-archived filters, exclude archived tasks
-  const nonArchivedTasks = DATA.tasks.filter(t => !isTaskArchived(t));
-  
-  if (taskFilter === 'all') return nonArchivedTasks;
-  return nonArchivedTasks.filter(t => t.assignee === taskFilter);
-}
 let memoryTab = 'daily';
 let selectedMemoryFile = null;
 let docsFilter = '';
@@ -767,7 +748,7 @@ window.addEventListener('hashchange', () => { const p = window.location.hash.sli
 function renderPage() {
   if (!DATA) return;
   const mc = document.getElementById('main-content');
-  const renderers = { dashboard:renderDashboard, tasks:renderTasks, calendar:renderCalendar, projects:renderProjects, memory:renderMemory, docs:renderDocs, team:renderTeam, system:renderSystem, 'p-calendar':renderPCalendar, people:renderPeople, mind:renderMind, body:renderBody, spirit:renderSpirit };
+  const renderers = { dashboard:renderDashboard, tasks:renderTasks, agents:renderAgents, calendar:renderCalendar, projects:renderProjects, memory:renderMemory, docs:renderDocs, team:renderTeam, system:renderSystem, 'p-calendar':renderPCalendar, people:renderPeople, mind:renderMind, body:renderBody, spirit:renderSpirit };
   mc.innerHTML = (renderers[currentPage] || renderDashboard)();
   lucide.createIcons();
   if (currentPage === 'calendar') positionCalendarBlocks();
@@ -779,8 +760,7 @@ function renderActivity() {
   const feed = document.getElementById('activity-feed');
   const agentColors = {};
   DATA.agents.forEach(a => agentColors[a.name] = a.color);
-  const sortedActivity = DATA.liveActivity.slice().sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-  feed.innerHTML = sortedActivity.map(item => {
+  feed.innerHTML = DATA.liveActivity.map(item => {
     const ago = timeAgo(new Date(item.timestamp));
     const color = agentColors[item.agent] || 'var(--text2)';
     return `<div style="padding:10px 0; border-bottom:1px solid var(--border);">
@@ -1187,8 +1167,7 @@ function renderTasks() {
     { key:'review', label:'Review', color:'var(--warn)' },
     { key:'done', label:'Done', color:'var(--success)' }
   ];
-  const filtered = getFilteredTasks();
-  const archivedCount = DATA.tasks.filter(t => isTaskArchived(t)).length;
+  const filtered = DATA.tasks.filter(t => taskFilter === 'all' || t.assignee === taskFilter);
   const mob = isMobile();
   // Validate mobileKanbanTab
   if (!cols.find(c => c.key === mobileKanbanTab)) mobileKanbanTab = 'backlog';
@@ -1204,7 +1183,6 @@ function renderTasks() {
           <button class="filter-btn ${taskFilter==='alfred'?'active':''}" onclick="taskFilter='alfred';renderPage()">Alfred</button>
           <button class="filter-btn ${taskFilter==='nhat'?'active':''}" onclick="taskFilter='nhat';renderPage()">Nhat</button>
         </div>
-        <button class="filter-btn ${taskFilter==='archived'?'active':''}" onclick="taskFilter='archived';renderPage()" style="margin-left:8px; opacity:0.7;"><i data-lucide="archive" style="width:14px; height:14px; margin-right:4px;"></i> Archived (${archivedCount})</button>
         <button class="btn-primary" onclick="openNewTask()"><i data-lucide="plus" style="width:14px; height:14px;"></i> New</button>
       </div>
     </div>
@@ -1221,25 +1199,7 @@ function renderTasks() {
         ${mobileTasks.length === 0 ? '<div style=\"padding:40px; text-align:center; color:var(--text3); font-size:14px;\">No tasks in ' + mobileCol.label + '</div>' : ''}
       </div>
     </div>
-    <!-- ARCHIVED TASKS VIEW -->
-    ${taskFilter === 'archived' ? `<div style="display:flex; flex-direction:column; gap:12px;">
-      ${filtered.map(t => {
-        const completedDate = new Date(t.completedAt);
-        return `<div class="card" style="padding:16px; opacity:0.8;">
-          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
-            <span style="font-size:14px; font-weight:500;">${esc(t.title)}</span>
-            <span style="font-size:11px; color:var(--text3);">Completed ${completedDate.toLocaleDateString()}</span>
-          </div>
-          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-            <span class="badge" style="background:${t.projectColor}18; color:${t.projectColor};">${esc(t.project)}</span>
-            <span style="font-size:12px; color:var(--text3);">by ${t.assignee === 'alfred' ? 'Alfred' : 'Nhat'}</span>
-          </div>
-        </div>`;
-      }).join('')}
-      ${filtered.length === 0 ? '<div style="padding:40px; text-align:center; color:var(--text3); font-size:14px;">No archived tasks</div>' : ''}  
-    </div>` : ''}
-
-    ${taskFilter !== 'archived' ? `<div class="kanban-wrap" style="display:flex; gap:16px; height:calc(100vh - 160px); overflow-x:auto;">
+    <div class="kanban-wrap" style="display:flex; gap:16px; height:calc(100vh - 160px); overflow-x:auto;">
       ${cols.map(col => {
         const tasks = filtered.filter(t => t.status === col.key);
         return `<div class="kanban-column" data-status="${col.key}" style="flex:1; min-width:220px; max-width:320px; display:flex; flex-direction:column; padding:4px; border-radius:8px; transition: background 150ms ease, outline 150ms ease;"
@@ -1267,10 +1227,31 @@ function renderTasks() {
           </div>
         </div>`;
       }).join('')}
-    </div>` : ''}
+    </div>`;
 }
 
 // ═══════════════ PAGE: AGENTS ═══════════════
+function renderAgents() {
+  return `
+    <div style="margin-bottom:24px;"><h1 style="font-size:24px; font-weight:600; letter-spacing:-0.025em; margin-bottom:4px;">Agents</h1><p style="font-size:13px; color:var(--text3);">AI workforce status</p></div>
+    <div class="agents-grid m-stack" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:16px;">
+      ${DATA.agents.map(a => `
+        <div class="card" style="padding:20px; border-left:3px solid ${a.color};">
+          <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:12px;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div style="width:36px; height:36px; border-radius:8px; background:${a.color}15; display:flex; align-items:center; justify-content:center;"><i data-lucide="${a.icon}" style="width:18px; height:18px; color:${a.color};"></i></div>
+              <div><div style="font-size:14px; font-weight:600;">${esc(a.name)}</div><div style="font-size:12px; color:var(--text3);">${esc(a.role)}</div></div>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;"><div class="status-dot status-${a.status}"></div><span style="font-size:11px; color:var(--text3); text-transform:capitalize;">${a.status}</span></div>
+          </div>
+          <p style="font-size:12px; color:var(--text2); margin-bottom:12px; line-height:1.5;">${esc(a.description)}</p>
+          <div style="font-size:11px; color:var(--text3); margin-bottom:10px; display:flex; align-items:center; gap:6px;"><i data-lucide="cpu" style="width:12px; height:12px; color:var(--text3);"></i> ${esc(a.model||'')}</div>
+          ${a.currentTask ? `<div style="font-size:12px; color:var(--text2); margin-bottom:10px; display:flex; align-items:center; gap:6px;"><i data-lucide="loader" style="width:12px; height:12px; color:var(--info);"></i> ${esc(a.currentTask)}</div>` : ''}
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">${a.skills.map(sk => `<span class="badge" style="background:var(--s2); color:var(--text2);">${esc(sk)}</span>`).join('')}</div>
+        </div>
+      `).join('')}
+    </div>`;
+}
 
 // ═══════════════ PAGE: CALENDAR ═══════════════
 function renderCalendar() {
@@ -1586,7 +1567,6 @@ function renderTeam() {
         <div style="font-size:15px; font-weight:600;">${esc(a0.name)}</div>
         <div style="font-size:12px; color:var(--text3);">${esc(a0.role)}</div>
         <div style="font-size:10px; color:var(--text3); margin-top:4px; font-family:'JetBrains Mono',monospace;">${esc(a0.model||'')}</div>
-        ${a0.currentTask ? `<div style="font-size:11px; color:var(--info); margin-top:6px; display:flex; align-items:center; gap:4px; justify-content:center;"><i data-lucide="loader" style="width:12px; height:12px;"></i> ${esc(a0.currentTask)}</div>` : ''}
         <div style="display:flex; gap:6px; justify-content:center; margin-top:10px; flex-wrap:wrap;">${a0.skills.map(s => `<span class="badge" style="background:var(--s2); color:var(--text2);">${esc(s)}</span>`).join('')}</div>
       </div>
       <div style="width:2px; height:32px; background:var(--s3);"></div>
@@ -1601,7 +1581,6 @@ function renderTeam() {
               <div style="font-size:11px; color:var(--text3); margin-bottom:4px;">${esc(a.role)}</div>
               <div style="font-size:10px; color:var(--text3); margin-bottom:8px; font-family:'JetBrains Mono',monospace;">${esc(a.model||'')}</div>
               <div style="display:flex; align-items:center; gap:4px; justify-content:center; margin-bottom:8px;"><div class="status-dot status-${a.status}"></div><span style="font-size:11px; color:var(--text3); text-transform:capitalize;">${a.status}</span></div>
-              ${a.currentTask ? `<div style="font-size:10px; color:var(--info); margin-bottom:6px; display:flex; align-items:center; gap:4px; justify-content:center;"><i data-lucide="loader" style="width:10px; height:10px;"></i> ${esc(a.currentTask)}</div>` : ''}
               <div style="display:flex; gap:4px; justify-content:center; flex-wrap:wrap;">${a.skills.map(s => `<span class="badge" style="background:var(--s2); color:var(--text2); font-size:10px;">${esc(s)}</span>`).join('')}</div>
             </div>
           </div>
@@ -1613,26 +1592,6 @@ function renderTeam() {
 // ═══════════════ PAGE: SYSTEM ═══════════════
 function renderSystem() {
   return `
-    <div class="card" style="padding:20px; margin-bottom:24px;">
-      <h2 style="font-size:15px; font-weight:600; margin-bottom:16px;">All Activity</h2>
-      <div style="max-height:400px; overflow-y:auto;">
-        ${DATA.liveActivity.slice().sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).map(item => {
-          const ago = timeAgo(new Date(item.timestamp));
-          const agentColors = {};
-          DATA.agents.forEach(a => agentColors[a.name] = a.color);
-          const color = agentColors[item.agent] || 'var(--text2)';
-          return `<div style="padding:12px 0; border-bottom:1px solid var(--border);">
-            <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-              <span style="font-size:13px; font-weight:600; color:${color};">${esc(item.agent)}</span>
-              <span class="mono" style="font-size:12px; color:var(--text3);">${ago}</span>
-              <span class="mono" style="font-size:10px; color:var(--text3); margin-left:auto;">${new Date(item.timestamp).toLocaleDateString()}</span>
-            </div>
-            <div style="font-size:13px; color:var(--text2); line-height:1.4;">${esc(item.action)}</div>
-          </div>`;
-        }).join('')}
-        ${DATA.liveActivity.length === 0 ? '<div style="padding:20px; text-align:center; color:var(--text3);">No activity yet</div>' : ''}  
-      </div>
-    </div>
     <div style="margin-bottom:24px;"><h1 style="font-size:24px; font-weight:600; letter-spacing:-0.025em; margin-bottom:4px;">System</h1><p style="font-size:13px; color:var(--text3);">Infrastructure and integrations</p></div>
     <div class="card" style="padding:20px; margin-bottom:24px;">
       <h2 style="font-size:15px; font-weight:600; margin-bottom:16px;">System Information</h2>
