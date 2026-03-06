@@ -780,7 +780,8 @@ function renderActivity() {
   const feed = document.getElementById('activity-feed');
   const agentColors = {};
   DATA.agents.forEach(a => agentColors[a.name] = a.color);
-  feed.innerHTML = DATA.liveActivity.map(item => {
+  const sortedActivity = DATA.liveActivity.slice().sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  feed.innerHTML = sortedActivity.map(item => {
     const ago = timeAgo(new Date(item.timestamp));
     const color = agentColors[item.agent] || 'var(--text2)';
     return `<div style="padding:10px 0; border-bottom:1px solid var(--border);">
@@ -1632,6 +1633,26 @@ function renderTeam() {
 // ═══════════════ PAGE: SYSTEM ═══════════════
 function renderSystem() {
   return `
+    <div class="card" style="padding:20px; margin-bottom:24px;">
+      <h2 style="font-size:15px; font-weight:600; margin-bottom:16px;">All Activity</h2>
+      <div style="max-height:400px; overflow-y:auto;">
+        ${DATA.liveActivity.slice().sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).map(item => {
+          const ago = timeAgo(new Date(item.timestamp));
+          const agentColors = {};
+          DATA.agents.forEach(a => agentColors[a.name] = a.color);
+          const color = agentColors[item.agent] || 'var(--text2)';
+          return `<div style="padding:12px 0; border-bottom:1px solid var(--border);">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+              <span style="font-size:13px; font-weight:600; color:${color};">${esc(item.agent)}</span>
+              <span class="mono" style="font-size:12px; color:var(--text3);">${ago}</span>
+              <span class="mono" style="font-size:10px; color:var(--text3); margin-left:auto;">${new Date(item.timestamp).toLocaleDateString()}</span>
+            </div>
+            <div style="font-size:13px; color:var(--text2); line-height:1.4;">${esc(item.action)}</div>
+          </div>`;
+        }).join('')}
+        ${DATA.liveActivity.length === 0 ? '<div style="padding:20px; text-align:center; color:var(--text3);">No activity yet</div>' : ''}  
+      </div>
+    </div>
     <div style="margin-bottom:24px;"><h1 style="font-size:24px; font-weight:600; letter-spacing:-0.025em; margin-bottom:4px;">System</h1><p style="font-size:13px; color:var(--text3);">Infrastructure and integrations</p></div>
     <div class="card" style="padding:20px; margin-bottom:24px;">
       <h2 style="font-size:15px; font-weight:600; margin-bottom:16px;">System Information</h2>
