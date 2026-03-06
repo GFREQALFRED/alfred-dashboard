@@ -1286,13 +1286,14 @@ function renderCalendar() {
       </div>
     </div>
     <div class="cal-mobile" style="display:none; margin-bottom:24px;">
-      <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+      <div style="display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:8px;">
         ${days.map((d,i) => {
           const isToday = i === todayIdx;
           const isSelected = calSelectedDay === null ? isToday : calSelectedDay === i;
-          return `<div onclick="calSelectedDay=${i};renderPage();" style="flex:1; text-align:center; padding:8px 0; cursor:pointer; border-radius:10px; ${isSelected ? 'background:var(--accent);' : ''}">
-            <div style="font-size:11px; font-weight:500; color:${isSelected ? '#fff' : 'var(--text3)'}; margin-bottom:2px;">${dayNames[i].charAt(0)}</div>
-            <div class="mono" style="font-size:15px; font-weight:600; color:${isSelected ? '#fff' : isToday ? 'var(--accent)' : 'var(--text)'};">${d.getDate()}</div>
+          const shortNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+          return `<div onclick="calSelectedDay=${i};renderPage();" style="text-align:center; padding:10px 0; cursor:pointer; border-radius:12px; min-height:52px; display:flex; flex-direction:column; align-items:center; justify-content:center; ${isSelected ? 'background:var(--accent);' : 'background:var(--s1); border:1px solid var(--border);'}">
+            <div style="font-size:11px; font-weight:500; color:${isSelected ? 'rgba(255,255,255,0.8)' : 'var(--text3)'}; margin-bottom:3px;">${shortNames[i]}</div>
+            <div class="mono" style="font-size:16px; font-weight:700; color:${isSelected ? '#fff' : isToday ? 'var(--accent)' : 'var(--text)'};">${d.getDate()}</div>
           </div>`;
         }).join('')}
       </div>
