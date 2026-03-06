@@ -161,17 +161,6 @@
       "completedAt": "2026-03-06T02:00:00Z"
     },
     {
-      "id": "t2",
-      "title": "Renew geniusfreq.com domain",
-      "description": "Domain expiring soon - renew before it lapses",
-      "status": "backlog",
-      "priority": "urgent",
-      "assignee": "nhat",
-      "project": "GFREQ",
-      "projectColor": "#22C55E",
-      "createdAt": "2026-03-05T10:00:00Z"
-    },
-    {
       "id": "t3",
       "title": "Build GFREQ website",
       "description": "Full website build using PRD spec - landing, pricing, about, blog",
