@@ -414,7 +414,7 @@
       "id": "t25",
       "title": "Renew geniusfreq.com on Wix",
       "description": "Domain expires March 31, 2026. Renew on Wix (~$15) to keep the domain. Later transfer to Cloudflare for cheaper renewals.",
-      "status": "in-progress",
+      "status": "backlog",
       "priority": "high",
       "assignee": "nhat",
       "project": "GFREQ",
