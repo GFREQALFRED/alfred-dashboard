@@ -550,6 +550,40 @@
       "projectColor": "#8B5CF6",
       "createdAt": "2026-03-06T22:24:00Z",
       "delegatedTo": "Claude Code CLI"
+    },
+    {
+      "id": "t34",
+      "title": "E-commerce platform selection",
+      "description": "Choose platform: Shopify vs custom. Research costs, features, integrations.",
+      "status": "backlog",
+      "priority": "medium",
+      "assignee": "alfred",
+      "delegatedTo": "Unassigned",
+      "project": "E-commerce",
+      "projectColor": "#F59E0B",
+      "createdAt": "2026-03-06T22:47:00Z"
+    },
+    {
+      "id": "t35",
+      "title": "E-commerce brand identity",
+      "description": "Logo, colors, voice for cultural fashion brand.",
+      "status": "backlog",
+      "priority": "medium",
+      "assignee": "nhat",
+      "project": "E-commerce",
+      "projectColor": "#F59E0B",
+      "createdAt": "2026-03-06T22:47:00Z"
+    },
+    {
+      "id": "t36",
+      "title": "E-commerce supplier sourcing",
+      "description": "Find Áo dài and African fashion suppliers. Pricing, MOQs, shipping.",
+      "status": "backlog",
+      "priority": "medium",
+      "assignee": "nhat",
+      "project": "E-commerce",
+      "projectColor": "#F59E0B",
+      "createdAt": "2026-03-06T22:47:00Z"
     }
   ],
   "integrations": [
