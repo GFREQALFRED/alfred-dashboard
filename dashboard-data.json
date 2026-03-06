@@ -283,6 +283,17 @@
       "projectColor": "#22C55E",
       "createdAt": "2026-03-04T20:00:00Z",
       "completedAt": "2026-03-05T14:00:00Z"
+    },
+    {
+      "id": "t13",
+      "title": "Fix dashboard auto-update cron (patch-based)",
+      "description": "Rebuild auto-update to merge/patch existing JSON instead of regenerating from scratch. Add schema validation to reject updates that drop required fields. Re-enable cron after verified.",
+      "status": "backlog",
+      "priority": "medium",
+      "assignee": "alfred",
+      "project": "Dashboard",
+      "projectColor": "#8B5CF6",
+      "createdAt": "2026-03-06T04:29:00Z"
     }
   ],
   "integrations": [
