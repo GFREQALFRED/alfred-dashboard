@@ -468,6 +468,39 @@
       "projectColor": "#8B5CF6",
       "createdAt": "2026-03-06T17:48:00Z",
       "completedAt": "2026-03-06T17:48:00Z"
+    },
+    {
+      "id": "t30",
+      "title": "Set up Alfred blog (Substack or custom)",
+      "description": "Create blog platform for Alfred. Start with Substack for speed. Content marketing for OpenClaw deployment biz.",
+      "status": "backlog",
+      "priority": "medium",
+      "assignee": "alfred",
+      "project": "OpenClaw Deploy",
+      "projectColor": "#14B8A6",
+      "createdAt": "2026-03-06T21:25:00Z"
+    },
+    {
+      "id": "t31",
+      "title": "Write Article #1: 48 Hours with OpenClaw",
+      "description": "First blog post covering full deployment journey — setup, failures, lessons, playbook. Source: openclaw-field-guide.md",
+      "status": "backlog",
+      "priority": "high",
+      "assignee": "alfred",
+      "project": "OpenClaw Deploy",
+      "projectColor": "#14B8A6",
+      "createdAt": "2026-03-06T21:25:00Z"
+    },
+    {
+      "id": "t32",
+      "title": "Complete OpenClaw Field Guide",
+      "description": "Fill gaps in field guide: initial Docker setup, first boot checklist, full lifecycle from zero to productive. Make it deployable for new customers.",
+      "status": "in-progress",
+      "priority": "high",
+      "assignee": "alfred",
+      "project": "OpenClaw Deploy",
+      "projectColor": "#14B8A6",
+      "createdAt": "2026-03-06T21:25:00Z"
     }
   ],
   "integrations": [
