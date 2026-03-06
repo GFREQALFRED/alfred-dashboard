@@ -1166,6 +1166,7 @@ async function loadData() {
     const r = await fetch('dashboard-data.json?t=' + Date.now());
     DATA = await r.json();
     loadLocalTasks();
+    applyArchivedState();
     renderPage();
     renderActivity();
     populateProjectDropdown();
@@ -1583,19 +1584,27 @@ function moveTask(id, status) {
   closeTaskDetail();
 }
 
+function getArchivedIds() {
+  try { return JSON.parse(localStorage.getItem('archivedTasks') || '[]'); } catch(e) { return []; }
+}
+function saveArchivedIds(ids) {
+  localStorage.setItem('archivedTasks', JSON.stringify(ids));
+}
+function applyArchivedState() {
+  const ids = getArchivedIds();
+  DATA.tasks.forEach(t => {
+    if (ids.includes(t.id)) t.archivedAt = t.archivedAt || new Date().toISOString();
+  });
+}
+
 function archiveTask(id) {
   const t = DATA.tasks.find(x => x.id === id);
   if (t && t.status === 'done' && t.completedAt) {
-    // Manually set the completed date to 4 days ago to trigger archive
-    const fourDaysAgo = new Date();
-    fourDaysAgo.setDate(fourDaysAgo.getDate() - 4);
-    t.archivedAt = fourDaysAgo.toISOString();
+    t.archivedAt = new Date().toISOString();
+    const ids = getArchivedIds();
+    if (!ids.includes(id)) { ids.push(id); saveArchivedIds(ids); }
     if (t.source === 'ui') saveLocalTasks();
-    
-    // Log activity
     addActivity('User', `Archived task "${t.title}"`);
-    
-    // Notify Alfred via webhook
     fireWebhook('task_archived', t);
   }
   closeTaskDetail();
@@ -1605,14 +1614,11 @@ function archiveTask(id) {
 function unarchiveTask(id) {
   const t = DATA.tasks.find(x => x.id === id);
   if (t) {
-    // Remove the manual archive timestamp and reset to original completion
     delete t.archivedAt;
+    const ids = getArchivedIds().filter(x => x !== id);
+    saveArchivedIds(ids);
     if (t.source === 'ui') saveLocalTasks();
-    
-    // Log activity
     addActivity('User', `Unarchived task "${t.title}"`);
-    
-    // Notify Alfred via webhook
     fireWebhook('task_unarchived', t);
   }
   closeTaskDetail();
