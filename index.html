@@ -398,6 +398,20 @@ function isTaskArchived(task) {
   return new Date(task.completedAt) < threeDaysAgo;
 }
 
+function addActivity(agent, action) {
+  if (!DATA.liveActivity) DATA.liveActivity = [];
+  DATA.liveActivity.unshift({
+    agent: agent,
+    action: action,
+    timestamp: new Date().toISOString()
+  });
+  // Keep only latest 50 activities to prevent bloat
+  if (DATA.liveActivity.length > 50) {
+    DATA.liveActivity = DATA.liveActivity.slice(0, 50);
+  }
+  renderActivity();
+}
+
 // ═══════════════ MOBILE SIDEBAR ═══════════════
 function toggleMobileSidebar() {
   var sidebar = document.getElementById('sidebar');
@@ -1230,6 +1244,9 @@ function renderActivity() {
       <div style="font-size:12px; color:var(--text2); line-height:1.4;">${esc(item.action)}</div>
     </div>`;
   }).join('');
+  
+  // Update the toggle button text
+  updateActivityToggleText();
 }
 
 function updateActivityToggleText() {
@@ -1439,6 +1456,11 @@ function createTask() {
   };
   DATA.tasks.push(task);
   saveLocalTasks();
+  
+  // Log activity
+  const assigneeName = task.assignee === 'alfred' ? 'Alfred' : 'Nhat';
+  addActivity('User', `Created new task "${task.title}" assigned to ${assigneeName}`);
+  
   closeNewTask();
   if (currentPage === 'tasks') renderPage();
   // Sync to GitHub via serverless function so Alfred can see it
@@ -1545,6 +1567,11 @@ function moveTask(id, status) {
     t.status = status; 
     if (status === 'done' && !t.completedAt) t.completedAt = new Date().toISOString(); 
     if (t.source === 'ui') saveLocalTasks();
+    
+    // Log activity
+    const statusLabels = {backlog: 'Backlog', 'in-progress': 'In Progress', review: 'Review', done: 'Done'};
+    addActivity('User', `Moved "${t.title}" to ${statusLabels[status]}`);
+    
     // Notify Alfred via webhook
     fireWebhook('task_updated', t, previousStatus, status);
   }
@@ -1559,6 +1586,10 @@ function archiveTask(id) {
     fourDaysAgo.setDate(fourDaysAgo.getDate() - 4);
     t.archivedAt = fourDaysAgo.toISOString();
     if (t.source === 'ui') saveLocalTasks();
+    
+    // Log activity
+    addActivity('User', `Archived task "${t.title}"`);
+    
     // Notify Alfred via webhook
     fireWebhook('task_archived', t);
   }
@@ -1572,6 +1603,10 @@ function unarchiveTask(id) {
     // Remove the manual archive timestamp and reset to original completion
     delete t.archivedAt;
     if (t.source === 'ui') saveLocalTasks();
+    
+    // Log activity
+    addActivity('User', `Unarchived task "${t.title}"`);
+    
     // Notify Alfred via webhook
     fireWebhook('task_unarchived', t);
   }
@@ -2388,6 +2423,11 @@ function kanbanDrop(e) {
   t.status = newStatus;
   if (newStatus === 'done' && !t.completedAt) t.completedAt = new Date().toISOString();
   if (t.source === 'ui') saveLocalTasks();
+  
+  // Log activity
+  const statusLabels = {backlog: 'Backlog', 'in-progress': 'In Progress', review: 'Review', done: 'Done'};
+  addActivity('User', `Moved "${t.title}" to ${statusLabels[newStatus]}`);
+  
   fireWebhook('task_updated', t, previousStatus, newStatus);
   // Re-render with animation
   renderPage();
