@@ -190,12 +190,16 @@
     /* Calendar: hide week grid, show mobile agenda */
     .cal-card { display:none !important; }
     .cal-mobile { display:block !important; }
-    .cal-cron-table { min-width:auto !important; }
+    .cal-cron-table { min-width:auto !important; table-layout:fixed !important; }
+    .cal-cron-table colgroup { display:table-column-group; }
     .cal-cron-table th:nth-child(3), .cal-cron-table td:nth-child(3),
     .cal-cron-table th:nth-child(4), .cal-cron-table td:nth-child(4) { display:none; }
     .cal-cron-table td:last-child div { white-space:nowrap; }
-    .cal-cron-table td { font-size:12px !important; padding:8px 6px !important; }
+    .cal-cron-table td { font-size:12px !important; padding:8px 6px !important; overflow:hidden; text-overflow:ellipsis; }
     .cal-cron-table th { font-size:10px !important; padding:8px 6px !important; }
+    .cal-cron-table th:nth-child(1), .cal-cron-table td:nth-child(1) { width:40%; }
+    .cal-cron-table th:nth-child(2), .cal-cron-table td:nth-child(2) { width:38%; }
+    .cal-cron-table th:last-child, .cal-cron-table td:last-child { width:22%; }
 
     /* Team tree: scrollable */
     .team-tree { overflow-x:auto !important; -webkit-overflow-scrolling:touch; padding-bottom:16px; }
