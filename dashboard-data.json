@@ -901,7 +901,48 @@
       ]
     }
   ],
-  "activity": [
+  "sprint": {
+    "currentWeek": 1,
+    "weeks": [
+      {
+        "week": 1,
+        "dates": "Mar 3-9",
+        "focus": "Dashboard + Website Setup",
+        "status": "active"
+      },
+      {
+        "week": 2,
+        "dates": "Mar 10-16",
+        "focus": "GFREQ Site Go-Live",
+        "status": "upcoming"
+      },
+      {
+        "week": 3,
+        "dates": "Mar 17-23",
+        "focus": "Content Machine Launch",
+        "status": "upcoming"
+      },
+      {
+        "week": 4,
+        "dates": "Mar 24-30",
+        "focus": "NinjaView Replacement",
+        "status": "upcoming"
+      },
+      {
+        "week": 5,
+        "dates": "Mar 31-Apr 6",
+        "focus": "Agents425 MVP",
+        "status": "upcoming"
+      },
+      {
+        "week": 6,
+        "dates": "Apr 7-13",
+        "focus": "Scale & Optimize",
+        "status": "upcoming"
+      }
+    ]
+  },
+  "liveActivity": [
     {
       "time": "2h ago",
       "type": "build",
@@ -945,62 +986,12 @@
       "project": "Integrations"
     }
   ],
-  "healthChecks": {
-    "system": "healthy",
-    "integrations": "auth-issues",
-    "agents": "active",
-    "projects": "on-track",
-    "revenue": "starting",
-    "lastCheck": "2026-03-06T02:00:00Z"
-  },
-  "upcomingEvents": [
-    {
-      "date": "2026-03-07",
-      "title": "Fix X/Twitter Authentication",
-      "type": "deadline",
-      "priority": "high"
-    },
-    {
-      "date": "2026-03-08",
-      "title": "Alfred Journal Entry #1",
-      "type": "deadline",
-      "priority": "medium"
-    },
-    {
-      "date": "2026-03-10",
-      "title": "Mobile Apps Brain Dump",
-      "type": "deadline",
-      "priority": "medium"
-    },
-    {
-      "date": "2026-03-12",
-      "title": "GFREQ Website Launch",
-      "type": "milestone",
-      "priority": "critical"
-    },
-    {
-      "date": "2026-03-15",
-      "title": "Domain Renewal Check",
-      "type": "reminder",
-      "priority": "medium"
-    },
-    {
-      "date": "2026-03-20",
-      "title": "LLC Name Change Deadline",
-      "type": "deadline",
-      "priority": "medium"
-    },
-    {
-      "date": "2026-03-21",
-      "title": "Nhat's 34th Birthday \ud83c\udf89",
-      "type": "birthday",
-      "priority": "high"
-    },
-    {
-      "date": "2026-04-15",
-      "title": "Tax Filing Deadline",
-      "type": "legal-deadline",
-      "priority": "critical"
-    }
-  ]
+  "system": {
+    "model": "Claude Opus 4.6",
+    "container": "Docker (openclaw-secure)",
+    "hostname": "3ba298d685e9",
+    "node": "v22.22.0",
+    "openclawVersion": "2026.3.2",
+    "os": "Linux 6.12.72-linuxkit (arm64)"
+  }
 }
