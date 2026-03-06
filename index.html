@@ -232,6 +232,7 @@ async function loadData() {
   try {
     const r = await fetch('dashboard-data.json?t=' + Date.now());
     DATA = await r.json();
+    loadLocalTasks();
     renderPage();
     renderActivity();
     populateProjectDropdown();
@@ -427,7 +428,7 @@ function createTask() {
   if (!title) { document.getElementById('nt-title').style.borderColor = 'var(--danger)'; return; }
   const proj = document.getElementById('nt-project').value;
   const projData = DATA.projects.find(p => p.name === proj);
-  DATA.tasks.push({
+  const task = {
     id: 't' + Date.now(),
     title,
     description: document.getElementById('nt-desc').value.trim(),
@@ -436,10 +437,50 @@ function createTask() {
     assignee: document.getElementById('nt-assignee').value,
     project: proj,
     projectColor: projData ? projData.color : '#8B5CF6',
-    createdAt: new Date().toISOString()
-  });
+    createdAt: new Date().toISOString(),
+    source: 'ui'
+  };
+  DATA.tasks.push(task);
+  saveLocalTasks();
   closeNewTask();
   if (currentPage === 'tasks') renderPage();
+  // Sync to GitHub via serverless function so Alfred can see it
+  syncTaskToGitHub(task);
+}
+
+// Sync task to GitHub via API so Alfred can pick it up
+async function syncTaskToGitHub(task) {
+  try {
+    await fetch('/api/tasks', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({task}) });
+  } catch(e) { console.log('Task sync pending — will sync on next dashboard update'); }
+}
+
+// Persist UI-created tasks in localStorage
+function saveLocalTasks() {
+  const uiTasks = DATA.tasks.filter(t => t.source === 'ui');
+  localStorage.setItem('mc-tasks', JSON.stringify(uiTasks));
+}
+
+function loadLocalTasks() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('mc-tasks') || '[]');
+    if (saved.length && DATA.tasks) {
+      const existingIds = new Set(DATA.tasks.map(t => t.id));
+      saved.forEach(t => { if (!existingIds.has(t.id)) DATA.tasks.push(t); });
+    }
+  } catch(e) {}
+}
+
+// Update task status and persist
+function updateTaskStatus(id, newStatus) {
+  const t = DATA.tasks.find(x => x.id === id);
+  if (t) {
+    t.status = newStatus;
+    if (newStatus === 'done') t.completedAt = new Date().toISOString();
+    if (t.source === 'ui') saveLocalTasks();
+    renderPage();
+  }
+  document.getElementById('task-detail-overlay').style.display = 'none';
 }
 
 // ═══════════════ TASK DETAIL ═══════════════
@@ -476,7 +517,11 @@ function openTaskDetail(id) {
 function closeTaskDetail() { document.getElementById('task-detail-overlay').style.display = 'none'; }
 function moveTask(id, status) {
   const t = DATA.tasks.find(x => x.id === id);
-  if (t) { t.status = status; if (status === 'done' && !t.completedAt) t.completedAt = new Date().toISOString(); }
+  if (t) { 
+    t.status = status; 
+    if (status === 'done' && !t.completedAt) t.completedAt = new Date().toISOString(); 
+    if (t.source === 'ui') saveLocalTasks();
+  }
   closeTaskDetail();
   if (currentPage === 'tasks') renderPage();
 }
