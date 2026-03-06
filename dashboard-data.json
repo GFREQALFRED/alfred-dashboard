@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-06T02:20:00Z",
+  "lastUpdated": "2026-03-06T22:05:00Z",
   "mission": "Build an empire of 6 revenue streams generating $1,000,000 by March 2027, powered by AI agents that work 24/7",
   "targetDate": "2027-03-01",
   "stats": {
@@ -315,12 +315,13 @@
       "id": "t16",
       "title": "Task archive system - hide done cards after a few days",
       "description": "Add \"Archived\" button next to All/Alfred/Nhat filters. Done cards auto-archive after a few days. Archived view to see old completed tasks.",
-      "status": "backlog",
+      "status": "done",
       "priority": "high",
       "assignee": "alfred",
       "project": "Dashboard",
       "projectColor": "#8B5CF6",
-      "createdAt": "2026-03-06T15:36:00Z"
+      "createdAt": "2026-03-06T15:36:00Z",
+      "completedAt": "2026-03-06T22:05:00Z"
     },
     {
       "id": "t17",
