@@ -193,16 +193,7 @@
     /* Calendar: hide week grid, show mobile agenda */
     .cal-card { display:none !important; }
     .cal-mobile { display:block !important; }
-    .cal-cron-table { min-width:auto !important; table-layout:fixed !important; }
-    .cal-cron-table colgroup { display:table-column-group; }
-    .cal-cron-table th:nth-child(3), .cal-cron-table td:nth-child(3),
-    .cal-cron-table th:nth-child(4), .cal-cron-table td:nth-child(4) { display:none; }
-    .cal-cron-table td:last-child div { white-space:nowrap; }
-    .cal-cron-table td { font-size:12px !important; padding:8px 6px !important; overflow:hidden; text-overflow:ellipsis; }
-    .cal-cron-table th { font-size:10px !important; padding:8px 6px !important; }
-    .cal-cron-table th:nth-child(1), .cal-cron-table td:nth-child(1) { width:40%; }
-    .cal-cron-table th:nth-child(2), .cal-cron-table td:nth-child(2) { width:38%; }
-    .cal-cron-table th:last-child, .cal-cron-table td:last-child { width:22%; }
+
 
     /* Team tree: scrollable */
     .team-tree { overflow-x:auto !important; -webkit-overflow-scrolling:touch; padding-bottom:16px; }
@@ -1464,25 +1455,7 @@ function renderCalendar() {
         }).join('')}
       </div>
     </div>
-    <div class="card" style="padding:20px;">
-      <h2 style="font-size:15px; font-weight:600; margin-bottom:16px;">Scheduled Jobs</h2>
-      <div style="overflow-x:auto; -webkit-overflow-scrolling:touch;"><table class="cal-cron-table" style="width:100%; font-size:13px; border-collapse:collapse;">
-        <thead><tr style="border-bottom:1px solid var(--border);">
-          <th style="text-align:left; padding:8px 12px; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">Name</th>
-          <th style="text-align:left; padding:8px 12px; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">Schedule</th>
-          <th style="text-align:left; padding:8px 12px; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">Last Run</th>
-          <th style="text-align:left; padding:8px 12px; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">Next Run</th>
-          <th style="text-align:left; padding:8px 12px; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">Status</th>
-        </tr></thead>
-        <tbody>${DATA.cronJobs.map(cj => `<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
-          <td style="padding:10px 12px; font-weight:500;">${esc(cj.name)}</td>
-          <td style="padding:10px 12px; color:var(--text2);" class="mono">${esc(cj.schedule)}</td>
-          <td style="padding:10px 12px; color:var(--text3);" class="mono">${cj.lastRun ? formatDate(cj.lastRun) : 'Never'}</td>
-          <td style="padding:10px 12px; color:var(--text3);" class="mono">${cj.nextRun ? formatDate(cj.nextRun) : 'TBD'}</td>
-          <td style="padding:10px 12px;"><div style="display:flex; align-items:center; gap:6px;"><div class="status-dot status-${cj.status}"></div><span style="font-size:12px; color:var(--text2); text-transform:capitalize;">${cj.status}</span></div></td>
-        </tr>`).join('')}</tbody>
-      </table>
-    </div>`;
+`;
 }
 
 function positionCalendarBlocks() {
@@ -1747,27 +1720,7 @@ function renderSystem() {
         }).join('')}
       </div>
     </div>
-    <div class="card" style="padding:20px;">
-      <h2 style="font-size:15px; font-weight:600; margin-bottom:16px;">Cron Jobs</h2>
-      <div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
-      <table style="width:100%; font-size:13px; border-collapse:collapse; min-width:600px;">
-        <thead><tr style="border-bottom:1px solid var(--border);">
-          <th style="text-align:left; padding:8px 12px; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">Name</th>
-          <th style="text-align:left; padding:8px 12px; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">Schedule</th>
-          <th style="text-align:left; padding:8px 12px; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">Last Run</th>
-          <th style="text-align:left; padding:8px 12px; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">Next Run</th>
-          <th style="text-align:left; padding:8px 12px; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">Status</th>
-        </tr></thead>
-        <tbody>${DATA.cronJobs.map(cj => `<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
-          <td style="padding:10px 12px; font-weight:500;">${esc(cj.name)}</td>
-          <td style="padding:10px 12px; color:var(--text2);" class="mono">${esc(cj.schedule)}</td>
-          <td style="padding:10px 12px; color:var(--text3);" class="mono">${cj.lastRun ? formatDate(cj.lastRun) : 'Never'}</td>
-          <td style="padding:10px 12px; color:var(--text3);" class="mono">${cj.nextRun ? formatDate(cj.nextRun) : 'TBD'}</td>
-          <td style="padding:10px 12px;"><div style="display:flex; align-items:center; gap:6px;"><div class="status-dot status-${cj.status}"></div><span style="font-size:12px; color:var(--text2); text-transform:capitalize;">${cj.status}</span></div></td>
-        </tr>`).join('')}</tbody>
-      </table>
-      </div>
-    </div>`;
+
 }
 
 // ═══════════════ KANBAN DRAG & DROP ═══════════════
