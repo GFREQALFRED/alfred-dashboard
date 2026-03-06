@@ -376,7 +376,7 @@ function handleSearch(q) {
   }
   const ql = q.toLowerCase();
   searchResults = [];
-  DATA.tasks.filter(t => t.title.toLowerCase().includes(ql) || t.description.toLowerCase().includes(ql)).forEach(t => searchResults.push({ type:'Task', label:t.title, icon:'check-square', page:'tasks', id:t.id }));
+  DATA.tasks.filter(t => (t.title||'').toLowerCase().includes(ql) || (t.description||'').toLowerCase().includes(ql)).forEach(t => searchResults.push({ type:'Task', label:t.title, icon:'check-square', page:'tasks', id:t.id }));
   DATA.documents.filter(d => d.name.toLowerCase().includes(ql) || d.category.toLowerCase().includes(ql)).forEach(d => searchResults.push({ type:'Document', label:d.name, sub:d.category, icon:'file-text', page:'docs', id:d.path }));
   DATA.projects.filter(p => p.name.toLowerCase().includes(ql) || p.description.toLowerCase().includes(ql)).forEach(p => searchResults.push({ type:'Project', label:p.name, icon:'folder', page:'projects', id:p.name }));
   DATA.documents.filter(d => d.category === 'Memory' && (d.name.toLowerCase().includes(ql) || (d.content && d.content.toLowerCase().includes(ql)))).forEach(d => searchResults.push({ type:'Memory', label:d.name, icon:'brain', page:'memory', id:d.path }));

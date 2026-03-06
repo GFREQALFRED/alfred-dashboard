@@ -127,165 +127,139 @@
   "tasks": [
     {
       "id": "t1",
-      "title": "Complete GFREQ Website Build",
-      "status": "in-progress",
-      "priority": "high",
-      "project": "GFREQ",
-      "assignee": "Alfred",
-      "due": "2026-03-12",
-      "tags": [
-        "frontend",
-        "seo",
-        "critical"
-      ]
+      "title": "Build Mission Control v2",
+      "description": "Rebuild dashboard as multi-page SPA",
+      "status": "done",
+      "priority": "urgent",
+      "assignee": "alfred",
+      "project": "Dashboard",
+      "projectColor": "#8B5CF6",
+      "createdAt": "2026-03-05T23:50:00Z",
+      "completedAt": "2026-03-06T02:00:00Z"
     },
     {
       "id": "t2",
-      "title": "Fix X/Twitter API Authentication",
-      "status": "blocked",
-      "priority": "high",
-      "project": "Integrations",
-      "assignee": "Nhat",
-      "due": "2026-03-07",
-      "tags": [
-        "auth",
-        "social",
-        "blocked"
-      ]
+      "title": "Renew geniusfreq.com domain",
+      "description": "Domain expiring soon - renew before it lapses",
+      "status": "backlog",
+      "priority": "urgent",
+      "assignee": "nhat",
+      "project": "GFREQ",
+      "projectColor": "#22C55E",
+      "createdAt": "2026-03-05T10:00:00Z"
     },
     {
       "id": "t3",
-      "title": "Mobile Apps Brain Dump",
-      "status": "pending",
-      "priority": "medium",
-      "project": "Mobile Apps",
-      "assignee": "Nhat",
-      "due": "2026-03-10",
-      "tags": [
-        "brainstorm",
-        "planning"
-      ]
+      "title": "Build GFREQ website",
+      "description": "Full website build using PRD spec",
+      "status": "backlog",
+      "priority": "high",
+      "assignee": "alfred",
+      "project": "GFREQ",
+      "projectColor": "#22C55E",
+      "createdAt": "2026-03-05T08:00:00Z"
     },
     {
       "id": "t4",
-      "title": "File 2025 Taxes (Personal + LLC)",
-      "status": "pending",
-      "priority": "high",
-      "project": "Personal",
-      "assignee": "Nhat",
-      "due": "2026-04-15",
-      "tags": [
-        "legal",
-        "deadline"
-      ]
+      "title": "Create Reddit account + API creds",
+      "description": "Set up Reddit presence for GFREQ",
+      "status": "backlog",
+      "priority": "medium",
+      "assignee": "nhat",
+      "project": "GFREQ",
+      "projectColor": "#22C55E",
+      "createdAt": "2026-03-05T09:00:00Z"
     },
     {
       "id": "t5",
-      "title": "LLC Name Change Filing",
-      "status": "pending",
+      "title": "Create Discord bot for GFREQ",
+      "description": "TOS-compliant bot for 420+ member server",
+      "status": "backlog",
       "priority": "medium",
-      "project": "Personal",
-      "assignee": "Nhat",
-      "due": "2026-03-20",
-      "tags": [
-        "legal",
-        "business"
-      ]
+      "assignee": "nhat",
+      "project": "GFREQ",
+      "projectColor": "#22C55E",
+      "createdAt": "2026-03-05T09:00:00Z"
     },
     {
       "id": "t6",
-      "title": "Renew geniusfreq.com Domain",
-      "status": "monitoring",
-      "priority": "medium",
-      "project": "GFREQ",
-      "assignee": "Alfred",
-      "due": "2026-03-15",
-      "tags": [
-        "domain",
-        "infrastructure"
-      ]
+      "title": "File personal + LLC taxes",
+      "description": "FreeTaxUSA, deadline April 15, 2026",
+      "status": "backlog",
+      "priority": "high",
+      "assignee": "nhat",
+      "project": "Personal",
+      "projectColor": "#6366F1",
+      "createdAt": "2026-03-05T07:00:00Z"
     },
     {
       "id": "t7",
-      "title": "Setup Reddit Account + API",
-      "status": "pending",
+      "title": "LLC name change",
+      "description": "Genius Frequency Investment to Genius Frequency",
+      "status": "backlog",
       "priority": "medium",
-      "project": "Integrations",
-      "assignee": "Nhat",
-      "due": "2026-03-08",
-      "tags": [
-        "social",
-        "content"
-      ]
+      "assignee": "nhat",
+      "project": "Personal",
+      "projectColor": "#6366F1",
+      "createdAt": "2026-03-05T07:00:00Z"
     },
     {
       "id": "t8",
-      "title": "Create Discord Bot for GFREQ",
-      "status": "pending",
+      "title": "Fix X/Twitter billing",
+      "description": "402 Payment Required - billing not propagated",
+      "status": "review",
       "priority": "medium",
+      "assignee": "nhat",
       "project": "GFREQ",
-      "assignee": "Nhat",
-      "due": "2026-03-09",
-      "tags": [
-        "discord",
-        "community"
-      ]
+      "projectColor": "#22C55E",
+      "createdAt": "2026-03-05T15:00:00Z"
     },
     {
       "id": "t9",
-      "title": "NinjaView Replacement Research",
-      "status": "in-progress",
+      "title": "NinjaView replacement architecture",
+      "description": "Design Flask + file-based orders system",
+      "status": "backlog",
       "priority": "high",
+      "assignee": "alfred",
       "project": "GFREQ",
-      "assignee": "Alfred",
-      "due": "2026-03-15",
-      "tags": [
-        "trading",
-        "research",
-        "technical"
-      ]
+      "projectColor": "#22C55E",
+      "createdAt": "2026-03-05T12:00:00Z"
     },
     {
       "id": "t10",
-      "title": "GFREQ Content Machine Setup",
-      "status": "planning",
-      "priority": "high",
-      "project": "GFREQ",
-      "assignee": "Alfred",
-      "due": "2026-03-12",
-      "tags": [
-        "content",
-        "automation",
-        "marketing"
-      ]
+      "title": "E-commerce market research",
+      "description": "Cultural fashion research complete",
+      "status": "done",
+      "priority": "medium",
+      "assignee": "alfred",
+      "project": "E-commerce",
+      "projectColor": "#F59E0B",
+      "createdAt": "2026-03-05T06:00:00Z",
+      "completedAt": "2026-03-05T18:00:00Z"
     },
     {
       "id": "t11",
-      "title": "Beauty Salon Google Business Audit",
-      "status": "pending",
+      "title": "Salon turnaround research",
+      "description": "Competitive analysis for Lovely Nails",
+      "status": "done",
       "priority": "medium",
-      "project": "Beauty Salons",
-      "assignee": "Alfred",
-      "due": "2026-03-10",
-      "tags": [
-        "seo",
-        "local",
-        "audit"
-      ]
+      "assignee": "alfred",
+      "project": "Salon",
+      "projectColor": "#EC4899",
+      "createdAt": "2026-03-05T05:00:00Z",
+      "completedAt": "2026-03-05T16:00:00Z"
     },
     {
       "id": "t12",
-      "title": "Alfred Journal - Entry #1",
-      "status": "pending",
-      "priority": "medium",
-      "project": "OpenClaw Deploy",
-      "assignee": "Alfred",
-      "due": "2026-03-08",
-      "tags": [
-        "content",
-        "marketing",
-        "blog"
-      ]
+      "title": "GFREQ competitor analysis",
+      "description": "Analyzed top 10 competitors",
+      "status": "done",
+      "priority": "high",
+      "assignee": "alfred",
+      "project": "GFREQ",
+      "projectColor": "#22C55E",
+      "createdAt": "2026-03-04T20:00:00Z",
+      "completedAt": "2026-03-05T14:00:00Z"
     }
   ],
   "agents": [

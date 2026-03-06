@@ -22,10 +22,16 @@ export default async function handler(req, res) {
     const fileData = await fileRes.json();
     const content = JSON.parse(Buffer.from(fileData.content, 'base64').toString('utf8'));
 
-    // Add new task
+    // Add new task with guaranteed fields
     content.tasks.push({
-      ...task,
       id: 't' + Date.now(),
+      title: task.title || 'Untitled',
+      description: task.description || '',
+      status: task.status || 'backlog',
+      priority: task.priority || 'medium',
+      assignee: task.assignee || 'alfred',
+      project: task.project || 'General',
+      projectColor: task.projectColor || '#8B5CF6',
       createdAt: new Date().toISOString(),
       source: 'ui'
     });
