@@ -104,6 +104,12 @@
       "label": "Daily Log",
       "description": "Write daily memory and journal",
       "type": "system"
+    },
+    {
+      "time": "13:00",
+      "label": "GFREQ Website Review",
+      "description": "Review website draft with Nhat \u2014 Saturday",
+      "type": "strategy"
     }
   ],
   "sprint": {
