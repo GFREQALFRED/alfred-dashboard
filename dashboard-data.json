@@ -1,12 +1,12 @@
 {
-  "lastUpdated": "2026-03-06T02:15:32.408Z",
+  "lastUpdated": "2026-03-06T02:20:00Z",
   "mission": "Build an empire of 6 revenue streams generating $1,000,000 by March 2027, powered by AI agents that work 24/7",
   "targetDate": "2027-03-01",
   "stats": {
-    "tasksThisWeek": 18,
-    "inProgress": 6,
-    "totalTasks": 35,
-    "completionPct": 51
+    "tasksThisWeek": 12,
+    "inProgress": 4,
+    "totalTasks": 28,
+    "completionPct": 43
   },
   "revenue": {
     "target": 1000000,
@@ -17,54 +17,42 @@
         "icon": "trending-up",
         "target": 160000,
         "current": 0,
-        "color": "#22C55E",
-        "status": "Active Development",
-        "progress": "Website PRD done, dashboard v2 shipped, building content machine"
+        "color": "#22C55E"
       },
       {
         "name": "Agents425",
         "icon": "bot",
         "target": 200000,
         "current": 0,
-        "color": "#8B5CF6",
-        "status": "Planning",
-        "progress": "Landing page in development, co-founded with Ebrima"
+        "color": "#8B5CF6"
       },
       {
         "name": "E-commerce",
         "icon": "shopping-cart",
         "target": 200000,
         "current": 0,
-        "color": "#F59E0B",
-        "status": "Research",
-        "progress": "Market analysis complete, focusing on cultural fashion"
+        "color": "#F59E0B"
       },
       {
         "name": "Mobile Apps",
         "icon": "smartphone",
         "target": 150000,
         "current": 0,
-        "color": "#6366F1",
-        "status": "Ideas Pending",
-        "progress": "Brain dump needed - 3 app concepts ready"
+        "color": "#6366F1"
       },
       {
         "name": "OpenClaw Deploy",
         "icon": "paw-print",
         "target": 150000,
         "current": 0,
-        "color": "#14B8A6",
-        "status": "Planning",
-        "progress": "Alfred Journal concept designed"
+        "color": "#14B8A6"
       },
       {
         "name": "Beauty Salons",
         "icon": "sparkles",
         "target": 140000,
         "current": 0,
-        "color": "#EC4899",
-        "status": "Research",
-        "progress": "Initial research done, 3-month turnaround target"
+        "color": "#EC4899"
       }
     ]
   },
@@ -72,13 +60,13 @@
     {
       "time": "00:00",
       "label": "Night Shift",
-      "description": "Autonomous background tasks - Dashboard updates",
+      "description": "Autonomous background tasks",
       "type": "system"
     },
     {
       "time": "06:00",
       "label": "Morning Standup",
-      "description": "Daily standup and priority setting with Nhat",
+      "description": "Daily standup and priority setting",
       "type": "briefing"
     },
     {
@@ -86,12 +74,6 @@
       "label": "GFREQ Briefing",
       "description": "Market conditions and algo performance",
       "type": "briefing"
-    },
-    {
-      "time": "08:00",
-      "label": "Domain Renewal",
-      "description": "Check geniusfreq.com renewal status",
-      "type": "system"
     },
     {
       "time": "09:00",
@@ -108,27 +90,68 @@
     {
       "time": "19:00",
       "label": "Evening Debrief",
-      "description": "GFREQ day review and metrics",
+      "description": "Day review and next-day prep",
       "type": "briefing"
     },
     {
       "time": "20:00",
       "label": "Strategy Session",
-      "description": "Long-term planning and pivots with Nhat",
+      "description": "Long-term planning and pivots",
       "type": "strategy"
     },
     {
       "time": "22:00",
       "label": "Daily Log",
-      "description": "Memory capture and tomorrow planning",
+      "description": "Write daily memory and journal",
       "type": "system"
     }
   ],
+  "sprint": {
+    "currentWeek": 1,
+    "weeks": [
+      {
+        "week": 1,
+        "dates": "Mar 3-9",
+        "focus": "Dashboard + Website Setup",
+        "status": "active"
+      },
+      {
+        "week": 2,
+        "dates": "Mar 10-16",
+        "focus": "GFREQ Site Go-Live",
+        "status": "upcoming"
+      },
+      {
+        "week": 3,
+        "dates": "Mar 17-23",
+        "focus": "Content Machine Launch",
+        "status": "upcoming"
+      },
+      {
+        "week": 4,
+        "dates": "Mar 24-30",
+        "focus": "NinjaView Replacement",
+        "status": "upcoming"
+      },
+      {
+        "week": 5,
+        "dates": "Mar 31-Apr 6",
+        "focus": "Agents425 MVP",
+        "status": "upcoming"
+      },
+      {
+        "week": 6,
+        "dates": "Apr 7-13",
+        "focus": "Scale & Optimize",
+        "status": "upcoming"
+      }
+    ]
+  },
   "tasks": [
     {
       "id": "t1",
-      "title": "Build Mission Control v2",
-      "description": "Rebuild dashboard as multi-page SPA",
+      "title": "Build Mission Control v3",
+      "description": "Fortune 500 grade dashboard rebuild",
       "status": "done",
       "priority": "urgent",
       "assignee": "alfred",
@@ -151,7 +174,7 @@
     {
       "id": "t3",
       "title": "Build GFREQ website",
-      "description": "Full website build using PRD spec",
+      "description": "Full website build using PRD spec - landing, pricing, about, blog",
       "status": "backlog",
       "priority": "high",
       "assignee": "alfred",
@@ -162,7 +185,7 @@
     {
       "id": "t4",
       "title": "Create Reddit account + API creds",
-      "description": "Set up Reddit presence for GFREQ",
+      "description": "Set up Reddit presence for GFREQ community and marketing",
       "status": "backlog",
       "priority": "medium",
       "assignee": "nhat",
@@ -173,7 +196,7 @@
     {
       "id": "t5",
       "title": "Create Discord bot for GFREQ",
-      "description": "TOS-compliant bot for 420+ member server",
+      "description": "TOS-compliant bot for the 420+ member GFREQ Discord server",
       "status": "backlog",
       "priority": "medium",
       "assignee": "nhat",
@@ -184,7 +207,7 @@
     {
       "id": "t6",
       "title": "File personal + LLC taxes",
-      "description": "FreeTaxUSA, deadline April 15, 2026",
+      "description": "Use FreeTaxUSA (~$40), deadline April 15, 2026",
       "status": "backlog",
       "priority": "high",
       "assignee": "nhat",
@@ -195,7 +218,7 @@
     {
       "id": "t7",
       "title": "LLC name change",
-      "description": "Genius Frequency Investment to Genius Frequency",
+      "description": "Genius Frequency Investment to Genius Frequency (~$50, 3-5 days)",
       "status": "backlog",
       "priority": "medium",
       "assignee": "nhat",
@@ -206,7 +229,7 @@
     {
       "id": "t8",
       "title": "Fix X/Twitter billing",
-      "description": "402 Payment Required - billing not propagated",
+      "description": "402 Payment Required - billing added but not propagated",
       "status": "review",
       "priority": "medium",
       "assignee": "nhat",
@@ -217,7 +240,7 @@
     {
       "id": "t9",
       "title": "NinjaView replacement architecture",
-      "description": "Design Flask + file-based orders system",
+      "description": "Design Flask + file-based orders system to replace NinjaView",
       "status": "backlog",
       "priority": "high",
       "assignee": "alfred",
@@ -228,7 +251,7 @@
     {
       "id": "t10",
       "title": "E-commerce market research",
-      "description": "Cultural fashion research complete",
+      "description": "Cultural fashion - all cultures research complete",
       "status": "done",
       "priority": "medium",
       "assignee": "alfred",
@@ -240,7 +263,7 @@
     {
       "id": "t11",
       "title": "Salon turnaround research",
-      "description": "Competitive analysis for Lovely Nails",
+      "description": "Competitive analysis for Lovely Nails and Beauty Salon",
       "status": "done",
       "priority": "medium",
       "assignee": "alfred",
@@ -252,7 +275,7 @@
     {
       "id": "t12",
       "title": "GFREQ competitor analysis",
-      "description": "Analyzed top 10 competitors",
+      "description": "Analyzed top 10 algo trading subscription competitors",
       "status": "done",
       "priority": "high",
       "assignee": "alfred",
@@ -262,340 +285,362 @@
       "completedAt": "2026-03-05T14:00:00Z"
     }
   ],
-  "agents": [
-    {
-      "name": "Alfred",
-      "role": "CEO & Orchestrator",
-      "status": "active",
-      "model": "Claude Opus",
-      "lastActivity": "now",
-      "tasks": 8,
-      "specialties": [
-        "Strategy",
-        "Coordination",
-        "Complex Reasoning"
-      ]
-    },
-    {
-      "name": "Research Sub-Agent",
-      "role": "Market Intelligence",
-      "status": "on-demand",
-      "model": "Claude Sonnet",
-      "lastActivity": "9h ago",
-      "tasks": 0,
-      "specialties": [
-        "Research",
-        "Analysis",
-        "Content"
-      ]
-    },
-    {
-      "name": "Claude Code CLI",
-      "role": "Frontend Development",
-      "status": "available",
-      "model": "Claude Sonnet",
-      "lastActivity": "6h ago",
-      "tasks": 0,
-      "specialties": [
-        "HTML/CSS",
-        "JavaScript",
-        "UI/UX"
-      ]
-    },
-    {
-      "name": "Content Sub-Agent",
-      "role": "Content Creation",
-      "status": "on-demand",
-      "model": "Claude Haiku",
-      "lastActivity": "never",
-      "tasks": 0,
-      "specialties": [
-        "Writing",
-        "SEO",
-        "Social Media"
-      ]
-    },
-    {
-      "name": "Coding Sub-Agent",
-      "role": "Backend Development",
-      "status": "on-demand",
-      "model": "Claude Sonnet",
-      "lastActivity": "never",
-      "tasks": 0,
-      "specialties": [
-        "Python",
-        "APIs",
-        "Automation"
-      ]
-    }
-  ],
   "integrations": [
     {
       "name": "Gmail",
+      "detail": "gfreqalgo@gmail.com",
       "status": "active",
-      "account": "gfreqalgo@gmail.com",
-      "lastSync": "2h ago",
-      "health": "healthy"
+      "icon": "mail"
     },
     {
       "name": "GitHub",
+      "detail": "GFREQALFRED",
       "status": "active",
-      "account": "GFREQALFRED",
-      "lastSync": "6h ago",
-      "health": "healthy"
-    },
-    {
-      "name": "Google Calendar",
-      "status": "active",
-      "account": "Alfred Bot",
-      "lastSync": "2h ago",
-      "health": "healthy"
+      "icon": "github"
     },
     {
       "name": "X/Twitter",
-      "status": "auth-error",
-      "account": "@GFREQalgo",
-      "lastSync": "never",
-      "health": "error - 401 auth"
+      "detail": "@GFREQalgo",
+      "status": "pending",
+      "icon": "twitter"
     },
     {
-      "name": "Vercel",
+      "name": "Google Calendar",
+      "detail": "ICS/SMTP method",
       "status": "active",
-      "account": "GFREQALFRED",
-      "lastSync": "6h ago",
-      "health": "healthy"
+      "icon": "calendar"
+    },
+    {
+      "name": "Google Drive",
+      "detail": "Service account",
+      "status": "active",
+      "icon": "folder"
     },
     {
       "name": "Reddit",
-      "status": "not-configured",
-      "account": "pending",
-      "lastSync": "never",
-      "health": "pending setup"
+      "detail": "Not created yet",
+      "status": "inactive",
+      "icon": "circle"
     },
     {
       "name": "Discord Bot",
-      "status": "not-configured",
-      "account": "pending",
-      "lastSync": "never",
-      "health": "pending setup"
+      "detail": "Not created yet",
+      "status": "inactive",
+      "icon": "message-circle"
     },
     {
-      "name": "Claude Code CLI",
-      "status": "not-authenticated",
-      "account": "local",
-      "lastSync": "6h ago",
-      "health": "needs auth"
-    },
-    {
-      "name": "OpenAI Whisper",
+      "name": "Vercel",
+      "detail": "alfred-dashboard",
       "status": "active",
-      "account": "local",
-      "lastSync": "2h ago",
-      "health": "healthy"
+      "icon": "triangle"
+    },
+    {
+      "name": "Whisper",
+      "detail": "Local transcription",
+      "status": "active",
+      "icon": "mic"
     }
   ],
   "projects": [
     {
-      "id": "gfreq",
-      "name": "GFREQ - Algo Trading",
+      "name": "GFREQ",
+      "icon": "trending-up",
       "status": "active",
-      "progress": 35,
-      "priority": "critical",
-      "timeline": "Week 1 of 6-week sprint",
-      "lead": "Alfred",
-      "nextMilestone": "Website Launch",
-      "milestoneDate": "2026-03-12",
-      "revenue": 160000,
-      "description": "Automated trading systems subscription business. Building website, content machine, and NinjaView replacement."
-    },
-    {
-      "id": "agents425",
-      "name": "Agents425 - AI Consulting",
-      "status": "planning",
-      "progress": 10,
-      "priority": "medium",
-      "timeline": "Co-founded with Ebrima",
-      "lead": "Alfred + Ebrima",
-      "nextMilestone": "Landing Page",
-      "milestoneDate": "2026-03-20",
-      "revenue": 200000,
-      "description": "AI consulting for law firms and home services in Washington state."
-    },
-    {
-      "id": "ecommerce",
-      "name": "Cultural Fashion E-Commerce",
-      "status": "research",
-      "progress": 15,
-      "priority": "low",
-      "timeline": "Market analysis phase",
-      "lead": "Alfred",
-      "nextMilestone": "Supplier Outreach",
-      "milestoneDate": "2026-03-25",
-      "revenue": 200000,
-      "description": "Sell traditional cultural fashion starting with Vietnamese \u00c1o d\u00e0i."
-    },
-    {
-      "id": "mobile-apps",
-      "name": "Mobile Apps",
-      "status": "pending",
-      "progress": 5,
-      "priority": "medium",
-      "timeline": "Awaiting brain dump",
-      "lead": "Nhat",
-      "nextMilestone": "App Ideas Brain Dump",
-      "milestoneDate": "2026-03-10",
-      "revenue": 150000,
-      "description": "3 consumer-to-business platform apps."
-    },
-    {
-      "id": "openclaw-deploy",
-      "name": "OpenClaw Deployment",
-      "status": "planning",
-      "progress": 20,
-      "priority": "medium",
-      "timeline": "Alfred Journal design phase",
-      "lead": "Alfred",
-      "nextMilestone": "First Journal Entry",
-      "milestoneDate": "2026-03-08",
-      "revenue": 150000,
-      "description": "Help businesses adopt OpenClaw + AI agents."
-    },
-    {
-      "id": "beauty-salons",
-      "name": "Beauty Salon Turnaround",
-      "status": "research",
-      "progress": 10,
-      "priority": "medium",
-      "timeline": "3-month turnaround goal",
-      "lead": "Alfred",
-      "nextMilestone": "Business Audit",
-      "milestoneDate": "2026-03-10",
-      "revenue": 140000,
-      "description": "Revive parents' Lovely Nails & Beauty Salon in Kenmore."
-    },
-    {
-      "id": "dashboard",
-      "name": "Mission Control Dashboard",
-      "status": "shipped",
-      "progress": 95,
-      "priority": "maintenance",
-      "timeline": "v2 complete, monitoring",
-      "lead": "Alfred",
-      "nextMilestone": "User Feedback Integration",
-      "milestoneDate": "2026-03-08",
-      "revenue": 0,
-      "description": "Live dashboard for tracking all projects and metrics."
-    },
-    {
-      "id": "personal-taxes",
-      "name": "Personal & LLC Taxes",
-      "status": "pending",
+      "phase": "Website Build",
       "progress": 25,
-      "priority": "high",
-      "timeline": "Due April 15",
-      "lead": "Nhat",
-      "nextMilestone": "File Tax Returns",
-      "milestoneDate": "2026-04-15",
-      "revenue": 0,
-      "description": "2025 tax filing for personal + Genius Frequency Investment LLC."
+      "description": "Algo trading subscriptions - scale from $0 to $160K/yr.",
+      "color": "#22C55E"
     },
     {
-      "id": "llc-rename",
-      "name": "LLC Name Change",
-      "status": "pending",
-      "progress": 50,
-      "priority": "medium",
-      "timeline": "Before March 21",
-      "lead": "Nhat",
-      "nextMilestone": "File Name Change",
-      "milestoneDate": "2026-03-20",
-      "revenue": 0,
-      "description": "Rename LLC from 'Genius Frequency Investment' to 'Genius Frequency'."
+      "name": "Agents425",
+      "icon": "bot",
+      "status": "planning",
+      "phase": "Research",
+      "progress": 10,
+      "description": "AI consulting for law firms + home services.",
+      "color": "#8B5CF6"
+    },
+    {
+      "name": "E-commerce",
+      "icon": "shopping-cart",
+      "status": "planning",
+      "phase": "Market Research",
+      "progress": 15,
+      "description": "Cultural fashion - celebrating all cultures worldwide.",
+      "color": "#F59E0B"
+    },
+    {
+      "name": "Mobile Apps",
+      "icon": "smartphone",
+      "status": "notStarted",
+      "phase": "Brain Dump Pending",
+      "progress": 0,
+      "description": "Mobile app ideas TBD.",
+      "color": "#6366F1"
+    },
+    {
+      "name": "OpenClaw Deploy",
+      "icon": "paw-print",
+      "status": "notStarted",
+      "phase": "Business Model TBD",
+      "progress": 0,
+      "description": "Helping businesses adopt OpenClaw.",
+      "color": "#14B8A6"
+    },
+    {
+      "name": "Beauty Salons",
+      "icon": "sparkles",
+      "status": "planning",
+      "phase": "Turnaround Strategy",
+      "progress": 20,
+      "description": "Lovely Nails - 3 month turnaround.",
+      "color": "#EC4899"
+    },
+    {
+      "name": "Dashboard",
+      "icon": "monitor",
+      "status": "active",
+      "phase": "v3 Live",
+      "progress": 80,
+      "description": "Mission Control command center.",
+      "color": "#8B5CF6"
+    },
+    {
+      "name": "GFREQ Website",
+      "icon": "globe",
+      "status": "active",
+      "phase": "PRD Complete",
+      "progress": 20,
+      "description": "Full website rebuild - PRD done.",
+      "color": "#22C55E"
+    },
+    {
+      "name": "Content Machine",
+      "icon": "pen-line",
+      "status": "planning",
+      "phase": "Strategy",
+      "progress": 5,
+      "description": "Automated content pipeline.",
+      "color": "#F59E0B"
+    }
+  ],
+  "agents": [
+    {
+      "name": "Alfred",
+      "role": "Chief of Staff / CEO",
+      "icon": "crown",
+      "description": "Coordinates, delegates, and drives the $1M mission.",
+      "skills": [
+        "Orchestration",
+        "Strategy",
+        "Delegation"
+      ],
+      "color": "#F59E0B",
+      "status": "active",
+      "currentTask": "Mission Control polish",
+      "model": "Claude Opus 4.6"
+    },
+    {
+      "name": "Research Agent",
+      "role": "Trend Analyst",
+      "icon": "search",
+      "description": "Finds leads, tracks signals, analyzes markets.",
+      "skills": [
+        "Speed",
+        "Analysis",
+        "Thoroughness"
+      ],
+      "color": "#6366F1",
+      "status": "idle",
+      "currentTask": null,
+      "model": "Claude Sonnet 4.6"
+    },
+    {
+      "name": "Coding Agent",
+      "role": "Lead Engineer",
+      "icon": "code",
+      "description": "Builds, ships, automates. Makes everything work.",
+      "skills": [
+        "Code",
+        "Systems",
+        "Frontend"
+      ],
+      "color": "#22C55E",
+      "status": "idle",
+      "currentTask": null,
+      "model": "Claude Sonnet 4.6 (via Claude Code CLI)"
+    },
+    {
+      "name": "Content Agent",
+      "role": "Content Writer",
+      "icon": "pen-line",
+      "description": "Writes copy, designs content strategy.",
+      "skills": [
+        "Voice",
+        "Quality",
+        "SEO"
+      ],
+      "color": "#F59E0B",
+      "status": "idle",
+      "currentTask": null,
+      "model": "Claude Sonnet 4.6"
+    },
+    {
+      "name": "SEO Agent",
+      "role": "Growth Specialist",
+      "icon": "trending-up",
+      "description": "Keywords, rankings, LLM optimization.",
+      "skills": [
+        "Keywords",
+        "Rankings",
+        "Growth"
+      ],
+      "color": "#EC4899",
+      "status": "idle",
+      "currentTask": null,
+      "model": "Claude Haiku 3.5"
+    }
+  ],
+  "liveActivity": [
+    {
+      "agent": "Alfred",
+      "action": "Fixed Mission Control data integrity",
+      "timestamp": "2026-03-06T02:20:00Z"
+    },
+    {
+      "agent": "Alfred",
+      "action": "Added task sync API endpoint",
+      "timestamp": "2026-03-06T02:15:00Z"
+    },
+    {
+      "agent": "Alfred",
+      "action": "Added dark/light theme toggle",
+      "timestamp": "2026-03-06T01:48:00Z"
+    },
+    {
+      "agent": "Coding Agent",
+      "action": "Built Mission Control v3",
+      "timestamp": "2026-03-06T01:06:00Z"
+    },
+    {
+      "agent": "Alfred",
+      "action": "Analyzed reference screenshots and transcript",
+      "timestamp": "2026-03-06T00:15:00Z"
+    },
+    {
+      "agent": "Research Agent",
+      "action": "Completed GFREQ competitor analysis",
+      "timestamp": "2026-03-05T22:00:00Z"
     }
   ],
   "cronJobs": [
     {
-      "id": "c611cc27-16b0-4536-840d-f35f157e1b46",
-      "name": "Dashboard Auto-Update",
-      "schedule": "Every 2 hours",
-      "status": "running",
-      "lastRun": "2h ago",
-      "nextRun": "1m ago",
-      "model": "Claude Opus"
+      "name": "Morning Briefing",
+      "schedule": "7:00 AM PST daily",
+      "lastRun": "2026-03-05T15:00:00Z",
+      "nextRun": "2026-03-06T15:00:00Z",
+      "status": "active"
     },
     {
-      "id": "ca9ab46e-1bd0-4daf-96a6-c47a34f51fba",
+      "name": "Night Shift",
+      "schedule": "12:00 AM PST daily",
+      "lastRun": "2026-03-06T08:00:00Z",
+      "nextRun": "2026-03-07T08:00:00Z",
+      "status": "active"
+    },
+    {
+      "name": "Midday Push",
+      "schedule": "1:00 PM PST daily",
+      "lastRun": "2026-03-05T21:00:00Z",
+      "nextRun": "2026-03-06T21:00:00Z",
+      "status": "active"
+    },
+    {
+      "name": "Evening Debrief",
+      "schedule": "7:00 PM PST daily",
+      "lastRun": "2026-03-06T03:00:00Z",
+      "nextRun": "2026-03-07T03:00:00Z",
+      "status": "active"
+    },
+    {
+      "name": "Morning Standup",
+      "schedule": "6:00 AM PST daily",
+      "lastRun": "2026-03-05T14:00:00Z",
+      "nextRun": "2026-03-06T14:00:00Z",
+      "status": "active"
+    },
+    {
+      "name": "Strategy Session",
+      "schedule": "8:00 PM PST daily",
+      "lastRun": "2026-03-06T04:00:00Z",
+      "nextRun": "2026-03-07T04:00:00Z",
+      "status": "active"
+    },
+    {
+      "name": "Market Intel",
+      "schedule": "9:00 AM PST daily",
+      "lastRun": "2026-03-05T17:00:00Z",
+      "nextRun": "2026-03-06T17:00:00Z",
+      "status": "active"
+    },
+    {
+      "name": "Daily Log",
+      "schedule": "10:00 PM PST M-Sa",
+      "lastRun": "2026-03-06T06:00:00Z",
+      "nextRun": "2026-03-07T06:00:00Z",
+      "status": "active"
+    },
+    {
+      "name": "Sprint Planning",
+      "schedule": "Monday 9AM PST",
+      "lastRun": "2026-03-03T17:00:00Z",
+      "nextRun": "2026-03-10T17:00:00Z",
+      "status": "active"
+    },
+    {
+      "name": "Friday Retro",
+      "schedule": "Friday 5PM PST",
+      "lastRun": null,
+      "nextRun": "2026-03-07T01:00:00Z",
+      "status": "active"
+    },
+    {
+      "name": "Content Batch",
+      "schedule": "Sunday 10AM PST",
+      "lastRun": null,
+      "nextRun": "2026-03-08T18:00:00Z",
+      "status": "active"
+    },
+    {
       "name": "Hourly Check-in",
-      "schedule": "Business hours",
-      "status": "running",
-      "lastRun": "1h ago",
-      "nextRun": "1m ago",
-      "model": "Main Agent"
+      "schedule": "Hourly 8AM-9PM PST",
+      "lastRun": "2026-03-06T02:00:00Z",
+      "nextRun": "2026-03-06T03:00:00Z",
+      "status": "active"
     },
     {
-      "id": "d206301b-c233-42a9-83e6-14e744d62c09",
-      "name": "GFREQ Evening Debrief",
-      "schedule": "Daily 19:00 PST",
-      "status": "idle",
-      "lastRun": "never",
-      "nextRun": "in 59m",
-      "model": "Claude Opus"
+      "name": "Dashboard Update",
+      "schedule": "Every 2 hours",
+      "lastRun": "2026-03-06T02:00:00Z",
+      "nextRun": "2026-03-06T04:00:00Z",
+      "status": "active"
     },
     {
-      "id": "d5cbf341-c36f-46ec-93c0-2bf94a623798",
-      "name": "Evening Strategy Session",
-      "schedule": "Daily 20:00 PST",
-      "status": "idle",
-      "lastRun": "never",
-      "nextRun": "in 2h",
-      "model": "Main Agent"
-    },
-    {
-      "id": "5595fb8c-24c8-4299-8bf6-e399418033fe",
-      "name": "GFREQ Night Shift",
-      "schedule": "Daily 00:00 PST",
-      "status": "ok",
-      "lastRun": "18h ago",
-      "nextRun": "in 6h",
-      "model": "Claude Opus"
-    },
-    {
-      "id": "b93f638a-1b60-4252-aaa4-ac172ff6672b",
-      "name": "Morning Standup + Brain Dump",
-      "schedule": "Daily 06:00 PST",
-      "status": "idle",
-      "lastRun": "never",
-      "nextRun": "in 12h",
-      "model": "Main Agent"
-    },
-    {
-      "id": "46355008-6d08-4288-95e4-21d867d4140a",
-      "name": "Market Intel Scan",
-      "schedule": "Daily 09:00 PST",
-      "status": "error",
-      "lastRun": "9h ago",
-      "nextRun": "in 15h",
-      "model": "Claude Opus"
-    },
-    {
-      "id": "8ca7a6e5-aaf5-434f-84f5-d4752bc3d1d6",
-      "name": "Weekly Retro (Friday)",
-      "schedule": "Friday 17:00 PST",
-      "status": "idle",
-      "lastRun": "never",
-      "nextRun": "in 23h",
-      "model": "Claude Opus"
-    },
-    {
-      "id": "72d2ab28-fc6f-47f2-948a-8be59a4488f7",
-      "name": "Weekly Sprint Planning",
-      "schedule": "Monday 07:00 PST",
-      "status": "idle",
-      "lastRun": "never",
-      "nextRun": "in 4d",
-      "model": "Main Agent"
+      "name": "Domain Reminder",
+      "schedule": "Daily 9AM PST",
+      "lastRun": "2026-03-05T17:00:00Z",
+      "nextRun": "2026-03-06T17:00:00Z",
+      "status": "active"
     }
   ],
+  "system": {
+    "model": "Claude Opus 4.6",
+    "container": "Docker (openclaw-secure)",
+    "hostname": "3ba298d685e9",
+    "node": "v22.22.0",
+    "openclawVersion": "2026.3.2",
+    "os": "Linux 6.12.72-linuxkit (arm64)"
+  },
   "documents": [
     {
       "path": "SOUL.md",
@@ -874,98 +919,5 @@
         "research"
       ]
     }
-  ],
-  "sprint": {
-    "currentWeek": 1,
-    "weeks": [
-      {
-        "week": 1,
-        "dates": "Mar 3-9",
-        "focus": "Dashboard + Website Setup",
-        "status": "active"
-      },
-      {
-        "week": 2,
-        "dates": "Mar 10-16",
-        "focus": "GFREQ Site Go-Live",
-        "status": "upcoming"
-      },
-      {
-        "week": 3,
-        "dates": "Mar 17-23",
-        "focus": "Content Machine Launch",
-        "status": "upcoming"
-      },
-      {
-        "week": 4,
-        "dates": "Mar 24-30",
-        "focus": "NinjaView Replacement",
-        "status": "upcoming"
-      },
-      {
-        "week": 5,
-        "dates": "Mar 31-Apr 6",
-        "focus": "Agents425 MVP",
-        "status": "upcoming"
-      },
-      {
-        "week": 6,
-        "dates": "Apr 7-13",
-        "focus": "Scale & Optimize",
-        "status": "upcoming"
-      }
-    ]
-  },
-  "liveActivity": [
-    {
-      "time": "2h ago",
-      "type": "build",
-      "description": "Mission Control v2 dashboard shipped to production",
-      "agent": "Alfred",
-      "project": "Dashboard"
-    },
-    {
-      "time": "6h ago",
-      "type": "lesson",
-      "description": "Claude Code CLI lessons learned - interactive prompts block automation",
-      "agent": "Alfred",
-      "project": "Dashboard"
-    },
-    {
-      "time": "9h ago",
-      "type": "error",
-      "description": "Market Intel Scan failed - investigating",
-      "agent": "Market Intel Agent",
-      "project": "GFREQ"
-    },
-    {
-      "time": "18h ago",
-      "type": "success",
-      "description": "GFREQ Night Shift completed successfully",
-      "agent": "Night Shift Agent",
-      "project": "GFREQ"
-    },
-    {
-      "time": "1d ago",
-      "type": "setup",
-      "description": "Alfred first boot - met Nhat, established mission",
-      "agent": "Alfred",
-      "project": "System"
-    },
-    {
-      "time": "1d ago",
-      "type": "integration",
-      "description": "Gmail, GitHub, Google Calendar connected successfully",
-      "agent": "Alfred",
-      "project": "Integrations"
-    }
-  ],
-  "system": {
-    "model": "Claude Opus 4.6",
-    "container": "Docker (openclaw-secure)",
-    "hostname": "3ba298d685e9",
-    "node": "v22.22.0",
-    "openclawVersion": "2026.3.2",
-    "os": "Linux 6.12.72-linuxkit (arm64)"
-  }
+  ]
 }
