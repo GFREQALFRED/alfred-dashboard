@@ -2097,7 +2097,7 @@ function renderProjects() {
         const isExpanded = expandedProject === p.name;
 
         return `
-          <div class="card" onclick="expandedProject = expandedProject === '${p.name}' ? null : '${p.name}'; renderPage();" style="padding:20px; cursor:pointer; transition:all 150ms ease;">
+          <div class="card" onclick="expandedProject = expandedProject === '${p.name}' ? null : '${p.name}'; renderPage();" style="padding:20px; cursor:pointer; transition:all 150ms ease; ${isExpanded ? 'grid-column: 1 / -1;' : ''}">
             <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:12px;">
               <div style="display:flex; align-items:center; gap:10px;">
                 <div style="width:36px; height:36px; border-radius:8px; background:${p.color}15; display:flex; align-items:center; justify-content:center;"><i data-lucide="${p.icon}" style="width:18px; height:18px; color:${p.color};"></i></div>
