@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-06T22:20:00Z",
+  "lastUpdated": "2026-03-06T23:07:20.096Z",
   "mission": "Build an empire of 6 revenue streams generating $1,000,000 by March 2027, powered by AI agents that work 24/7",
   "targetDate": "2027-03-01",
   "stats": {
@@ -518,13 +518,14 @@
       "id": "t31",
       "title": "Write Article #1: 48 Hours with OpenClaw",
       "description": "First blog post covering full deployment journey — setup, failures, lessons, playbook. Source: openclaw-field-guide.md",
-      "status": "backlog",
+      "status": "done",
       "priority": "high",
       "assignee": "alfred",
       "project": "OpenClaw Deploy",
       "projectColor": "#14B8A6",
       "createdAt": "2026-03-06T21:25:00Z",
-      "delegatedTo": "Cron (Sonnet)"
+      "delegatedTo": "Cron (Sonnet)",
+      "completedAt": "2026-03-06T23:07:20.096Z"
     },
     {
       "id": "t32",
