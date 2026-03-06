@@ -467,7 +467,7 @@
       "color": "#22C55E",
       "status": "active",
       "currentTask": "Mission Control HTML build",
-      "model": "Claude Code CLI"
+      "model": "Claude Sonnet 4 (via Claude Code CLI)"
     },
     {
       "name": "Content Agent",
