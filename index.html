@@ -10,12 +10,29 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
-  :root {
+  :root, [data-theme="dark"] {
     --bg: #09090B; --s1: #18181B; --s2: #27272A; --s3: #3F3F46;
     --border: rgba(255,255,255,0.06); --border-h: rgba(255,255,255,0.12);
     --text: #FAFAFA; --text2: #A1A1AA; --text3: #71717A;
     --accent: #8B5CF6; --success: #22C55E; --warn: #F59E0B; --danger: #EF4444; --info: #3B82F6;
   }
+  [data-theme="light"] {
+    --bg: #F8F9FA; --s1: #FFFFFF; --s2: #F1F3F5; --s3: #DEE2E6;
+    --border: rgba(0,0,0,0.08); --border-h: rgba(0,0,0,0.15);
+    --text: #1A1A2E; --text2: #495057; --text3: #868E96;
+    --accent: #7C3AED; --success: #16A34A; --warn: #D97706; --danger: #DC2626; --info: #2563EB;
+  }
+  [data-theme="light"] body { color: var(--text); }
+  [data-theme="light"] .card { box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  [data-theme="light"] ::-webkit-scrollbar-thumb { background: #CED4DA; }
+  [data-theme="light"] .btn-secondary { background: var(--s2); border-color: var(--s3); color: var(--text2); }
+  [data-theme="light"] input, [data-theme="light"] textarea, [data-theme="light"] select { background: var(--s1); border-color: var(--s3); color: var(--text); }
+  [data-theme="light"] .sidebar-item { color: var(--text2); }
+  [data-theme="light"] .sidebar-item.active { color: var(--text); background: rgba(0,0,0,0.04); }
+  [data-theme="light"] .sidebar-item:hover { background: rgba(0,0,0,0.03); }
+  [data-theme="light"] .overlay { background: rgba(0,0,0,0.3); }
+  [data-theme="light"] .modal { background: var(--s1); border-color: var(--border-h); }
+  [data-theme="light"] .slide-panel { background: var(--s1); }
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); overflow:hidden; height:100vh; }
   .mono { font-family:'JetBrains Mono',monospace; }
@@ -199,6 +216,8 @@
 let DATA = null;
 let currentPage = 'dashboard';
 let activityPanelVisible = true;
+let isDark = (localStorage.getItem('theme') || 'dark') === 'dark';
+document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
 let searchSelectedIdx = 0;
 let searchResults = [];
 let taskFilter = 'all';
@@ -310,7 +329,10 @@ function renderSettings() {
       </div>
       <div style="display:flex; justify-content:space-between; align-items:center;">
         <span style="font-size:13px;">Theme</span>
-        <span class="badge" style="background:var(--s2); color:var(--text2);">Dark</span>
+        <button id="theme-toggle" onclick="toggleTheme()" style="width:44px;height:24px;border-radius:12px;border:none;cursor:pointer;position:relative;transition:background 200ms ease;background:${isDark?'var(--s3)':'var(--accent)'};">
+          <div style="width:18px;height:18px;border-radius:50%;background:white;position:absolute;top:3px;transition:left 200ms ease;left:${isDark?'3px':'23px'};box-shadow:0 1px 3px rgba(0,0,0,0.2);"></div>
+        </button>
+        <span style="font-size:12px;color:var(--text3);margin-left:8px;">${isDark?'Dark':'Light'}</span>
       </div>
     </div>
     <div class="card" style="padding:16px;">
@@ -323,6 +345,13 @@ function renderSettings() {
 function toggleActivityPanel() {
   activityPanelVisible = !activityPanelVisible;
   document.getElementById('activity-panel').style.display = activityPanelVisible ? '' : 'none';
+  renderSettings();
+}
+
+function toggleTheme() {
+  isDark = !isDark;
+  document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
   renderSettings();
 }
 
