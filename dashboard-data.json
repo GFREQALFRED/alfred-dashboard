@@ -436,7 +436,8 @@
       ],
       "color": "#F59E0B",
       "status": "active",
-      "currentTask": "Building Mission Control v2"
+      "currentTask": "Building Mission Control v2",
+      "model": "Claude Opus 4.6"
     },
     {
       "name": "Research Agent",
@@ -450,7 +451,8 @@
       ],
       "color": "#6366F1",
       "status": "idle",
-      "currentTask": null
+      "currentTask": null,
+      "model": "Claude Sonnet 4"
     },
     {
       "name": "Coding Agent",
@@ -464,7 +466,8 @@
       ],
       "color": "#22C55E",
       "status": "active",
-      "currentTask": "Mission Control HTML build"
+      "currentTask": "Mission Control HTML build",
+      "model": "Claude Code CLI"
     },
     {
       "name": "Content Agent",
@@ -478,7 +481,8 @@
       ],
       "color": "#F59E0B",
       "status": "idle",
-      "currentTask": null
+      "currentTask": null,
+      "model": "Claude Sonnet 4"
     },
     {
       "name": "SEO Agent",
@@ -492,7 +496,8 @@
       ],
       "color": "#EC4899",
       "status": "idle",
-      "currentTask": null
+      "currentTask": null,
+      "model": "Claude Haiku 3.5"
     }
   ],
   "liveActivity": [
