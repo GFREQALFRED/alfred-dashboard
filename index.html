@@ -2121,21 +2121,20 @@ function positionCalendarBlocks() {
   });
 
   let html = '';
+  const fullWidth = '100% - 56px';
   Object.values(byHour).forEach(group => {
     const total = group.length;
     group.forEach((ev, idx) => {
       const [hh,mm] = ev.time.split(':').map(Number);
       const top = hh * hourH + (mm||0)/60*hourH;
       const c = typeColors[ev.type] || typeColors.system;
-      for (let day = 0; day < 7; day++) {
-        const colWidth = '(100% - 56px)/7';
-        const slotWidth = total > 1 ? 'calc((' + colWidth + ' - 2px) / ' + total + ')' : 'calc(' + colWidth + ' - 2px)';
-        const slotOffset = total > 1 ? 'calc((' + colWidth + ' - 2px) / ' + total + ' * ' + idx + ')' : '0px';
-        html += '<div class="cal-block" style="top:' + top + 'px; left:calc(56px + (' + colWidth + ')*' + day + '/7 + 1px + ' + slotOffset + '); width:' + slotWidth + '; height:' + (hourH-2) + 'px; background:' + c.bg + '; border-color:' + c.border + ';">'
-          + '<div style="font-weight:500; color:' + c.text + '; font-size:' + (total > 2 ? '9' : '11') + 'px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + esc(ev.label) + '</div>'
-          + '<div class="mono" style="font-size:' + (total > 2 ? '8' : '10') + 'px; color:' + c.text + '; opacity:0.7;">' + fmt12(ev.time) + '</div>'
-          + '</div>';
-      }
+      // Span full width across all days, split horizontally for overlaps
+      const slotWidth = total > 1 ? 'calc((' + fullWidth + ' - 2px) / ' + total + ')' : 'calc(' + fullWidth + ' - 2px)';
+      const slotOffset = total > 1 ? 'calc((' + fullWidth + ' - 2px) / ' + total + ' * ' + idx + ')' : '0px';
+      html += '<div class="cal-block" style="top:' + top + 'px; left:calc(56px + 1px + ' + slotOffset + '); width:' + slotWidth + '; height:' + (hourH-2) + 'px; background:' + c.bg + '; border-color:' + c.border + ';">'
+        + '<div style="font-weight:500; color:' + c.text + '; font-size:' + (total > 2 ? '9' : '11') + 'px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + esc(ev.label) + '</div>'
+        + '<div class="mono" style="font-size:' + (total > 2 ? '8' : '10') + 'px; color:' + c.text + '; opacity:0.7;">' + fmt12(ev.time) + '</div>'
+        + '</div>';
     });
   });
   container.innerHTML = html;
