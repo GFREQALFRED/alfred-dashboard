@@ -104,6 +104,18 @@
       "label": "Daily Log",
       "description": "Write daily memory and journal",
       "type": "system"
+    },
+    {
+      "time": "10:00",
+      "label": "Blog Article (Morning)",
+      "description": "Writing agent drafts next article from field guide",
+      "type": "content"
+    },
+    {
+      "time": "19:00",
+      "label": "Blog Article (Evening)",
+      "description": "Writing agent drafts next article from field guide",
+      "type": "content"
     }
   ],
   "sprint": {
@@ -852,6 +864,20 @@
       "lastRun": "2026-03-05T17:00:00Z",
       "nextRun": "2026-03-06T17:00:00Z",
       "status": "active"
+    },
+    {
+      "name": "Blog Writer — Morning",
+      "schedule": "Daily 10 AM PST",
+      "status": "active",
+      "lastRun": null,
+      "nextRun": "2026-03-07T18:00:00Z"
+    },
+    {
+      "name": "Blog Writer — Evening",
+      "schedule": "Daily 7 PM PST",
+      "status": "active",
+      "lastRun": null,
+      "nextRun": "2026-03-07T03:00:00Z"
     }
   ],
   "system": {
