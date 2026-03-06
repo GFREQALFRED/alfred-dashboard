@@ -356,7 +356,11 @@
 <script>
 // ═══════════════ STATE ═══════════════
 let DATA = null;
-let currentPage = window.location.hash.slice(1) || 'dashboard';
+let currentPage = (() => {
+  const hash = window.location.hash.slice(1);
+  if (!hash) return 'dashboard';
+  return hash.includes(':') ? hash.split(':')[0] : hash;
+})();
 let activityPanelVisible = true;
 let isDark = (localStorage.getItem('theme') || 'dark') === 'dark';
 document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
