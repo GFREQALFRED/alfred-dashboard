@@ -414,12 +414,60 @@
       "id": "t25",
       "title": "Renew geniusfreq.com on Wix",
       "description": "Domain expires March 31, 2026. Renew on Wix (~$15) to keep the domain. Later transfer to Cloudflare for cheaper renewals.",
-      "status": "backlog",
+      "status": "in-progress",
       "priority": "high",
       "assignee": "nhat",
       "project": "GFREQ",
       "projectColor": "#8B5CF6",
       "createdAt": "2026-03-06T17:36:00Z"
+    },
+    {
+      "id": "t26",
+      "title": "Set up browser relay extension",
+      "description": "Installed OpenClaw Chrome extension on Brave, connected to gateway.",
+      "status": "done",
+      "priority": "medium",
+      "assignee": "nhat",
+      "project": "Infrastructure",
+      "projectColor": "#60A5FA",
+      "createdAt": "2026-03-06T17:48:00Z",
+      "completedAt": "2026-03-06T17:48:00Z"
+    },
+    {
+      "id": "t27",
+      "title": "Point geniusfreq.com DNS to Vercel",
+      "description": "Updated A record to 76.76.21.21, CNAME www to cname.vercel-dns.com. Deleted old Wix records.",
+      "status": "done",
+      "priority": "high",
+      "assignee": "nhat",
+      "project": "GFREQ",
+      "projectColor": "#8B5CF6",
+      "createdAt": "2026-03-06T17:48:00Z",
+      "completedAt": "2026-03-06T17:48:00Z"
+    },
+    {
+      "id": "t28",
+      "title": "Create Cloudflare account",
+      "description": "Cloudflare account created via Google OAuth (rayvsnhat@gmail.com). geniusfreq.com added.",
+      "status": "done",
+      "priority": "medium",
+      "assignee": "nhat",
+      "project": "Infrastructure",
+      "projectColor": "#60A5FA",
+      "createdAt": "2026-03-06T17:48:00Z",
+      "completedAt": "2026-03-06T17:48:00Z"
+    },
+    {
+      "id": "t29",
+      "title": "Deploy GFREQ 2.0 coming soon landing page",
+      "description": "Live at geniusfreq.com. Black/white theme, Discord invite link.",
+      "status": "done",
+      "priority": "high",
+      "assignee": "alfred",
+      "project": "GFREQ",
+      "projectColor": "#8B5CF6",
+      "createdAt": "2026-03-06T17:48:00Z",
+      "completedAt": "2026-03-06T17:48:00Z"
     }
   ],
   "integrations": [
