@@ -2154,8 +2154,9 @@ function renderProjects() {
               </div>
               <div class="progress-bar"><div class="progress-fill" style="width:${dynamicProgress}%; background:${p.color};"></div></div>
             </div>
-            ${!isExpanded && projectTasks.length > 0 ? `
-              <div style="display:flex; gap:12px; margin-top:10px; flex-wrap:wrap;">
+            ${!isExpanded ? `
+              <div style="display:flex; gap:12px; margin-top:10px; flex-wrap:wrap; min-height:16px;">
+                ${projectTasks.length === 0 ? '<span style="font-size:11px; color:var(--text3); font-style:italic;">No tasks yet</span>' : ''}
                 ${doneTasks.length > 0 ? '<span style="font-size:11px; color:var(--success);">✓ ' + doneTasks.length + ' done</span>' : ''}
                 ${inProgTasks.length > 0 ? '<span style="font-size:11px; color:var(--info);">● ' + inProgTasks.length + ' in progress</span>' : ''}
                 ${backlogTasks.length > 0 ? '<span style="font-size:11px; color:var(--text3);">○ ' + backlogTasks.length + ' backlog</span>' : ''}
