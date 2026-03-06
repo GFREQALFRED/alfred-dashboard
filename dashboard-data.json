@@ -175,12 +175,13 @@
       "id": "t3",
       "title": "Build GFREQ website",
       "description": "Full website build using PRD spec - landing, pricing, about, blog",
-      "status": "backlog",
+      "status": "done",
       "priority": "high",
       "assignee": "alfred",
       "project": "GFREQ",
       "projectColor": "#22C55E",
-      "createdAt": "2026-03-05T08:00:00Z"
+      "createdAt": "2026-03-05T08:00:00Z",
+      "completedAt": "2026-03-06T09:20:00Z"
     },
     {
       "id": "t4",
