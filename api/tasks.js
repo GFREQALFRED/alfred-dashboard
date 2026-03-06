@@ -1,5 +1,6 @@
 // Vercel serverless function — syncs tasks to dashboard-data.json via GitHub API
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+const OPENCLAW_WEBHOOK_URL = process.env.OPENCLAW_WEBHOOK_URL;
 const REPO = 'GFREQALFRED/alfred-dashboard';
 const FILE_PATH = 'dashboard-data.json';
 
@@ -53,7 +54,29 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'GitHub update failed', detail: err });
     }
 
-    return res.status(200).json({ success: true, taskId: content.tasks[content.tasks.length - 1].id });
+    const createdTask = content.tasks[content.tasks.length - 1];
+
+    // Fire webhook to notify Alfred (OpenClaw) of the new task
+    if (OPENCLAW_WEBHOOK_URL) {
+      try {
+        await fetch(OPENCLAW_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            source: 'alfred-dashboard',
+            event: 'task_created',
+            task: createdTask,
+            previousStatus: null,
+            newStatus: createdTask.status,
+            timestamp: new Date().toISOString()
+          })
+        });
+      } catch (webhookErr) {
+        console.error('Failed to forward to OpenClaw webhook:', webhookErr.message);
+      }
+    }
+
+    return res.status(200).json({ success: true, taskId: createdTask.id });
   } catch (e) {
     return res.status(500).json({ error: e.message });
   }

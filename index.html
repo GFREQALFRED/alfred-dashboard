@@ -62,6 +62,16 @@
   .priority-high { border-left:3px solid var(--warn) !important; }
   .priority-medium { border-left:3px solid var(--info) !important; }
   .priority-low { border-left:3px solid var(--s3) !important; }
+
+  /* Drag and Drop */
+  .kanban-card { transition: opacity 200ms ease, transform 200ms ease, box-shadow 200ms ease; cursor: grab; touch-action: none; }
+  .kanban-card:active { cursor: grabbing; }
+  .kanban-card.dragging { opacity: 0.4; transform: scale(0.97); }
+  .kanban-column.drag-over { background: rgba(139,92,246,0.06); border-radius: 8px; outline: 2px dashed var(--accent); outline-offset: -2px; transition: background 150ms ease, outline 150ms ease; }
+  .kanban-drop-placeholder { height: 4px; border-radius: 2px; background: var(--accent); margin: 4px 0; transition: height 150ms ease; pointer-events: none; }
+  .kanban-card.drop-animate { animation: dropIn 300ms cubic-bezier(0.22, 1, 0.36, 1); }
+  @keyframes dropIn { 0% { opacity: 0; transform: scale(0.95) translateY(-8px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+  .touch-drag-ghost { position: fixed; z-index: 9999; pointer-events: none; opacity: 0.85; transform: rotate(2deg) scale(1.04); box-shadow: 0 12px 32px rgba(0,0,0,0.3); transition: none; }
   .status-dot { width:8px; height:8px; border-radius:50%; display:inline-block; flex-shrink:0; }
   .status-active { background:var(--success); }
   .status-idle { border:1.5px solid var(--text3); background:transparent; }
@@ -694,6 +704,8 @@ function createTask() {
   if (currentPage === 'tasks') renderPage();
   // Sync to GitHub via serverless function so Alfred can see it
   syncTaskToGitHub(task);
+  // Notify Alfred via webhook
+  fireWebhook('task_created', task, null, task.status);
 }
 
 // Sync task to GitHub via API so Alfred can pick it up
@@ -701,6 +713,17 @@ async function syncTaskToGitHub(task) {
   try {
     await fetch('/api/tasks', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({task}) });
   } catch(e) { console.log('Task sync pending — will sync on next dashboard update'); }
+}
+
+// Fire webhook to notify Alfred (OpenClaw) of task changes
+async function fireWebhook(event, task, previousStatus, newStatus) {
+  try {
+    await fetch('/api/webhook', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event, task, previousStatus: previousStatus || null, newStatus: newStatus || task.status })
+    });
+  } catch(e) { console.log('Webhook fire failed (non-blocking):', e.message); }
 }
 
 // Persist UI-created tasks in localStorage
@@ -723,10 +746,13 @@ function loadLocalTasks() {
 function updateTaskStatus(id, newStatus) {
   const t = DATA.tasks.find(x => x.id === id);
   if (t) {
+    const previousStatus = t.status;
     t.status = newStatus;
     if (newStatus === 'done') t.completedAt = new Date().toISOString();
     if (t.source === 'ui') saveLocalTasks();
     renderPage();
+    // Notify Alfred via webhook
+    fireWebhook('task_updated', t, previousStatus, newStatus);
   }
   document.getElementById('task-detail-overlay').style.display = 'none';
 }
@@ -751,7 +777,7 @@ function openTaskDetail(id) {
       <div><span style="font-size:11px; color:var(--text3); display:block; margin-bottom:4px;">Project</span><span style="font-size:13px; color:${t.projectColor};">${esc(t.project)}</span></div>
     </div>
     <div style="display:flex; gap:24px; margin-bottom:20px;">
-      <div><span style="font-size:11px; color:var(--text3); display:block; margin-bottom:4px;">Created</span><span class="mono" style="font-size:12px; color:var(--text2);">${formatDate(t.createdAt)}</span></div>
+      ${t.createdAt ? `<div><span style="font-size:11px; color:var(--text3); display:block; margin-bottom:4px;">Created</span><span class="mono" style="font-size:12px; color:var(--text2);">${formatDate(t.createdAt)}</span></div>` : ''}
       ${t.completedAt ? `<div><span style="font-size:11px; color:var(--text3); display:block; margin-bottom:4px;">Completed</span><span class="mono" style="font-size:12px; color:var(--success);">${formatDate(t.completedAt)}</span></div>` : ''}
     </div>
     <div style="border-top:1px solid var(--border); padding-top:16px;">
@@ -766,9 +792,12 @@ function closeTaskDetail() { document.getElementById('task-detail-overlay').styl
 function moveTask(id, status) {
   const t = DATA.tasks.find(x => x.id === id);
   if (t) { 
+    const previousStatus = t.status;
     t.status = status; 
     if (status === 'done' && !t.completedAt) t.completedAt = new Date().toISOString(); 
     if (t.source === 'ui') saveLocalTasks();
+    // Notify Alfred via webhook
+    fireWebhook('task_updated', t, previousStatus, status);
   }
   closeTaskDetail();
   if (currentPage === 'tasks') renderPage();
@@ -780,6 +809,16 @@ function formatDate(iso) {
   if (!iso) return 'N/A';
   const d = new Date(iso);
   return d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric', timeZone:'America/Los_Angeles' }) + ' ' + d.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit', timeZone:'America/Los_Angeles' });
+}
+function formatRelativeTime(iso) {
+  if (!iso) return '';
+  const now = new Date(), d = new Date(iso), diff = now - d;
+  if (diff < 0) return '';
+  const mins = Math.floor(diff / 60000), hrs = Math.floor(diff / 3600000);
+  if (mins < 1) return 'Just now';
+  if (mins < 60) return mins + 'm ago';
+  if (hrs < 24) return hrs + 'h ago';
+  return 'Created ' + d.toLocaleDateString('en-US', { month:'short', day:'numeric', timeZone:'America/Los_Angeles' });
 }
 function priorityColor(p) { return { urgent:'var(--danger)', high:'var(--warn)', medium:'var(--info)', low:'var(--s3)' }[p] || 'var(--s3)'; }
 
@@ -880,25 +919,29 @@ function renderTasks() {
         <button class="btn-primary" onclick="openNewTask()"><i data-lucide="plus" style="width:14px; height:14px;"></i> New Task</button>
       </div>
     </div>
-    <div style="display:flex; gap:16px; height:calc(100vh - 160px); overflow-x:auto;">
+    <div class="kanban-wrap" style="display:flex; gap:16px; height:calc(100vh - 160px); overflow-x:auto;">
       ${cols.map(col => {
         const tasks = filtered.filter(t => t.status === col.key);
-        return `<div style="flex:1; min-width:220px; max-width:320px; display:flex; flex-direction:column;">
+        return `<div class="kanban-column" data-status="${col.key}" style="flex:1; min-width:220px; max-width:320px; display:flex; flex-direction:column; padding:4px; border-radius:8px; transition: background 150ms ease, outline 150ms ease;"
+          ondragover="kanbanDragOver(event)" ondragleave="kanbanDragLeave(event)" ondrop="kanbanDrop(event)">
           <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px; padding:0 4px;">
             <div style="width:8px; height:8px; border-radius:50%; background:${col.color};"></div>
             <span style="font-size:13px; font-weight:600;">${col.label}</span>
             <span class="mono" style="font-size:11px; color:var(--text3); background:var(--s2); padding:1px 6px; border-radius:4px;">${tasks.length}</span>
           </div>
-          <div style="display:flex; flex-direction:column; gap:8px; overflow-y:auto; flex:1; padding-right:4px;">
+          <div class="kanban-card-list" data-status="${col.key}" style="display:flex; flex-direction:column; gap:8px; overflow-y:auto; flex:1; padding-right:4px; min-height:40px;">
             ${tasks.map(t => `
-              <div class="card priority-${t.priority}" style="padding:14px; cursor:pointer;" onclick="openTaskDetail('${t.id}')">
+              <div class="card kanban-card priority-${t.priority}" draggable="true" data-task-id="${t.id}" style="padding:14px;"
+                ondragstart="kanbanDragStart(event)" ondragend="kanbanDragEnd(event)"
+                ontouchstart="kanbanTouchStart(event)" onclick="kanbanCardClick(event, '${t.id}')">
                 <div style="font-size:13px; font-weight:500; line-height:1.4; margin-bottom:6px;">${esc(t.title)}</div>
                 <p style="font-size:12px; color:var(--text3); margin-bottom:10px; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${esc(t.description || '')}</p>
                 <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
                   <span class="badge" style="background:${t.projectColor}18; color:${t.projectColor};">${esc(t.project)}</span>
                   <span class="badge" style="background:${priorityColor(t.priority)}18; color:${priorityColor(t.priority)};">${t.priority}</span>
                   <span style="font-size:11px; color:var(--text3); margin-left:auto;">${t.assignee === 'alfred' ? 'Alfred' : 'Nhat'}</span>
-                </div>
+                </div>${t.createdAt ? `
+                <div style="font-size:10px; color:var(--text3); margin-top:8px; opacity:0.7;">${formatRelativeTime(t.createdAt)}</div>` : ''}
               </div>
             `).join('')}
           </div>
@@ -1233,6 +1276,194 @@ function renderSystem() {
       </table>
       </div>
     </div>`;
+}
+
+// ═══════════════ KANBAN DRAG & DROP ═══════════════
+let draggedTaskId = null;
+let draggedEl = null;
+let touchDragGhost = null;
+let touchDragTaskId = null;
+let touchStartX = 0, touchStartY = 0;
+let touchDragging = false;
+let touchStartTime = 0;
+
+// --- HTML5 Drag API ---
+function kanbanDragStart(e) {
+  draggedTaskId = e.currentTarget.dataset.taskId;
+  draggedEl = e.currentTarget;
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', draggedTaskId);
+  requestAnimationFrame(() => { if (draggedEl) draggedEl.classList.add('dragging'); });
+}
+
+function kanbanDragEnd(e) {
+  if (draggedEl) draggedEl.classList.remove('dragging');
+  draggedTaskId = null;
+  draggedEl = null;
+  // Remove all drag-over states and placeholders
+  document.querySelectorAll('.kanban-column.drag-over').forEach(el => el.classList.remove('drag-over'));
+  document.querySelectorAll('.kanban-drop-placeholder').forEach(el => el.remove());
+}
+
+function kanbanDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const col = e.currentTarget;
+  col.classList.add('drag-over');
+  // Position placeholder
+  const cardList = col.querySelector('.kanban-card-list');
+  if (!cardList) return;
+  // Remove existing placeholder
+  const existing = cardList.querySelector('.kanban-drop-placeholder');
+  // Find insertion point
+  const cards = [...cardList.querySelectorAll('.kanban-card:not(.dragging)')];
+  let insertBefore = null;
+  for (const card of cards) {
+    const rect = card.getBoundingClientRect();
+    if (e.clientY < rect.top + rect.height / 2) { insertBefore = card; break; }
+  }
+  if (!existing) {
+    const ph = document.createElement('div');
+    ph.className = 'kanban-drop-placeholder';
+    if (insertBefore) cardList.insertBefore(ph, insertBefore);
+    else cardList.appendChild(ph);
+  } else {
+    if (insertBefore) cardList.insertBefore(existing, insertBefore);
+    else cardList.appendChild(existing);
+  }
+}
+
+function kanbanDragLeave(e) {
+  const col = e.currentTarget;
+  // Only remove if actually leaving (not entering a child)
+  if (!col.contains(e.relatedTarget)) {
+    col.classList.remove('drag-over');
+    const ph = col.querySelector('.kanban-drop-placeholder');
+    if (ph) ph.remove();
+  }
+}
+
+function kanbanDrop(e) {
+  e.preventDefault();
+  const col = e.currentTarget;
+  col.classList.remove('drag-over');
+  const ph = col.querySelector('.kanban-drop-placeholder');
+  if (ph) ph.remove();
+  const newStatus = col.dataset.status;
+  const taskId = e.dataTransfer.getData('text/plain') || draggedTaskId;
+  if (!taskId) return;
+  const t = DATA.tasks.find(x => x.id === taskId);
+  if (!t) return;
+  const previousStatus = t.status;
+  if (previousStatus === newStatus) return;
+  // Update
+  t.status = newStatus;
+  if (newStatus === 'done' && !t.completedAt) t.completedAt = new Date().toISOString();
+  if (t.source === 'ui') saveLocalTasks();
+  fireWebhook('task_updated', t, previousStatus, newStatus);
+  // Re-render with animation
+  renderPage();
+  // Animate the dropped card
+  requestAnimationFrame(() => {
+    const droppedCard = document.querySelector(`.kanban-card[data-task-id="${taskId}"]`);
+    if (droppedCard) {
+      droppedCard.classList.add('drop-animate');
+      droppedCard.addEventListener('animationend', () => droppedCard.classList.remove('drop-animate'), { once: true });
+    }
+  });
+}
+
+// Card click handler — only open detail if not dragging
+function kanbanCardClick(e, taskId) {
+  // If touch-dragging occurred, don't open detail
+  if (touchDragging) { touchDragging = false; return; }
+  openTaskDetail(taskId);
+}
+
+// --- Touch Events for Mobile ---
+function kanbanTouchStart(e) {
+  const touch = e.touches[0];
+  touchStartX = touch.clientX;
+  touchStartY = touch.clientY;
+  touchStartTime = Date.now();
+  touchDragging = false;
+  const card = e.currentTarget;
+  touchDragTaskId = card.dataset.taskId;
+
+  const onMove = (ev) => {
+    const t = ev.touches[0];
+    const dx = t.clientX - touchStartX;
+    const dy = t.clientY - touchStartY;
+    // Need to move at least 10px to start dragging
+    if (!touchDragging && Math.sqrt(dx*dx + dy*dy) < 10) return;
+    ev.preventDefault();
+    if (!touchDragging) {
+      touchDragging = true;
+      card.classList.add('dragging');
+      // Create ghost
+      touchDragGhost = card.cloneNode(true);
+      touchDragGhost.className = 'card kanban-card touch-drag-ghost priority-' + (DATA.tasks.find(x => x.id === touchDragTaskId)?.priority || 'medium');
+      touchDragGhost.style.width = card.offsetWidth + 'px';
+      document.body.appendChild(touchDragGhost);
+    }
+    // Position ghost
+    if (touchDragGhost) {
+      touchDragGhost.style.left = (t.clientX - card.offsetWidth / 2) + 'px';
+      touchDragGhost.style.top = (t.clientY - 30) + 'px';
+    }
+    // Highlight column under touch
+    document.querySelectorAll('.kanban-column').forEach(col => {
+      const rect = col.getBoundingClientRect();
+      if (t.clientX >= rect.left && t.clientX <= rect.right && t.clientY >= rect.top && t.clientY <= rect.bottom) {
+        col.classList.add('drag-over');
+      } else {
+        col.classList.remove('drag-over');
+      }
+    });
+  };
+
+  const onEnd = (ev) => {
+    document.removeEventListener('touchmove', onMove);
+    document.removeEventListener('touchend', onEnd);
+    document.removeEventListener('touchcancel', onEnd);
+    card.classList.remove('dragging');
+    if (touchDragGhost) { touchDragGhost.remove(); touchDragGhost = null; }
+    document.querySelectorAll('.kanban-column.drag-over').forEach(el => el.classList.remove('drag-over'));
+    if (!touchDragging) return; // was just a tap
+    // Find which column the touch ended on
+    const endTouch = ev.changedTouches[0];
+    let targetCol = null;
+    document.querySelectorAll('.kanban-column').forEach(col => {
+      const rect = col.getBoundingClientRect();
+      if (endTouch.clientX >= rect.left && endTouch.clientX <= rect.right && endTouch.clientY >= rect.top && endTouch.clientY <= rect.bottom) {
+        targetCol = col;
+      }
+    });
+    if (targetCol && touchDragTaskId) {
+      const newStatus = targetCol.dataset.status;
+      const task = DATA.tasks.find(x => x.id === touchDragTaskId);
+      if (task && task.status !== newStatus) {
+        const previousStatus = task.status;
+        task.status = newStatus;
+        if (newStatus === 'done' && !task.completedAt) task.completedAt = new Date().toISOString();
+        if (task.source === 'ui') saveLocalTasks();
+        fireWebhook('task_updated', task, previousStatus, newStatus);
+        renderPage();
+        requestAnimationFrame(() => {
+          const droppedCard = document.querySelector(`.kanban-card[data-task-id="${touchDragTaskId}"]`);
+          if (droppedCard) {
+            droppedCard.classList.add('drop-animate');
+            droppedCard.addEventListener('animationend', () => droppedCard.classList.remove('drop-animate'), { once: true });
+          }
+        });
+      }
+    }
+    touchDragTaskId = null;
+  };
+
+  document.addEventListener('touchmove', onMove, { passive: false });
+  document.addEventListener('touchend', onEnd);
+  document.addEventListener('touchcancel', onEnd);
 }
 
 // ═══════════════ INIT ═══════════════
