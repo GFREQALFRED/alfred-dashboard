@@ -2023,8 +2023,8 @@ function renderCalendar() {
     </div>
     <div class="card cal-card" style="overflow:hidden; margin-bottom:24px;">
       <div style="display:grid; grid-template-columns:56px repeat(7,1fr); border-bottom:1px solid var(--border);">
-        <div style="padding:12px 8px;"></div>
-        ${days.map((d,i) => `<div style="padding:12px 8px; text-align:center; ${i===todayIdx?'background:rgba(139,92,246,0.05);':''} border-left:1px solid var(--border);">
+        <div style="padding:12px 8px; border-right:1px solid var(--border);"></div>
+        ${days.map((d,i) => `<div style="padding:12px 8px; text-align:center; ${i===todayIdx?'background:rgba(139,92,246,0.05);':''}${i>0?'border-left:1px solid var(--border);':''}">
           <div style="font-size:11px; font-weight:500; color:var(--text3); margin-bottom:2px;">${dayNames[i]}</div>
           <div class="mono" style="font-size:14px; font-weight:600; ${i===todayIdx && calWeekOffset === 0 ? 'color:var(--accent);' : calWeekOffset !== 0 ? 'color:var(--text3);' : 'color:var(--text);'}">${d.getDate()}</div>
         </div>`).join('')}
