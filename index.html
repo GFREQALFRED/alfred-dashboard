@@ -386,7 +386,7 @@ let docsSortOrder = 'newest';
 let calSelectedDay = null; // null = today
 let allActivityExpanded = false;
 let calWeekOffset = 0;
-let expandedProject = null;
+let expandedProjects = new Set();
 let taskSortOrder = {}; // per-column sort: { 'backlog': 'oldest', 'in-progress': 'newest' }
 let expandedPerson = null;
 let expandedStat = null;
@@ -2094,10 +2094,10 @@ function renderProjects() {
         const projectTasks = DATA.tasks.filter(t => t.project === p.name);
         const doneTasks = projectTasks.filter(t => t.status === 'done');
         const dynamicProgress = projectTasks.length > 0 ? Math.round(doneTasks.length / projectTasks.length * 100) : 0;
-        const isExpanded = expandedProject === p.name;
+        const isExpanded = expandedProjects.has(p.name);
 
         return `
-          <div class="card" onclick="expandedProject = expandedProject === '${p.name}' ? null : '${p.name}'; renderPage();" style="padding:20px; cursor:pointer; transition:all 150ms ease;">
+          <div class="card" onclick="if(expandedProjects.has('${p.name}')) expandedProjects.delete('${p.name}'); else expandedProjects.add('${p.name}'); renderPage();" style="padding:20px; cursor:pointer; transition:all 150ms ease;">
             <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:12px;">
               <div style="display:flex; align-items:center; gap:10px;">
                 <div style="width:36px; height:36px; border-radius:8px; background:${p.color}15; display:flex; align-items:center; justify-content:center;"><i data-lucide="${p.icon}" style="width:18px; height:18px; color:${p.color};"></i></div>
