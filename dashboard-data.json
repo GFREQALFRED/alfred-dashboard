@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-06T22:05:00Z",
+  "lastUpdated": "2026-03-06T22:20:00Z",
   "mission": "Build an empire of 6 revenue streams generating $1,000,000 by March 2027, powered by AI agents that work 24/7",
   "targetDate": "2027-03-01",
   "stats": {
@@ -327,12 +327,13 @@
       "id": "t17",
       "title": "Activity feed - capture all changes + fix View All",
       "description": "Activity feed should log every change (task status, new tasks, small edits). Fix View All Activity button.",
-      "status": "backlog",
+      "status": "done",
       "priority": "high",
       "assignee": "alfred",
       "project": "Dashboard",
       "projectColor": "#8B5CF6",
-      "createdAt": "2026-03-06T15:36:00Z"
+      "createdAt": "2026-03-06T15:36:00Z",
+      "completedAt": "2026-03-06T22:20:00Z"
     },
     {
       "id": "t18",
