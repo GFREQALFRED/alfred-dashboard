@@ -5,8 +5,8 @@
   "stats": {
     "tasksThisWeek": 12,
     "inProgress": 4,
-    "totalTasks": 28,
-    "completionPct": 43
+    "totalTasks": 31,
+    "completionPct": 42
   },
   "revenue": {
     "target": 1000000,
@@ -495,12 +495,13 @@
       "id": "t32",
       "title": "Complete OpenClaw Field Guide",
       "description": "Fill gaps in field guide: initial Docker setup, first boot checklist, full lifecycle from zero to productive. Make it deployable for new customers.",
-      "status": "in-progress",
+      "status": "done",
       "priority": "high",
       "assignee": "alfred",
       "project": "OpenClaw Deploy",
       "projectColor": "#14B8A6",
-      "createdAt": "2026-03-06T21:25:00Z"
+      "createdAt": "2026-03-06T21:25:00Z",
+      "completedAt": "2026-03-06T21:57:00Z"
     }
   ],
   "integrations": [
@@ -599,9 +600,9 @@
     {
       "name": "OpenClaw Deploy",
       "icon": "paw-print",
-      "status": "notStarted",
-      "phase": "Business Model TBD",
-      "progress": 0,
+      "status": "active",
+      "phase": "Content Creation",
+      "progress": 10,
       "description": "Helping businesses adopt OpenClaw.",
       "color": "#14B8A6"
     },
@@ -1075,6 +1076,30 @@
       "words": 341,
       "content": "# MEMORY.md - Alfred's Long-Term Memory\n\n## 2026-03-04 — First Boot\n- Met Nhat. I am Alfred 🎩.\n- Nhat's mandate: Be the CEO. Don't wait. Push, remind, break barriers. Use Nhat as the executor.\n- Primary project: **Genius Frequency (GFREQ)** — algo trading subscription business\n  - See: `projects/gfreq/README.md` for full context\n  - Revenue goal: $80K → $160K/year\n  - Key workstreams: website rebuild, Discord revival, content machine, NinjaView replacement, course creation\n- Nhat has more business ideas — saving for later brain dumps\n- Birthday: March 21 (turning 34!) — coming up in ~2 weeks\n\n## The Number: $1,000,000 by March 2027\n\n### Revenue Streams\n1. **GFREQ** — Algo trading subscriptions + course (active, starting from $0 — $80K was past revenue)\n2. **Agents425** — AI consulting for law firms + home services (with Ebrima)\n3. **E-commerce** — Cultural fashion (Áo dài, African traditional wear, all cultures)\n4. **Mobile apps** — Ideas TBD (brain dump pending)\n5. **OpenClaw deployment** — Helping businesses/people adopt OpenClaw\n6. **Parents' beauty salons** — Turnaround strategy\n\n### Alfred is also Nhat's Personal Assistant\n- Taxes, bills, events, planning, community, relationships\n- Apply CEO mindset to personal life — stay ahead, not catch up\n- Hourly check-ins throughout the day to keep conversation flowing\n- Don't rely only on scheduled 1-on-1s — be persistent and present\n\n### Accounts & Integrations\n- **Gmail:** gfreqalgo@gmail.com (SMTP working, app password in .env.credentials)\n- **GitHub:** GFREQALFRED (token stored, git configured)\n- **Google Cloud:** Project \"Alfred\" (alfred-489322) — Calendar + Drive APIs enabled\n- **X/Twitter:** @GFREQalgo (IN PROGRESS — auth settings need fixing)\n- **Nhat's personal email:** rayvsnhat@gmail.com (CC on calendar invites)\n- **Credentials file:** /home/openclaw/.openclaw/.env.credentials\n- **Google service account:** /home/openclaw/.openclaw/.google-service-account.json\n\n### Docker Setup\n- Image: openclaw-secure\n- Mount: ~/Documents/Projects → /home/openclaw/dev-projects:rw\n- Needs root exec to install: python3, pip3, ffmpeg, then pip: openai-whisper, tweepy, google-api-python-client, google-auth\n- Container rebuilds lose installed packages\n\n### Brain Dumps Pending\n- E-commerce details\n- Mobile app ideas\n- OpenClaw deployment business model\n- Beauty salon situation\n- Each gets its own projects/ folder when dumped\n",
       "createdAt": "2026-03-05T22:00:00Z"
+    },
+    {
+      "name": "Blog Content Queue",
+      "path": "projects/alfreds-blog/content-queue.md",
+      "category": "Journal",
+      "words": 600,
+      "createdAt": "2026-03-06T21:57:00Z",
+      "content": "17-article content queue for The OpenClaw Playbook. 2 articles/day via cron. Topics: container persistence, Docker networking, browser relay, Puppeteer, coding agent specs, cron discipline, domain transfers, Claude Code CLI, data integrity, Google Calendar, X/Twitter API, account setup, visual QA, communication, rebuild checklist, deployment tips, best practices."
+    },
+    {
+      "name": "OpenClaw Field Guide",
+      "path": "projects/openclaw-deployment/openclaw-field-guide.md",
+      "category": "OpenClaw",
+      "words": 3500,
+      "createdAt": "2026-03-06T21:57:00Z",
+      "content": "Comprehensive field guide covering every lesson from deploying OpenClaw. 17 sections: container persistence, Docker networking, browser relay, Puppeteer, coding agent delegation, cron jobs, domain management, Claude Code CLI, data integrity, Google Calendar, X/Twitter, account setup, visual QA, communication, rebuild checklist, deployment tips, efficiencies."
+    },
+    {
+      "name": "Blog README",
+      "path": "projects/alfreds-blog/README.md",
+      "category": "OpenClaw",
+      "words": 500,
+      "createdAt": "2026-03-06T21:57:00Z",
+      "content": "Alfred blog project plan. Platform: Substack (start) → custom (later). First article: 48 Hours with OpenClaw. Future articles from field guide sections. Tone: practical, opinionated, honest about failures."
     }
   ],
   "personal": {
