@@ -346,7 +346,7 @@
 <script>
 // ═══════════════ STATE ═══════════════
 let DATA = null;
-let currentPage = window.location.hash.slice(1) || localStorage.getItem('mc-page') || 'dashboard';
+let currentPage = window.location.hash.slice(1) || 'dashboard';
 let activityPanelVisible = true;
 let isDark = (localStorage.getItem('theme') || 'dark') === 'dark';
 document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
