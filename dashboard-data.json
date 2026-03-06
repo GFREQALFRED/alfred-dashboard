@@ -320,6 +320,105 @@
       "project": "Dashboard",
       "projectColor": "#8B5CF6",
       "createdAt": "2026-03-06T15:13:00Z"
+    },
+    {
+      "id": "t16",
+      "title": "Task archive system - hide done cards after a few days",
+      "description": "Add \"Archived\" button next to All/Alfred/Nhat filters. Done cards auto-archive after a few days. Archived view to see old completed tasks.",
+      "status": "backlog",
+      "priority": "high",
+      "assignee": "alfred",
+      "project": "Dashboard",
+      "projectColor": "#8B5CF6",
+      "createdAt": "2026-03-06T15:36:00Z"
+    },
+    {
+      "id": "t17",
+      "title": "Activity feed - capture all changes + fix View All",
+      "description": "Activity feed should log every change (task status, new tasks, small edits). Fix View All Activity button.",
+      "status": "backlog",
+      "priority": "high",
+      "assignee": "alfred",
+      "project": "Dashboard",
+      "projectColor": "#8B5CF6",
+      "createdAt": "2026-03-06T15:36:00Z"
+    },
+    {
+      "id": "t18",
+      "title": "Combine Agents + Team pages into one",
+      "description": "Merge the Agents page and Team page into a single unified page.",
+      "status": "backlog",
+      "priority": "medium",
+      "assignee": "alfred",
+      "project": "Dashboard",
+      "projectColor": "#8B5CF6",
+      "createdAt": "2026-03-06T15:36:00Z"
+    },
+    {
+      "id": "t19",
+      "title": "Calendar - week navigation + grey out non-today dates",
+      "description": "Add prev/next week buttons. Grey out dates that are not today. Show day-specific events from Google Calendar.",
+      "status": "backlog",
+      "priority": "medium",
+      "assignee": "alfred",
+      "project": "Dashboard",
+      "projectColor": "#8B5CF6",
+      "createdAt": "2026-03-06T15:36:00Z"
+    },
+    {
+      "id": "t20",
+      "title": "Projects page - expandable cards with dynamic progress",
+      "description": "Each project card expandable to show completed/remaining tasks. Progress bar calculated from completed tasks / total tasks. Dynamic - updates when tasks are added/completed.",
+      "status": "backlog",
+      "priority": "high",
+      "assignee": "alfred",
+      "project": "Dashboard",
+      "projectColor": "#8B5CF6",
+      "createdAt": "2026-03-06T15:36:00Z"
+    },
+    {
+      "id": "t21",
+      "title": "People & Places - expanded cards with schedules",
+      "description": "People: expandable cards with scheduled events, suggestions, ideas. Add Grandma, cousins, Friends. Places: synced to calendar (gym M/W/F 5:30, basketball schedule).",
+      "status": "backlog",
+      "priority": "medium",
+      "assignee": "alfred",
+      "project": "Dashboard",
+      "projectColor": "#8B5CF6",
+      "createdAt": "2026-03-06T15:36:00Z"
+    },
+    {
+      "id": "t22",
+      "title": "Mind/Body/Spirit - progression, gamification, daily content",
+      "description": "Detailed progression tracking, completion stats, daily suggestions (X articles, motivational quotes), recommendations, recaps. Gamify with streaks/achievements. Reminders.",
+      "status": "backlog",
+      "priority": "medium",
+      "assignee": "alfred",
+      "project": "Dashboard",
+      "projectColor": "#8B5CF6",
+      "createdAt": "2026-03-06T15:36:00Z"
+    },
+    {
+      "id": "t23",
+      "title": "Nhat Le profile page - personal summary + progression",
+      "description": "Clicking \"Nhat Le\" bottom-left opens dedicated page summarizing everything: all projects, progression, stats, health, finances, goals. Bird-eye view of life.",
+      "status": "backlog",
+      "priority": "medium",
+      "assignee": "alfred",
+      "project": "Dashboard",
+      "projectColor": "#8B5CF6",
+      "createdAt": "2026-03-06T15:36:00Z"
+    },
+    {
+      "id": "t24",
+      "title": "Dashboard stat cards - expandable + dynamic from tasks",
+      "description": "The 4 stat cards (tasks this week, progress, etc) should be expandable on click and dynamically calculated from the tasks page data.",
+      "status": "backlog",
+      "priority": "high",
+      "assignee": "alfred",
+      "project": "Dashboard",
+      "projectColor": "#8B5CF6",
+      "createdAt": "2026-03-06T15:36:00Z"
     }
   ],
   "integrations": [
