@@ -367,6 +367,7 @@ let selectedMemoryFile = null;
 let docsFilter = '';
 let docsCategory = 'all';
 let selectedDocPath = null;
+let docsSortOrder = 'newest';
 
 // ═══════════════ MOBILE SIDEBAR ═══════════════
 function toggleMobileSidebar() {
@@ -1422,12 +1423,21 @@ function renderDocs() {
   let filtered = DATA.documents;
   if (docsCategory !== 'all') filtered = filtered.filter(d => d.category === docsCategory);
   if (docsFilter) { const q = docsFilter.toLowerCase(); filtered = filtered.filter(d => d.name.toLowerCase().includes(q) || d.category.toLowerCase().includes(q) || (d.content && d.content.toLowerCase().includes(q))); }
+  filtered.sort((a, b) => {
+    const da = new Date(a.createdAt || 0).getTime(), db = new Date(b.createdAt || 0).getTime();
+    return docsSortOrder === 'newest' ? db - da : da - db;
+  });
   if (!selectedDocPath && filtered.length) selectedDocPath = filtered[0].path;
   const selDoc = DATA.documents.find(d => d.path === selectedDocPath);
   const cc = { Personal:'#6366F1', 'Mobile Apps':'#6366F1', 'E-commerce':'#F59E0B', Journal:'#22C55E', Agents425:'#8B5CF6', Dashboard:'#8B5CF6', Salon:'#EC4899', GFREQ:'#22C55E', OpenClaw:'#14B8A6', Memory:'#F59E0B' };
 
   return `
-    <div style="margin-bottom:20px;"><h1 style="font-size:24px; font-weight:600; letter-spacing:-0.025em; margin-bottom:4px;">Documents</h1><p style="font-size:13px; color:var(--text3);">${DATA.documents.length} documents</p></div>
+    <div style="margin-bottom:20px; display:flex; justify-content:space-between; align-items:flex-start;">
+      <div><h1 style="font-size:24px; font-weight:600; letter-spacing:-0.025em; margin-bottom:4px;">Documents</h1><p style="font-size:13px; color:var(--text3);">${DATA.documents.length} documents</p></div>
+      <button onclick="docsSortOrder=docsSortOrder==='newest'?'oldest':'newest';renderPage();" style="padding:6px 12px; border-radius:6px; border:1px solid var(--border); background:var(--s1); cursor:pointer; font-size:12px; color:var(--text2); white-space:nowrap; display:flex; align-items:center; gap:4px;">
+        <span>${docsSortOrder==='newest'?'↓':'↑'}</span> ${docsSortOrder==='newest'?'Newest':'Oldest'}
+      </button>
+    </div>
     <!-- MOBILE DOCS -->
     <div class="docs-mobile" style="display:none;">
       <div style="display:flex; gap:8px; margin-bottom:12px; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:4px;">
@@ -1437,9 +1447,10 @@ function renderDocs() {
       <div style="display:flex; flex-direction:column; gap:8px;">
         ${filtered.map(d => `<div onclick="openDocPreview('${d.path}')" class="card" style="padding:14px; cursor:pointer;">
           <div style="font-size:14px; font-weight:500; margin-bottom:4px; word-break:break-word;">${esc(d.name)}</div>
-          <div style="display:flex; align-items:center; gap:8px;">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
             <span class="badge" style="background:${cc[d.category]||'var(--s2)'}18; color:${cc[d.category]||'var(--text3)'};">${esc(d.category)}</span>
             <span class="mono" style="font-size:11px; color:var(--text3);">${d.words||0} words</span>
+            ${d.createdAt ? `<span class="mono" style="font-size:11px; color:var(--text3);">${new Date(d.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span>` : ''}
           </div>
         </div>`).join('')}
         ${!filtered.length ? '<div style="padding:40px; text-align:center; color:var(--text3); font-size:14px;">No documents match</div>' : ''}
@@ -1468,6 +1479,7 @@ function renderDocs() {
               <div style="display:flex; align-items:center; gap:8px;">
                 <span class="badge" style="background:${cc[d.category]||'var(--s2)'}18; color:${cc[d.category]||'var(--text3)'};">${esc(d.category)}</span>
                 <span class="mono" style="font-size:10px; color:var(--text3);">${d.words||0} words</span>
+                ${d.createdAt ? `<span class="mono" style="font-size:10px; color:var(--text3);">${new Date(d.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span>` : ''}
               </div>
             </div>`).join('') : '<div style="padding:24px; text-align:center; color:var(--text3); font-size:13px;">No documents match</div>'}
         </div>
