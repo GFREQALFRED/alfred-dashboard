@@ -2128,7 +2128,7 @@ function renderProjects() {
                       </div>
                       <div style="margin-left:12px;">
                         ${statusTasks.map(t => `
-                          <div onclick="event.stopPropagation(); openTaskDetail('${t.id}');" style="font-size:12px; color:var(--text3); margin-bottom:2px; cursor:pointer; padding:4px 8px; border-radius:4px; transition:background 150ms ease; display:flex; justify-content:space-between; align-items:center;" onmouseover="this.style.background='var(--s2)';this.style.color='var(--text)'" onmouseout="this.style.background='transparent';this.style.color='var(--text3)'"><span>${esc(t.title)}</span>${t.assignee === 'alfred' && t.delegatedTo ? '<span style="font-size:10px; color:var(--info); flex-shrink:0; margin-left:8px;">' + esc(t.delegatedTo) + '</span>' : ''}</div>
+                          <div onclick="event.stopPropagation(); openTaskDetail('${t.id}');" style="font-size:12px; color:var(--text3); margin-bottom:2px; cursor:pointer; padding:4px 8px; border-radius:4px; transition:background 150ms ease;" onmouseover="this.style.background='var(--s2)';this.style.color='var(--text)'" onmouseout="this.style.background='transparent';this.style.color='var(--text3)'">${esc(t.title)}</div>
                         `).join('')}
                       </div>
                     </div>
