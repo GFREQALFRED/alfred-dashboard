@@ -309,6 +309,17 @@
       "createdAt": "2026-03-06T13:58:00Z",
       "completedAt": "2026-03-06T14:12:00Z",
       "source": "ui"
+    },
+    {
+      "id": "t15",
+      "title": "Calendar redesign - day-specific events + Google Calendar sync",
+      "description": "Dashboard calendar needs to support individual date events and pull from Google Calendar API. Not just repeating daily schedule.",
+      "status": "backlog",
+      "priority": "medium",
+      "assignee": "alfred",
+      "project": "Dashboard",
+      "projectColor": "#8B5CF6",
+      "createdAt": "2026-03-06T15:13:00Z"
     }
   ],
   "integrations": [
