@@ -112,7 +112,7 @@
       "type": "content"
     },
     {
-      "time": "19:30",
+      "time": "19:00",
       "label": "Blog Article (Evening)",
       "description": "Writing agent drafts next article from field guide",
       "type": "content"
@@ -516,6 +516,17 @@
       "projectColor": "#14B8A6",
       "createdAt": "2026-03-06T21:25:00Z",
       "completedAt": "2026-03-06T21:57:00Z"
+    },
+    {
+      "id": "t33",
+      "title": "Calendar: overlap handling for concurrent events",
+      "description": "When multiple events share the same time slot, render them side-by-side (shrunk width) like Outlook. Currently they stack on top of each other. Detect overlaps, split column width, click/hover for details.",
+      "status": "backlog",
+      "priority": "medium",
+      "assignee": "alfred",
+      "project": "Dashboard",
+      "projectColor": "#8B5CF6",
+      "createdAt": "2026-03-06T22:24:00Z"
     }
   ],
   "integrations": [
