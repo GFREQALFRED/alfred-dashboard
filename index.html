@@ -195,6 +195,28 @@
     /* Team tree: scrollable */
     .team-tree { overflow-x:auto !important; -webkit-overflow-scrolling:touch; padding-bottom:16px; }
     .team-tree .card { max-width:260px; }
+
+    /* Dashboard stat cards: 2×2 */
+    .dash-stats-grid { grid-template-columns:repeat(2,1fr) !important; gap:10px !important; }
+    .dash-stats-grid .card { padding:14px !important; }
+
+    /* Dashboard two-col → stack */
+    .dash-two-col { grid-template-columns:1fr !important; }
+
+    /* Personal two-col → stack */
+    .personal-two-col { grid-template-columns:1fr !important; }
+
+    /* Sprint grid → 2 col on mobile */
+    .sprint-grid { grid-template-columns:repeat(2,1fr) !important; gap:10px !important; }
+
+    /* Projects grid → single column */
+    .projects-grid { grid-template-columns:1fr !important; }
+
+    /* Integrations grid → single column */
+    .integrations-grid { grid-template-columns:1fr !important; }
+
+    /* Team sub-agents: stack */
+    .team-subs > div { width:100% !important; }
   }
 
   /* No extra 640px overrides needed — mobile kanban uses tabs */
@@ -248,7 +270,6 @@
     <div class="sidebar-item" data-page="system" onclick="navigate('system')"><i data-lucide="settings" style="width:16px; height:16px;"></i> System</div>
     <div style="height:1px; background:var(--border); margin:8px 16px;"></div>
     <div style="padding:0 16px; margin-bottom:4px;"><span style="font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text3);">Personal</span></div>
-    <div class="sidebar-item" data-page="p-calendar" onclick="navigate('p-calendar')"><i data-lucide="calendar-heart" style="width:16px; height:16px;"></i> Calendar</div>
     <div class="sidebar-item" data-page="people" onclick="navigate('people')"><i data-lucide="heart-handshake" style="width:16px; height:16px;"></i> People & Places</div>
     <div class="sidebar-item" data-page="mind" onclick="navigate('mind')"><i data-lucide="lightbulb" style="width:16px; height:16px;"></i> Mind</div>
     <div class="sidebar-item" data-page="body" onclick="navigate('body')"><i data-lucide="dumbbell" style="width:16px; height:16px;"></i> Body</div>
@@ -278,6 +299,9 @@
   <div id="activity-panel" style="width:260px; border-left:1px solid var(--border); background:var(--s1); overflow-y:auto; padding:16px; flex-shrink:0;">
     <h3 style="font-size:14px; font-weight:600; margin-bottom:16px; color:var(--text);">Activity</h3>
     <div id="activity-feed"></div>
+    <div style="padding:12px 0; text-align:center; border-top:1px solid var(--border); margin-top:8px;">
+      <a href="#" onclick="navigate('system');return false;" style="font-size:12px; color:var(--accent); text-decoration:none; font-weight:500;">View all activity →</a>
+    </div>
   </div>
 </div>
 
@@ -1005,16 +1029,41 @@ function formatRelativeTime(iso) {
 function priorityColor(p) { return { urgent:'var(--danger)', high:'var(--warn)', medium:'var(--info)', low:'var(--s3)' }[p] || 'var(--s3)'; }
 
 // ═══════════════ PAGE: DASHBOARD ═══════════════
+function getScheduleStatus(schedule) {
+  // Determine now/next/past for each schedule item
+  const now = new Date();
+  const pst = new Date(now.toLocaleString('en-US', { timeZone:'America/Los_Angeles' }));
+  const currentMinutes = pst.getHours() * 60 + pst.getMinutes();
+  let foundNext = false;
+  return schedule.map((ev, i) => {
+    const [hh, mm] = ev.time.split(':').map(Number);
+    const evMinutes = hh * 60 + (mm || 0);
+    // Assume each event is ~1 hour
+    const nextEv = schedule[i + 1];
+    const nextMinutes = nextEv ? (parseInt(nextEv.time.split(':')[0]) * 60 + (parseInt(nextEv.time.split(':')[1]) || 0)) : evMinutes + 60;
+    if (currentMinutes >= evMinutes && currentMinutes < nextMinutes) {
+      return 'now';
+    } else if (currentMinutes < evMinutes && !foundNext) {
+      foundNext = true;
+      return 'next';
+    } else if (currentMinutes >= nextMinutes) {
+      return 'past';
+    }
+    return 'future';
+  });
+}
+
 function renderDashboard() {
   const s = DATA.stats, rev = DATA.revenue;
   const revPct = rev.target > 0 ? Math.round((rev.current / rev.target) * 100) : 0;
+  const scheduleStatuses = getScheduleStatus(DATA.schedule);
   return `
     <div style="margin-bottom:24px;"><h1 style="font-size:24px; font-weight:600; letter-spacing:-0.025em; margin-bottom:4px;">Dashboard</h1><p style="font-size:13px; color:var(--text3);">Mission overview and daily operations</p></div>
     <div class="dash-stats-grid" style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
       ${statCard('Tasks This Week', s.tasksThisWeek, 'check-square', 'var(--accent)')}
       ${statCard('In Progress', s.inProgress, 'loader', 'var(--info)')}
       ${statCard('Total Tasks', s.totalTasks, 'list', 'var(--text2)')}
-      ${statCard('Completion', s.completionPct + '%', 'trending-up', 'var(--success)')}
+      ${statCard('Completion', s.completionPct + '%', 'trending-up', 'var(--success)', s.completionPct)}
     </div>
     <div class="dash-two-col" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
       <div class="card" style="padding:20px;">
@@ -1022,12 +1071,20 @@ function renderDashboard() {
           <h2 style="font-size:15px; font-weight:600;">Revenue Tracker</h2>
           <span class="mono" style="font-size:13px; color:var(--text3);">$${rev.current.toLocaleString()} / $${(rev.target/1000).toLocaleString()}K</span>
         </div>
-        <div class="progress-bar" style="margin-bottom:20px; height:8px;">
+        ${rev.current > 0 ? `<div class="progress-bar" style="margin-bottom:20px; height:8px;">
           <div class="progress-fill" style="width:${Math.max(revPct, 1)}%; background:var(--accent);"></div>
-        </div>
+        </div>` : `<div style="margin-bottom:20px; padding:8px 0; text-align:center;"><span style="font-size:12px; color:var(--text3); font-style:italic;">Tracking begins when revenue starts</span></div>`}
         <div style="display:flex; flex-direction:column; gap:14px;">
           ${rev.streams.map(st => {
             const pct = st.target > 0 ? Math.round((st.current/st.target)*100) : 0;
+            if (st.current === 0) {
+              return `<div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <div style="display:flex; align-items:center; gap:8px;"><div style="width:8px; height:8px; border-radius:2px; background:${st.color}; opacity:0.4;"></div><span style="font-size:12px; font-weight:500; color:var(--text3);">${esc(st.name)}</span></div>
+                  <span style="font-size:11px; color:var(--text3); font-style:italic;">Not started</span>
+                </div>
+              </div>`;
+            }
             return `<div>
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
                 <div style="display:flex; align-items:center; gap:8px;"><div style="width:8px; height:8px; border-radius:2px; background:${st.color};"></div><span style="font-size:12px; font-weight:500;">${esc(st.name)}</span></div>
@@ -1041,12 +1098,21 @@ function renderDashboard() {
       <div class="card" style="padding:20px;">
         <h2 style="font-size:15px; font-weight:600; margin-bottom:16px;">Today's Schedule</h2>
         <div style="display:flex; flex-direction:column;">
-          ${DATA.schedule.map(ev => {
+          ${DATA.schedule.map((ev, idx) => {
             const tc = { briefing:'var(--info)', strategy:'var(--accent)', system:'var(--text3)', content:'var(--warn)' };
-            return `<div style="display:flex; align-items:center; gap:12px; padding:9px 0; border-bottom:1px solid rgba(255,255,255,0.04);">
+            const status = scheduleStatuses[idx];
+            const isPast = status === 'past';
+            const isNow = status === 'now';
+            const isNext = status === 'next';
+            const borderLeft = isNow ? '3px solid var(--accent)' : isNext ? '3px solid var(--info)' : '3px solid transparent';
+            const bgColor = isNow ? 'rgba(139,92,246,0.06)' : isNext ? 'rgba(59,130,246,0.04)' : 'transparent';
+            const opacity = isPast ? '0.45' : '1';
+            return `<div style="display:flex; align-items:center; gap:12px; padding:9px 8px; border-bottom:1px solid rgba(255,255,255,0.04); border-left:${borderLeft}; background:${bgColor}; opacity:${opacity}; border-radius:0 4px 4px 0; margin-bottom:2px;">
               <span class="mono" style="font-size:12px; color:var(--text3); width:48px; flex-shrink:0;">${ev.time}</span>
               <div class="status-dot" style="background:${tc[ev.type]||'var(--text3)'};"></div>
               <div style="flex:1; min-width:0;"><div style="font-size:13px; font-weight:500;">${esc(ev.label)}</div><div style="font-size:11px; color:var(--text3);">${esc(ev.description)}</div></div>
+              ${isNow ? '<span class="badge" style="background:rgba(139,92,246,0.15); color:var(--accent); flex-shrink:0; font-size:10px; font-weight:600;">NOW</span>' : ''}
+              ${isNext ? '<span class="badge" style="background:rgba(59,130,246,0.12); color:var(--info); flex-shrink:0; font-size:10px; font-weight:600;">NEXT</span>' : ''}
             </div>`;
           }).join('')}
         </div>
@@ -1070,13 +1136,15 @@ function renderDashboard() {
     </div>`;
 }
 
-function statCard(label, value, icon, color) {
+function statCard(label, value, icon, color, progressPct) {
+  const hasProgress = typeof progressPct === 'number';
   return `<div class="card" style="padding:20px;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
       <span style="font-size:12px; color:var(--text3); font-weight:500;">${label}</span>
       <i data-lucide="${icon}" style="width:16px; height:16px; color:${color};"></i>
     </div>
     <div class="mono" style="font-size:28px; font-weight:600; color:${color};">${value}</div>
+    ${hasProgress ? `<div class="progress-bar" style="margin-top:10px; height:4px;"><div class="progress-fill" style="width:${progressPct}%; background:${color};"></div></div>` : ''}
   </div>`;
 }
 
@@ -1257,7 +1325,7 @@ function renderProjects() {
   const st = { active:'var(--success)', planning:'var(--info)', notStarted:'var(--text3)' };
   return `
     <div style="margin-bottom:24px;"><h1 style="font-size:24px; font-weight:600; letter-spacing:-0.025em; margin-bottom:4px;">Projects</h1><p style="font-size:13px; color:var(--text3);">${DATA.projects.length} projects</p></div>
-    <div class="projects-grid" class="m-stack" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:16px;">
+    <div class="projects-grid m-stack" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:16px;">
       ${DATA.projects.map(p => `
         <div class="card" style="padding:20px;">
           <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:12px;">
@@ -1291,7 +1359,7 @@ function renderMemory() {
       <button class="tab-btn ${memoryTab==='daily'?'active':''}" onclick="memoryTab='daily';selectedMemoryFile=null;renderPage()">Daily</button>
       <button class="tab-btn ${memoryTab==='longterm'?'active':''}" onclick="memoryTab='longterm';selectedMemoryFile=null;renderPage()">Long-term</button>
     </div>
-    <div class="mem-layout" class="mem-grid" style="display:grid; grid-template-columns:240px 1fr; gap:16px; height:calc(100vh - 230px);">
+    <div class="mem-layout mem-grid" style="display:grid; grid-template-columns:240px 1fr; gap:16px; height:calc(100vh - 230px);">
       <div class="card" style="overflow-y:auto; padding:8px;">
         ${currentDocs.length ? currentDocs.map(d => `
           <div onclick="selectedMemoryFile='${d.path}';renderPage();" style="padding:10px 12px; border-radius:6px; cursor:pointer; margin-bottom:2px; transition:background 150ms ease; ${selectedMemoryFile===d.path?'background:var(--s2);':''}" onmouseover="if(selectedMemoryFile!=='${d.path}')this.style.background='rgba(39,39,42,0.3)'" onmouseout="if(selectedMemoryFile!=='${d.path}')this.style.background='transparent'">
