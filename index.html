@@ -390,6 +390,9 @@ let briefingDate = new Date();
 // ═══════════════ HELPER FUNCTIONS ═══════════════
 function isTaskArchived(task) {
   if (task.status !== 'done' || !task.completedAt) return false;
+  // Check for manual archive
+  if (task.archivedAt) return true;
+  // Check for automatic archive (3+ days old)
   const threeDaysAgo = new Date();
   threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
   return new Date(task.completedAt) < threeDaysAgo;
@@ -1521,6 +1524,16 @@ function openTaskDetail(id) {
       <select onchange="moveTask('${t.id}', this.value)" style="width:100%; height:44px; padding:0 12px;">
         ${Object.entries(sl).map(([k,v]) => `<option value="${k}" ${t.status===k?'selected':''}>${v}</option>`).join('')}
       </select>
+      ${t.status === 'done' && t.completedAt && !isTaskArchived(t) ? `
+        <button onclick="archiveTask('${t.id}')" class="btn-secondary" style="width:100%; margin-top:12px; height:44px; background:var(--s3); color:var(--text2);">
+          <i data-lucide="archive" style="width:16px; height:16px;"></i> Archive Task
+        </button>
+      ` : ''}
+      ${isTaskArchived(t) ? `
+        <button onclick="unarchiveTask('${t.id}')" class="btn-secondary" style="width:100%; margin-top:12px; height:44px; background:var(--warn)18; color:var(--warn);">
+          <i data-lucide="archive-restore" style="width:16px; height:16px;"></i> Unarchive Task
+        </button>
+      ` : ''}
     </div>`;
   lucide.createIcons();
 }
@@ -1536,6 +1549,34 @@ function moveTask(id, status) {
     fireWebhook('task_updated', t, previousStatus, status);
   }
   closeTaskDetail();
+}
+
+function archiveTask(id) {
+  const t = DATA.tasks.find(x => x.id === id);
+  if (t && t.status === 'done' && t.completedAt) {
+    // Manually set the completed date to 4 days ago to trigger archive
+    const fourDaysAgo = new Date();
+    fourDaysAgo.setDate(fourDaysAgo.getDate() - 4);
+    t.archivedAt = fourDaysAgo.toISOString();
+    if (t.source === 'ui') saveLocalTasks();
+    // Notify Alfred via webhook
+    fireWebhook('task_archived', t);
+  }
+  closeTaskDetail();
+  navigate('tasks');
+}
+
+function unarchiveTask(id) {
+  const t = DATA.tasks.find(x => x.id === id);
+  if (t) {
+    // Remove the manual archive timestamp and reset to original completion
+    delete t.archivedAt;
+    if (t.source === 'ui') saveLocalTasks();
+    // Notify Alfred via webhook
+    fireWebhook('task_unarchived', t);
+  }
+  closeTaskDetail();
+  navigate('tasks');
   if (currentPage === 'tasks') renderPage();
 }
 
@@ -1744,7 +1785,7 @@ function renderTasks() {
           <button class="filter-btn ${taskFilter==='all'?'active':''}" onclick="taskFilter='all';sessionStorage.setItem('taskFilter','all');navigate('tasks')">All</button>
           <button class="filter-btn ${taskFilter==='alfred'?'active':''}" onclick="taskFilter='alfred';sessionStorage.setItem('taskFilter','alfred');navigate('tasks')">Alfred</button>
           <button class="filter-btn ${taskFilter==='nhat'?'active':''}" onclick="taskFilter='nhat';sessionStorage.setItem('taskFilter','nhat');navigate('tasks')">Nhat</button>
-          <button class="filter-btn ${taskFilter==='archived'?'active':'inactive'}" style="${taskFilter==='archived'?'':'opacity:0.7'}" onclick="taskFilter='archived';sessionStorage.setItem('taskFilter','archived');navigate('tasks')">Archived</button>
+          <button class="filter-btn ${taskFilter==='archived'?'active':''}" onclick="taskFilter='archived';sessionStorage.setItem('taskFilter','archived');navigate('tasks')">Archived</button>
         </div>
         <button class="btn-primary" onclick="openNewTask()"><i data-lucide="plus" style="width:14px; height:14px;"></i> New</button>
       </div>
