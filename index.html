@@ -1123,7 +1123,7 @@ function renderBriefing() {
           <div style="display:flex; flex-direction:column; gap:8px; max-height:200px; overflow-y:auto;">
             ${events.map(e => `
               <div style="display:flex; align-items:center; gap:8px; padding:8px; border-radius:6px; background:var(--bg);">
-                <span style="font-size:11px; font-weight:600; color:var(--accent); min-width:50px;">${e.time}</span>
+                <span style="font-size:11px; font-weight:600; color:var(--accent); min-width:60px;">${fmt12(e.time)}</span>
                 <div>
                   <div style="font-size:13px; font-weight:500;">${esc(e.label)}</div>
                   <div style="font-size:11px; color:var(--text3);">${esc(e.description)}</div>
@@ -1627,6 +1627,12 @@ function formatDate(iso) {
   const d = new Date(iso);
   return d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric', timeZone:'America/Los_Angeles' }) + ' ' + d.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit', timeZone:'America/Los_Angeles' });
 }
+function fmt12(time24) {
+  const [h,m] = time24.split(':').map(Number);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const h12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
+  return h12 + ':' + String(m).padStart(2,'0') + ' ' + ampm;
+}
 function formatRelativeTime(iso) {
   if (!iso) return '';
   const now = new Date(), d = new Date(iso), diff = now - d;
@@ -1756,7 +1762,7 @@ function renderDashboard() {
             const bgColor = isNow ? 'rgba(139,92,246,0.06)' : isNext ? 'rgba(59,130,246,0.04)' : 'transparent';
             const opacity = isPast ? '0.45' : '1';
             return `<div style="display:flex; align-items:center; gap:12px; padding:9px 8px; border-bottom:1px solid rgba(255,255,255,0.04); border-left:${borderLeft}; background:${bgColor}; opacity:${opacity}; border-radius:0 4px 4px 0; margin-bottom:2px;">
-              <span class="mono" style="font-size:12px; color:var(--text3); width:48px; flex-shrink:0;">${ev.time}</span>
+              <span class="mono" style="font-size:12px; color:var(--text3); width:64px; flex-shrink:0;">${fmt12(ev.time)}</span>
               <div class="status-dot" style="background:${tc[ev.type]||'var(--text3)'};"></div>
               <div style="flex:1; min-width:0;"><div style="font-size:13px; font-weight:500;">${esc(ev.label)}</div><div style="font-size:11px; color:var(--text3);">${esc(ev.description)}</div></div>
               ${isNow ? '<span class="badge" style="background:rgba(139,92,246,0.15); color:var(--accent); flex-shrink:0; font-size:10px; font-weight:600;">NOW</span>' : ''}
@@ -2025,7 +2031,7 @@ function renderCalendar() {
           const bg = typeBgs[ev.type] || 'rgba(63,63,70,0.15)';
           return `<div style="display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); opacity:${isPast?'0.4':'1'}; ${isCurrent?'background:rgba(139,92,246,0.05); margin:0 -20px; padding:12px 20px; border-radius:8px;':''}">
             <div style="min-width:56px; text-align:right;">
-              <span class="mono" style="font-size:13px; font-weight:500; color:${isCurrent?'var(--accent)':'var(--text2)'};">${ev.time}</span>
+              <span class="mono" style="font-size:13px; font-weight:500; color:${isCurrent?'var(--accent)':'var(--text2)'};">${fmt12(ev.time)}</span>
             </div>
             <div style="width:3px; border-radius:2px; background:${c}; flex-shrink:0;"></div>
             <div style="flex:1; min-width:0;">
@@ -2072,7 +2078,7 @@ function positionCalendarBlocks() {
     for (let day = 0; day < 7; day++) {
       html += `<div class="cal-block" style="top:${top}px; left:calc(56px + (100% - 56px)*${day}/7 + 2px); width:calc((100% - 56px)/7 - 6px); height:${hourH-2}px; background:${c.bg}; border-color:${c.border};">
         <div style="font-weight:500; color:${c.text}; font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${esc(ev.label)}</div>
-        <div class="mono" style="font-size:10px; color:${c.text}; opacity:0.7;">${ev.time}</div>
+        <div class="mono" style="font-size:10px; color:${c.text}; opacity:0.7;">${fmt12(ev.time)}</div>
       </div>`;
     }
   });
