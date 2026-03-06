@@ -270,13 +270,14 @@
   <nav style="flex:1; padding:12px 0; overflow-y:auto; -webkit-overflow-scrolling:touch;">
     <div class="sidebar-item active" data-page="dashboard" onclick="navigate('dashboard')"><i data-lucide="layout-dashboard" style="width:16px; height:16px;"></i> Dashboard</div>
     <div class="sidebar-item" data-page="tasks" onclick="navigate('tasks')"><i data-lucide="check-square" style="width:16px; height:16px;"></i> Tasks</div>
-    <div class="sidebar-item" data-page="agents" onclick="navigate('agents')"><i data-lucide="bot" style="width:16px; height:16px;"></i> Agents</div>
+    <!-- <div class="sidebar-item" data-page="agents" onclick="navigate('agents')"><i data-lucide="bot" style="width:16px; height:16px;"></i> Agents</div> -->
     <div class="sidebar-item" data-page="calendar" onclick="navigate('calendar')"><i data-lucide="calendar" style="width:16px; height:16px;"></i> Calendar</div>
     <div class="sidebar-item" data-page="projects" onclick="navigate('projects')"><i data-lucide="folder" style="width:16px; height:16px;"></i> Projects</div>
     <div class="sidebar-item" data-page="memory" onclick="navigate('memory')"><i data-lucide="brain" style="width:16px; height:16px;"></i> Memory</div>
     <div class="sidebar-item" data-page="docs" onclick="navigate('docs')"><i data-lucide="file-text" style="width:16px; height:16px;"></i> Docs</div>
     <div class="sidebar-item" data-page="team" onclick="navigate('team')"><i data-lucide="users" style="width:16px; height:16px;"></i> Team</div>
     <div class="sidebar-item" data-page="system" onclick="navigate('system')"><i data-lucide="settings" style="width:16px; height:16px;"></i> System</div>
+    <div class="sidebar-item" data-page="briefing" onclick="navigate('briefing')"><i data-lucide="notebook-pen" style="width:16px; height:16px;"></i> Briefing</div>
     <div style="height:1px; background:var(--border); margin:8px 16px;"></div>
     <div style="padding:0 16px; margin-bottom:4px;"><span style="font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text3);">Personal</span></div>
     <div class="sidebar-item" data-page="people" onclick="navigate('people')"><i data-lucide="heart-handshake" style="width:16px; height:16px;"></i> People & Places</div>
@@ -284,7 +285,7 @@
     <div class="sidebar-item" data-page="body" onclick="navigate('body')"><i data-lucide="dumbbell" style="width:16px; height:16px;"></i> Body</div>
     <div class="sidebar-item" data-page="spirit" onclick="navigate('spirit')"><i data-lucide="flame" style="width:16px; height:16px;"></i> Spirit</div>
   </nav>
-  <div style="padding:12px 16px; border-top:1px solid var(--border); display:flex; align-items:center; gap:10px;">
+  <div onclick="navigate('profile')" style="cursor:pointer; padding:12px 16px; border-top:1px solid var(--border); display:flex; align-items:center; gap:10px; transition:background 150ms ease;" onmouseover="this.style.background='var(--s2)'" onmouseout="this.style.background='transparent'">
     <div style="width:28px; height:28px; border-radius:50%; background:var(--s2); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; color:var(--text2);">NL</div>
     <span style="font-size:12px; color:var(--text2);">Nhat Le</span>
   </div>
@@ -309,7 +310,7 @@
     <h3 style="font-size:14px; font-weight:600; margin-bottom:16px; color:var(--text);">Activity</h3>
     <div id="activity-feed"></div>
     <div style="padding:12px 0; text-align:center; border-top:1px solid var(--border); margin-top:8px;">
-      <a href="#" onclick="navigate('system');return false;" style="font-size:12px; color:var(--accent); text-decoration:none; font-weight:500;">View all activity →</a>
+      <a href="#" id="activity-toggle" onclick="allActivityExpanded=!allActivityExpanded;renderActivity();updateActivityToggleText();return false;" style="font-size:12px; color:var(--accent); text-decoration:none; font-weight:500;">View all activity →</a>
     </div>
   </div>
 </div>
@@ -361,7 +362,17 @@ let isDark = (localStorage.getItem('theme') || 'dark') === 'dark';
 document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
 let searchSelectedIdx = 0;
 let searchResults = [];
-let taskFilter = 'all';
+// Initialize taskFilter from hash or sessionStorage
+let taskFilter = (() => {
+  const hash = window.location.hash.slice(1);
+  if (hash.includes(':')) {
+    const [page, filter] = hash.split(':');
+    if (page === 'tasks' && ['all', 'alfred', 'nhat', 'archived'].includes(filter)) {
+      return filter;
+    }
+  }
+  return sessionStorage.getItem('taskFilter') || 'all';
+})();
 let memoryTab = 'daily';
 let selectedMemoryFile = null;
 let docsFilter = '';
@@ -369,6 +380,20 @@ let docsCategory = 'all';
 let selectedDocPath = null;
 let docsSortOrder = 'newest';
 let calSelectedDay = null; // null = today
+let allActivityExpanded = false;
+let calWeekOffset = 0;
+let expandedProject = null;
+let expandedPerson = null;
+let expandedStat = null;
+let briefingDate = new Date();
+
+// ═══════════════ HELPER FUNCTIONS ═══════════════
+function isTaskArchived(task) {
+  if (task.status !== 'done' || !task.completedAt) return false;
+  const threeDaysAgo = new Date();
+  threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+  return new Date(task.completedAt) < threeDaysAgo;
+}
 
 // ═══════════════ MOBILE SIDEBAR ═══════════════
 function toggleMobileSidebar() {
@@ -517,16 +542,29 @@ function renderPeople() {
     <div style="margin-bottom:24px;"><h1 style="font-size:24px; font-weight:600; letter-spacing:-0.025em; margin-bottom:4px;">People & Places</h1><p style="font-size:13px; color:var(--text3);">The humans and spaces that matter most</p></div>
     <h3 style="font-size:15px; font-weight:600; margin-bottom:12px;">People</h3>
     <div class="people-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:12px; margin-bottom:32px;">
-      ${sorted.map(p => `<div class="card" style="padding:16px; border-left:3px solid ${prioColors[p.priority]||'var(--text3)'};">
-        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-          <div style="width:32px; height:32px; border-radius:8px; background:var(--s2); display:flex; align-items:center; justify-content:center;"><i data-lucide="${p.icon||'user'}" style="width:16px; height:16px; color:${prioColors[p.priority]||'var(--text3)'};"></i></div>
-          <div>
-            <div style="font-size:14px; font-weight:600;">${esc(p.name)}</div>
-            <div style="font-size:11px; color:var(--text3);">${esc(p.role)}${p.birthday?' · '+esc(p.birthday):''}</div>
+      ${sorted.map(person => {
+        const isExpanded = expandedPerson === person.name;
+        return `<div onclick="expandedPerson = expandedPerson === '${person.name}' ? null : '${person.name}'; renderPage();" class="card" style="padding:16px; border-left:3px solid ${prioColors[person.priority]||'var(--text3)'}; cursor:pointer; transition:all 150ms ease;">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div style="width:32px; height:32px; border-radius:8px; background:var(--s2); display:flex; align-items:center; justify-content:center;"><i data-lucide="${person.icon||'user'}" style="width:16px; height:16px; color:${prioColors[person.priority]||'var(--text3)'};"></i></div>
+              <div>
+                <div style="font-size:14px; font-weight:600;">${esc(person.name)}</div>
+                <div style="font-size:11px; color:var(--text3);">${esc(person.role)}${person.birthday?' · '+esc(person.birthday):''}</div>
+              </div>
+            </div>
+            <i data-lucide="${isExpanded ? 'chevron-up' : 'chevron-down'}" style="width:14px; height:14px; color:var(--text3);"></i>
           </div>
-        </div>
-        <p style="font-size:12px; color:var(--text2); line-height:1.5;">${esc(p.notes)}</p>
-      </div>`).join('')}
+          <p style="font-size:12px; color:var(--text2); line-height:1.5; ${isExpanded ? '' : 'display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;'}">${esc(person.notes)}</p>
+          ${isExpanded ? `
+            <div style="margin-top:12px; border-top:1px solid var(--border); padding-top:12px;">
+              ${person.birthday ? `<div style="font-size:11px; color:var(--text3); margin-bottom:6px; display:flex; align-items:center; gap:6px;"><i data-lucide="cake" style="width:12px; height:12px;"></i> Birthday: ${esc(person.birthday)}</div>` : ''}
+              <div style="font-size:11px; color:var(--text3); margin-bottom:6px; display:flex; align-items:center; gap:6px;"><i data-lucide="calendar" style="width:12px; height:12px;"></i> Upcoming events: None planned</div>
+              <div style="font-size:11px; color:var(--text3); display:flex; align-items:center; gap:6px;"><i data-lucide="history" style="width:12px; height:12px;"></i> Recent interactions: Coming soon</div>
+            </div>
+          ` : ''}
+        </div>`;
+      }).join('')}
     </div>
     <h3 style="font-size:15px; font-weight:600; margin-bottom:12px;">Places</h3>
     <div class="people-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:12px;">
@@ -546,8 +584,44 @@ function renderMind() {
   const goals = m.goals || [];
   const principles = m.principles || [];
   const reflections = m.reflections || [];
+  const checkIns = getCheckIns('mind');
+  const streaks = getStreaks('mind');
+
   return `
     <div style="margin-bottom:24px;"><h1 style="font-size:24px; font-weight:600; letter-spacing:-0.025em; margin-bottom:4px;">Mind</h1><p style="font-size:13px; color:var(--text3);">Learning, clarity, and intellectual growth</p></div>
+
+    <!-- Daily Quote & Check-ins -->
+    <div class="personal-two-col" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
+      <div class="card" style="padding:20px; background:linear-gradient(135deg, rgba(139,92,246,0.1), rgba(59,130,246,0.1)); border:1px solid rgba(139,92,246,0.2);">
+        <h3 style="font-size:15px; font-weight:600; margin-bottom:12px; color:var(--accent);">Daily Quote</h3>
+        <p style="font-size:14px; color:var(--text); line-height:1.5; font-style:italic;">"${getDailyQuote()}"</p>
+      </div>
+      <div class="card" style="padding:20px;">
+        <h3 style="font-size:15px; font-weight:600; margin-bottom:12px;">Today's Check-ins</h3>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <i data-lucide="book" style="width:16px; height:16px; color:var(--info);"></i>
+              <span style="font-size:13px;">Reading Done</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <button onclick="doCheckIn('mind', 'reading', true)" style="background:${checkIns.reading ? 'var(--success)' : 'var(--s2)'}; color:${checkIns.reading ? 'white' : 'var(--text2)'}; border:none; border-radius:4px; width:24px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer;">✓</button>
+              <span style="font-size:11px; color:var(--text3);">${streaks.reading || 0}d</span>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <i data-lucide="brain" style="width:16px; height:16px; color:var(--warn);"></i>
+              <span style="font-size:13px;">Learning Session</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <button onclick="doCheckIn('mind', 'learning', true)" style="background:${checkIns.learning ? 'var(--success)' : 'var(--s2)'}; color:${checkIns.learning ? 'white' : 'var(--text2)'}; border:none; border-radius:4px; width:24px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer;">✓</button>
+              <span style="font-size:11px; color:var(--text3);">${streaks.learning || 0}d</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="personal-two-col" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
       <div class="card" style="padding:20px;">
         <h3 style="font-size:15px; font-weight:600; margin-bottom:4px;">Current Focus</h3>
@@ -592,8 +666,65 @@ function renderBody() {
   const goals = b.goals || [];
   const nutr = b.nutrition || {};
   const weightPct = cur.goal ? Math.round(((cur.weight - 130) / (cur.goal - 130)) * 100) : 0; // 130 as baseline
+  const checkIns = getCheckIns('body');
+  const streaks = getStreaks('body');
+  const today = new Date().getDay(); // 0=Sunday, 1=Monday, etc.
+  const isGymDay = [1, 3, 5].includes(today); // Monday, Wednesday, Friday
+
   return `
     <div style="margin-bottom:24px;"><h1 style="font-size:24px; font-weight:600; letter-spacing:-0.025em; margin-bottom:4px;">Body</h1><p style="font-size:13px; color:var(--text3);">Fitness, nutrition, and physical health</p></div>
+
+    <!-- Trackers & Check-ins -->
+    <div class="personal-two-col" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
+      <div class="card" style="padding:20px;">
+        <h3 style="font-size:15px; font-weight:600; margin-bottom:12px;">Weight Tracker</h3>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+          <input type="number" id="weight-input" placeholder="Weight" style="flex:1; padding:8px; font-size:13px;" min="120" max="200" step="0.1">
+          <button onclick="updateWeight()" style="background:var(--accent); color:white; border:none; border-radius:4px; padding:8px 12px; font-size:12px; font-weight:500; cursor:pointer;">Update</button>
+        </div>
+        <h4 style="font-size:13px; font-weight:600; margin-bottom:8px;">Weekly Schedule (M/W/F Gym)</h4>
+        <div style="display:flex; gap:4px; margin-bottom:16px;">
+          ${['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => `
+            <div style="width:24px; height:24px; border-radius:4px; background:${[1,3,5].includes(i) ? 'var(--success)' : 'var(--s3)'}; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; color:${[1,3,5].includes(i) ? 'white' : 'var(--text3)'};">${day}</div>
+          `).join('')}
+        </div>
+        <h4 style="font-size:13px; font-weight:600; margin-bottom:8px;">Today's Check-ins</h4>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          ${isGymDay ? `
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <i data-lucide="dumbbell" style="width:16px; height:16px; color:var(--success);"></i>
+                <span style="font-size:13px;">Gym Done</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <button onclick="doCheckIn('body', 'gym', true)" style="background:${checkIns.gym ? 'var(--success)' : 'var(--s2)'}; color:${checkIns.gym ? 'white' : 'var(--text2)'}; border:none; border-radius:4px; width:24px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer;">✓</button>
+                <span style="font-size:11px; color:var(--text3);">${streaks.gym || 0}d</span>
+              </div>
+            </div>
+          ` : ''}
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <i data-lucide="apple" style="width:16px; height:16px; color:var(--warn);"></i>
+              <span style="font-size:13px;">Nutrition Goals</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <button onclick="doCheckIn('body', 'nutrition', true)" style="background:${checkIns.nutrition ? 'var(--success)' : 'var(--s2)'}; color:${checkIns.nutrition ? 'white' : 'var(--text2)'}; border:none; border-radius:4px; width:24px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer;">✓</button>
+              <span style="font-size:11px; color:var(--text3);">${streaks.nutrition || 0}d</span>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <i data-lucide="droplets" style="width:16px; height:16px; color:var(--info);"></i>
+              <span style="font-size:13px;">Hydration</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <button onclick="doCheckIn('body', 'hydration', true)" style="background:${checkIns.hydration ? 'var(--success)' : 'var(--s2)'}; color:${checkIns.hydration ? 'white' : 'var(--text2)'}; border:none; border-radius:4px; width:24px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer;">✓</button>
+              <span style="font-size:11px; color:var(--text3);">${streaks.hydration || 0}d</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
     <div class="personal-two-col" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
       <div class="card" style="padding:20px;">
         <h3 style="font-size:15px; font-weight:600; margin-bottom:16px;">Weight Progress</h3>
@@ -646,8 +777,59 @@ function renderSpirit() {
   const gratitude = s.gratitude || [];
   const philosophies = s.philosophies || [];
   const statusColors = { active:'var(--success)', building:'var(--warn)', planning:'var(--text3)' };
+  const checkIns = getCheckIns('spirit');
+  const streaks = getStreaks('spirit');
+
   return `
     <div style="margin-bottom:24px;"><h1 style="font-size:24px; font-weight:600; letter-spacing:-0.025em; margin-bottom:4px;">Spirit</h1><p style="font-size:13px; color:var(--text3);">Purpose, peace, and the inner journey</p></div>
+
+    <!-- Daily Check-ins -->
+    <div class="card" style="padding:20px; margin-bottom:24px;">
+      <h3 style="font-size:15px; font-weight:600; margin-bottom:12px;">Today's Spiritual Practice</h3>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-radius:6px; background:var(--bg);">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i data-lucide="flower-2" style="width:16px; height:16px; color:var(--success);"></i>
+            <span style="font-size:13px;">Meditation</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <button onclick="doCheckIn('spirit', 'meditation', true)" style="background:${checkIns.meditation ? 'var(--success)' : 'var(--s2)'}; color:${checkIns.meditation ? 'white' : 'var(--text2)'}; border:none; border-radius:4px; width:24px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer;">✓</button>
+            <span style="font-size:11px; color:var(--text3);">${streaks.meditation || 0}d</span>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-radius:6px; background:var(--bg);">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i data-lucide="heart" style="width:16px; height:16px; color:var(--danger);"></i>
+            <span style="font-size:13px;">Gratitude</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <button onclick="doCheckIn('spirit', 'gratitude', true)" style="background:${checkIns.gratitude ? 'var(--success)' : 'var(--s2)'}; color:${checkIns.gratitude ? 'white' : 'var(--text2)'}; border:none; border-radius:4px; width:24px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer;">✓</button>
+            <span style="font-size:11px; color:var(--text3);">${streaks.gratitude || 0}d</span>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-radius:6px; background:var(--bg);">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i data-lucide="pen-tool" style="width:16px; height:16px; color:var(--info);"></i>
+            <span style="font-size:13px;">Journaling</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <button onclick="doCheckIn('spirit', 'journaling', true)" style="background:${checkIns.journaling ? 'var(--success)' : 'var(--s2)'}; color:${checkIns.journaling ? 'white' : 'var(--text2)'}; border:none; border-radius:4px; width:24px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer;">✓</button>
+            <span style="font-size:11px; color:var(--text3);">${streaks.journaling || 0}d</span>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-radius:6px; background:var(--bg);">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i data-lucide="sparkles" style="width:16px; height:16px; color:var(--warn);"></i>
+            <span style="font-size:13px;">Prayer/Reflection</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <button onclick="doCheckIn('spirit', 'prayer', true)" style="background:${checkIns.prayer ? 'var(--success)' : 'var(--s2)'}; color:${checkIns.prayer ? 'white' : 'var(--text2)'}; border:none; border-radius:4px; width:24px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer;">✓</button>
+            <span style="font-size:11px; color:var(--text3);">${streaks.prayer || 0}d</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="card" style="padding:24px; margin-bottom:24px; text-align:center; border:1px solid rgba(139,92,246,0.15); background:linear-gradient(135deg, rgba(139,92,246,0.05), rgba(236,72,153,0.05));">
       <i data-lucide="flame" style="width:24px; height:24px; color:var(--accent); margin-bottom:8px;"></i>
       <p style="font-size:16px; font-weight:500; color:var(--text); line-height:1.6; font-style:italic; max-width:640px; margin:0 auto;">"${esc(s.mission||'')}"</p>
@@ -702,6 +884,260 @@ function renderSpirit() {
     </div>`;
 }
 
+// ═══════════════ PAGE: PROFILE ═══════════════
+function renderProfile() {
+  // Calculate life stats
+  const completedTasks = DATA.tasks.filter(t => t.status === 'done').length;
+  const activeProjects = DATA.projects.filter(p => p.status === 'active').length;
+  const longestStreak = Math.max(...Object.values(getStreaks('mind')).concat(Object.values(getStreaks('body')), Object.values(getStreaks('spirit'))), 0);
+  const currentWeight = localStorage.getItem('currentWeight') || '150';
+
+  return `
+    <div style="margin-bottom:32px; text-align:center;">
+      <div style="width:80px; height:80px; border-radius:50%; background:var(--s2); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:32px; font-weight:600; color:var(--text2);">NL</div>
+      <h1 style="font-size:32px; font-weight:700; letter-spacing:-0.025em; margin-bottom:4px;">Nhat Le</h1>
+      <p style="font-size:16px; color:var(--text3);">Founder & Operator</p>
+    </div>
+
+    <div class="personal-two-col" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:16px; margin-bottom:24px;">
+      <!-- Life Stats -->
+      <div class="card" style="padding:24px;">
+        <h3 style="font-size:18px; font-weight:600; margin-bottom:16px;">Life Stats</h3>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+          <div style="text-align:center;">
+            <div style="font-size:28px; font-weight:700; color:var(--accent);">${completedTasks}</div>
+            <div style="font-size:12px; color:var(--text3);">Tasks Completed</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:28px; font-weight:700; color:var(--success);">${activeProjects}</div>
+            <div style="font-size:12px; color:var(--text3);">Active Projects</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:28px; font-weight:700; color:var(--warn);">${longestStreak}d</div>
+            <div style="font-size:12px; color:var(--text3);">Longest Streak</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:28px; font-weight:700; color:var(--info);">${currentWeight} lbs</div>
+            <div style="font-size:12px; color:var(--text3);">Current Weight</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Revenue Overview -->
+      <div class="card" style="padding:24px;">
+        <h3 style="font-size:18px; font-weight:600; margin-bottom:16px;">Revenue Overview</h3>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+          <div style="text-align:center;">
+            <div style="font-size:28px; font-weight:700; color:var(--success);">$${(DATA.revenue.current/1000).toFixed(0)}K</div>
+            <div style="font-size:12px; color:var(--text3);">Current Revenue</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:28px; font-weight:700; color:var(--accent);">$${(DATA.revenue.target/1000).toFixed(0)}K</div>
+            <div style="font-size:12px; color:var(--text3);">Target Revenue</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:28px; font-weight:700; color:var(--info);">${DATA.agents.filter(a => a.status === 'active').length}</div>
+            <div style="font-size:12px; color:var(--text3);">Active Agents</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:28px; font-weight:700; color:var(--warn);">99.9%</div>
+            <div style="font-size:12px; color:var(--text3);">System Uptime</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Projects Overview -->
+    <div class="card" style="padding:24px; margin-bottom:24px;">
+      <h3 style="font-size:18px; font-weight:600; margin-bottom:16px;">Top Projects</h3>
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        ${DATA.projects.slice(0, 5).map(p => {
+          const projectTasks = DATA.tasks.filter(t => t.project === p.name);
+          const doneTasks = projectTasks.filter(t => t.status === 'done');
+          const dynamicProgress = projectTasks.length > 0 ? Math.round(doneTasks.length / projectTasks.length * 100) : 0;
+          return `
+            <div style="display:flex; align-items:center; gap:12px; padding:12px; border-radius:8px; background:var(--bg);">
+              <div style="width:36px; height:36px; border-radius:8px; background:${p.color}15; display:flex; align-items:center; justify-content:center;"><i data-lucide="${p.icon}" style="width:18px; height:18px; color:${p.color};"></i></div>
+              <div style="flex:1;">
+                <div style="font-size:14px; font-weight:500; margin-bottom:4px;">${esc(p.name)}</div>
+                <div class="progress-bar" style="height:6px;"><div class="progress-fill" style="width:${dynamicProgress}%; background:${p.color};"></div></div>
+              </div>
+              <div style="font-size:14px; font-weight:600; color:var(--text2);">${dynamicProgress}%</div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+
+    <!-- Upcoming Events -->
+    <div class="card" style="padding:24px;">
+      <h3 style="font-size:18px; font-weight:600; margin-bottom:16px;">Upcoming Events</h3>
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        ${(DATA.personal?.calendar || []).slice(0, 3).map(event => `
+          <div style="display:flex; align-items:center; gap:10px; padding:8px;">
+            <i data-lucide="calendar" style="width:16px; height:16px; color:var(--accent);"></i>
+            <div>
+              <div style="font-size:13px; font-weight:500;">${esc(event.event)}</div>
+              <div style="font-size:11px; color:var(--text3);">${esc(event.time)}</div>
+            </div>
+          </div>
+        `).join('')}
+        ${(!DATA.personal?.calendar || DATA.personal.calendar.length === 0) ? '<div style="font-size:13px; color:var(--text3); text-align:center; padding:20px;">No upcoming events</div>' : ''}
+      </div>
+    </div>
+  `;
+}
+
+// ═══════════════ PAGE: BRIEFING ═══════════════
+function renderBriefing() {
+  // Filter tasks by briefingDate
+  const completedTasks = DATA.tasks.filter(t => t.completedAt && isSameDay(new Date(t.completedAt), briefingDate));
+  const newTasks = DATA.tasks.filter(t => t.createdAt && isSameDay(new Date(t.createdAt), briefingDate));
+  const inProgressTasks = DATA.tasks.filter(t => t.status === 'in-progress' && t.createdAt && new Date(t.createdAt) <= briefingDate);
+  const events = DATA.schedule || []; // Always show recurring events
+
+  // Activity items for this date
+  const dayActivities = DATA.liveActivity.filter(item => isSameDay(new Date(item.timestamp), briefingDate));
+
+  const isToday = isSameDay(briefingDate, new Date());
+  const dateLabel = briefingDate.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+
+  return `
+    <div style="margin-bottom:24px;">
+      <h1 style="font-size:24px; font-weight:600; letter-spacing:-0.025em; margin-bottom:4px;">Daily Briefing</h1>
+      <p style="font-size:13px; color:var(--text3);">What happened on this day</p>
+    </div>
+
+    <!-- Date Navigation -->
+    <div style="display:flex; align-items:center; gap:8px; margin-bottom:20px; justify-content:center;">
+      <button onclick="briefingDate.setDate(briefingDate.getDate() - 1); renderPage();" style="background:var(--s2); color:var(--text2); border:1px solid var(--s3); border-radius:6px; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 150ms ease;"><i data-lucide="chevron-left" style="width:16px; height:16px;"></i></button>
+      <span style="font-size:14px; font-weight:500; min-width:200px; text-align:center;">${dateLabel}</span>
+      <button onclick="briefingDate.setDate(briefingDate.getDate() + 1); renderPage();" style="background:var(--s2); color:var(--text2); border:1px solid var(--s3); border-radius:6px; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 150ms ease;"><i data-lucide="chevron-right" style="width:16px; height:16px;"></i></button>
+      ${!isToday ? '<button onclick="briefingDate = new Date(); renderPage();" style="background:var(--accent); color:white; border:none; border-radius:6px; padding:6px 12px; font-size:12px; font-weight:500; cursor:pointer; margin-left:12px;">Today</button>' : ''}
+    </div>
+
+    <!-- Quick Stats -->
+    <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin-bottom:20px;">
+      <div class="card" style="padding:16px; text-align:center;">
+        <div style="font-size:20px; font-weight:600; color:var(--success);">${completedTasks.length}</div>
+        <div style="font-size:11px; color:var(--text3);">Completed</div>
+      </div>
+      <div class="card" style="padding:16px; text-align:center;">
+        <div style="font-size:20px; font-weight:600; color:var(--info);">${inProgressTasks.length}</div>
+        <div style="font-size:11px; color:var(--text3);">In Progress</div>
+      </div>
+      <div class="card" style="padding:16px; text-align:center;">
+        <div style="font-size:20px; font-weight:600; color:var(--accent);">${newTasks.length}</div>
+        <div style="font-size:11px; color:var(--text3);">New Tasks</div>
+      </div>
+      <div class="card" style="padding:16px; text-align:center;">
+        <div style="font-size:20px; font-weight:600; color:var(--warn);">${events.length}</div>
+        <div style="font-size:11px; color:var(--text3);">Events</div>
+      </div>
+    </div>
+
+    <!-- Two Column Layout -->
+    <div class="personal-two-col" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
+      <!-- Left Column -->
+      <div>
+        <!-- Completed Tasks -->
+        <div class="card" style="padding:20px; margin-bottom:16px;">
+          <h3 style="font-size:15px; font-weight:600; margin-bottom:12px;">Completed Tasks (${completedTasks.length})</h3>
+          <div style="display:flex; flex-direction:column; gap:8px; max-height:200px; overflow-y:auto;">
+            ${completedTasks.length === 0 ? '<div style="padding:20px; text-align:center; color:var(--text3); font-size:13px;">No tasks completed</div>' : ''}
+            ${completedTasks.map(t => `
+              <div onclick="openTaskDetail('${t.id}')" style="display:flex; align-items:center; gap:8px; padding:8px; border-radius:6px; background:var(--bg); cursor:pointer; transition:background 150ms ease;" onmouseover="this.style.background='var(--s2)'" onmouseout="this.style.background='var(--bg)'">
+                <span class="badge" style="background:${t.projectColor}18; color:${t.projectColor};">${esc(t.project)}</span>
+                <span style="flex:1; font-size:13px;">${esc(t.title)}</span>
+                <span style="font-size:11px; color:var(--text3);">${t.assignee === 'alfred' ? 'Alfred' : 'Nhat'}</span>
+                <span style="font-size:11px; color:var(--text3);">${new Date(t.completedAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- New Tasks -->
+        <div class="card" style="padding:20px;">
+          <h3 style="font-size:15px; font-weight:600; margin-bottom:12px;">New Tasks (${newTasks.length})</h3>
+          <div style="display:flex; flex-direction:column; gap:8px; max-height:200px; overflow-y:auto;">
+            ${newTasks.length === 0 ? '<div style="padding:20px; text-align:center; color:var(--text3); font-size:13px;">No new tasks</div>' : ''}
+            ${newTasks.map(t => `
+              <div onclick="openTaskDetail('${t.id}')" style="display:flex; align-items:center; gap:8px; padding:8px; border-radius:6px; background:var(--bg); cursor:pointer; transition:background 150ms ease;" onmouseover="this.style.background='var(--s2)'" onmouseout="this.style.background='var(--bg)'">
+                <span class="badge" style="background:${t.projectColor}18; color:${t.projectColor};">${esc(t.project)}</span>
+                <span style="flex:1; font-size:13px;">${esc(t.title)}</span>
+                <span style="font-size:11px; color:var(--text3);">${t.assignee === 'alfred' ? 'Alfred' : 'Nhat'}</span>
+                <span style="font-size:11px; color:var(--text3);">${new Date(t.createdAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div>
+        <!-- In Progress -->
+        <div class="card" style="padding:20px; margin-bottom:16px;">
+          <h3 style="font-size:15px; font-weight:600; margin-bottom:12px;">In Progress (${inProgressTasks.length})</h3>
+          <div style="display:flex; flex-direction:column; gap:8px; max-height:200px; overflow-y:auto;">
+            ${inProgressTasks.length === 0 ? '<div style="padding:20px; text-align:center; color:var(--text3); font-size:13px;">No tasks in progress</div>' : ''}
+            ${inProgressTasks.map(t => `
+              <div onclick="openTaskDetail('${t.id}')" style="display:flex; align-items:center; gap:8px; padding:8px; border-radius:6px; background:var(--bg); cursor:pointer; transition:background 150ms ease;" onmouseover="this.style.background='var(--s2)'" onmouseout="this.style.background='var(--bg)'">
+                <span class="badge" style="background:${t.projectColor}18; color:${t.projectColor};">${esc(t.project)}</span>
+                <span style="flex:1; font-size:13px;">${esc(t.title)}</span>
+                <span style="font-size:11px; color:var(--text3);">${t.assignee === 'alfred' ? 'Alfred' : 'Nhat'}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Events/Schedule -->
+        <div class="card" style="padding:20px;">
+          <h3 style="font-size:15px; font-weight:600; margin-bottom:12px;">Events & Schedule (${events.length})</h3>
+          <div style="display:flex; flex-direction:column; gap:8px; max-height:200px; overflow-y:auto;">
+            ${events.map(e => `
+              <div style="display:flex; align-items:center; gap:8px; padding:8px; border-radius:6px; background:var(--bg);">
+                <span style="font-size:11px; font-weight:600; color:var(--accent); min-width:50px;">${e.time}</span>
+                <div>
+                  <div style="font-size:13px; font-weight:500;">${esc(e.label)}</div>
+                  <div style="font-size:11px; color:var(--text3);">${esc(e.description)}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity Section -->
+    ${dayActivities.length > 0 ? `
+      <div class="card" style="padding:20px;">
+        <h3 style="font-size:15px; font-weight:600; margin-bottom:12px;">Activity (${dayActivities.length})</h3>
+        <div style="display:flex; flex-direction:column; gap:8px; max-height:200px; overflow-y:auto;">
+          ${dayActivities.map(item => {
+            const agentColors = {};
+            DATA.agents.forEach(a => agentColors[a.name] = a.color);
+            const color = agentColors[item.agent] || 'var(--text2)';
+            return `
+              <div style="padding:8px; border-radius:6px; background:var(--bg);">
+                <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+                  <span style="font-size:12px; font-weight:600; color:${color};">${esc(item.agent)}</span>
+                  <span style="font-size:11px; color:var(--text3);">${new Date(item.timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
+                </div>
+                <div style="font-size:12px; color:var(--text2); line-height:1.4;">${esc(item.action)}</div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    ` : ''}
+  `;
+}
+
 // ═══════════════ LOAD DATA ═══════════════
 async function loadData() {
   try {
@@ -736,19 +1172,38 @@ updateClock();
 // ═══════════════ NAVIGATION ═══════════════
 function navigate(page) {
   currentPage = page;
-  window.location.hash = page;
+  // Include filter in hash for tasks page
+  if (page === 'tasks' && taskFilter !== 'all') {
+    window.location.hash = page + ':' + taskFilter;
+  } else {
+    window.location.hash = page;
+  }
   localStorage.setItem('mc-page', page);
   document.querySelectorAll('.sidebar-item').forEach(el => el.classList.toggle('active', el.dataset.page === page));
   closeMobileSidebar();
   renderPage();
 }
-window.addEventListener('hashchange', () => { const p = window.location.hash.slice(1); if (p) navigate(p); });
+window.addEventListener('hashchange', () => {
+  const hash = window.location.hash.slice(1);
+  if (hash) {
+    if (hash.includes(':')) {
+      const [page, filter] = hash.split(':');
+      if (page === 'tasks' && ['all', 'alfred', 'nhat', 'archived'].includes(filter)) {
+        taskFilter = filter;
+        sessionStorage.setItem('taskFilter', filter);
+      }
+      navigate(page);
+    } else {
+      navigate(hash);
+    }
+  }
+});
 
 // ═══════════════ RENDER DISPATCH ═══════════════
 function renderPage() {
   if (!DATA) return;
   const mc = document.getElementById('main-content');
-  const renderers = { dashboard:renderDashboard, tasks:renderTasks, agents:renderAgents, calendar:renderCalendar, projects:renderProjects, memory:renderMemory, docs:renderDocs, team:renderTeam, system:renderSystem, 'p-calendar':renderPCalendar, people:renderPeople, mind:renderMind, body:renderBody, spirit:renderSpirit };
+  const renderers = { dashboard:renderDashboard, tasks:renderTasks, agents:renderAgents, calendar:renderCalendar, projects:renderProjects, memory:renderMemory, docs:renderDocs, team:renderTeam, system:renderSystem, 'p-calendar':renderPCalendar, people:renderPeople, mind:renderMind, body:renderBody, spirit:renderSpirit, profile:renderProfile, briefing:renderBriefing };
   mc.innerHTML = (renderers[currentPage] || renderDashboard)();
   lucide.createIcons();
   if (currentPage === 'calendar') positionCalendarBlocks();
@@ -760,7 +1215,8 @@ function renderActivity() {
   const feed = document.getElementById('activity-feed');
   const agentColors = {};
   DATA.agents.forEach(a => agentColors[a.name] = a.color);
-  feed.innerHTML = DATA.liveActivity.map(item => {
+  const displayItems = allActivityExpanded ? DATA.liveActivity : DATA.liveActivity.slice(0, 6);
+  feed.innerHTML = displayItems.map(item => {
     const ago = timeAgo(new Date(item.timestamp));
     const color = agentColors[item.agent] || 'var(--text2)';
     return `<div style="padding:10px 0; border-bottom:1px solid var(--border);">
@@ -771,6 +1227,69 @@ function renderActivity() {
       <div style="font-size:12px; color:var(--text2); line-height:1.4;">${esc(item.action)}</div>
     </div>`;
   }).join('');
+}
+
+function updateActivityToggleText() {
+  const toggle = document.getElementById('activity-toggle');
+  if (toggle) {
+    toggle.textContent = allActivityExpanded ? 'Show less ←' : 'View all activity →';
+  }
+}
+
+function getStreaks(category) {
+  try { return JSON.parse(localStorage.getItem('streaks-' + category) || '{}'); } catch(e) { return {}; }
+}
+
+function getCheckIns(category) {
+  const today = new Date().toISOString().slice(0, 10);
+  try { return JSON.parse(localStorage.getItem('checkin-' + category + '-' + today) || '{}'); } catch(e) { return {}; }
+}
+
+function doCheckIn(category, item, value) {
+  const today = new Date().toISOString().slice(0, 10);
+  const key = 'checkin-' + category + '-' + today;
+  const data = getCheckIns(category);
+  data[item] = value;
+  localStorage.setItem(key, JSON.stringify(data));
+  // Update streak
+  const streaks = getStreaks(category);
+  if (value) { streaks[item] = (streaks[item] || 0) + 1; }
+  localStorage.setItem('streaks-' + category, JSON.stringify(streaks));
+  renderPage();
+}
+
+const dailyQuotes = [
+  "The goal isn't just $1M — it's becoming the person who can earn $1M.",
+  "Build systems, not just outcomes.",
+  "Having quests is key to longevity — never stop seeking.",
+  "Ship > perfect. Get v1 out, iterate.",
+  "Peace comes from alignment — when actions match values.",
+  "Every struggle is a lesson. Embrace the journey.",
+  "Consistency beats intensity. Show up every day.",
+  "The best time to plant a tree was 20 years ago. The second best time is now.",
+  "Don't wait for motivation. Discipline is the bridge.",
+  "Your network is your net worth. Invest in relationships."
+];
+
+function getDailyQuote() {
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+  return dailyQuotes[dayOfYear % dailyQuotes.length];
+}
+
+function updateWeight() {
+  const input = document.getElementById('weight-input');
+  const weight = parseFloat(input.value);
+  if (weight && weight >= 120 && weight <= 200) {
+    localStorage.setItem('currentWeight', weight.toString());
+    input.value = '';
+    alert('Weight updated to ' + weight + ' lbs!');
+  } else {
+    alert('Please enter a valid weight between 120 and 200 lbs.');
+  }
+}
+
+function isSameDay(date1, date2) {
+  return date1.toISOString().slice(0, 10) === date2.toISOString().slice(0, 10);
 }
 
 function timeAgo(date) {
@@ -1065,17 +1584,54 @@ function getScheduleStatus(schedule) {
 }
 
 function renderDashboard() {
-  const s = DATA.stats, rev = DATA.revenue;
+  const rev = DATA.revenue;
   const revPct = rev.target > 0 ? Math.round((rev.current / rev.target) * 100) : 0;
   const scheduleStatuses = getScheduleStatus(DATA.schedule);
+
+  // Calculate dynamic stats
+  const now = new Date();
+  const weekAgo = new Date(now - 7 * 86400000);
+  const thisWeekTasks = DATA.tasks.filter(t => t.completedAt && new Date(t.completedAt) > weekAgo);
+  const inProgressTasks = DATA.tasks.filter(t => t.status === 'in-progress');
+  const totalTasks = DATA.tasks.length;
+  const completedTasks = DATA.tasks.filter(t => t.status === 'done');
+  const completionPct = totalTasks > 0 ? Math.round(completedTasks.length / totalTasks * 100) : 0;
+
   return `
     <div style="margin-bottom:24px;"><h1 style="font-size:24px; font-weight:600; letter-spacing:-0.025em; margin-bottom:4px;">Dashboard</h1><p style="font-size:13px; color:var(--text3);">Mission overview and daily operations</p></div>
     <div class="dash-stats-grid" style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
-      ${statCard('Tasks This Week', s.tasksThisWeek, 'check-square', 'var(--accent)')}
-      ${statCard('In Progress', s.inProgress, 'loader', 'var(--info)')}
-      ${statCard('Total Tasks', s.totalTasks, 'list', 'var(--text2)')}
-      ${statCard('Completion', s.completionPct + '%', 'trending-up', 'var(--success)', s.completionPct)}
+      ${statCard('Tasks This Week', thisWeekTasks.length, 'check-square', 'var(--accent)', null, 'thisWeek')}
+      ${statCard('In Progress', inProgressTasks.length, 'loader', 'var(--info)', null, 'inProgress')}
+      ${statCard('Total Tasks', totalTasks, 'list', 'var(--text2)', null, 'total')}
+      ${statCard('Completion', completionPct + '%', 'trending-up', 'var(--success)', completionPct, 'completion')}
     </div>
+    ${expandedStat ? `
+      <div class="card" style="padding:20px; margin-bottom:24px;">
+        <h3 style="font-size:16px; font-weight:600; margin-bottom:16px;">
+          ${expandedStat === 'thisWeek' ? 'Tasks Completed This Week' :
+            expandedStat === 'inProgress' ? 'In Progress Tasks' :
+            expandedStat === 'total' ? 'All Tasks' : 'Completed Tasks'}
+        </h3>
+        <div style="display:flex; flex-direction:column; gap:8px; max-height:300px; overflow-y:auto;">
+          ${(() => {
+            let tasks = [];
+            if (expandedStat === 'thisWeek') tasks = thisWeekTasks;
+            else if (expandedStat === 'inProgress') tasks = inProgressTasks;
+            else if (expandedStat === 'total') tasks = DATA.tasks;
+            else if (expandedStat === 'completion') tasks = completedTasks;
+
+            return tasks.map(t => `
+              <div onclick="openTaskDetail('${t.id}')" style="display:flex; align-items:center; gap:10px; padding:8px; border-radius:6px; background:var(--bg); cursor:pointer; transition:background 150ms ease;" onmouseover="this.style.background='var(--s2)'" onmouseout="this.style.background='var(--bg)'">
+                <span class="badge" style="background:${t.projectColor}18; color:${t.projectColor};">${esc(t.project)}</span>
+                <span style="flex:1; font-size:13px;">${esc(t.title)}</span>
+                <span class="badge" style="background:${t.status === 'done' ? 'var(--success)' : t.status === 'in-progress' ? 'var(--info)' : t.status === 'review' ? 'var(--warn)' : 'var(--text3)'}18; color:${t.status === 'done' ? 'var(--success)' : t.status === 'in-progress' ? 'var(--info)' : t.status === 'review' ? 'var(--warn)' : 'var(--text3)'}">${t.status}</span>
+                <span style="font-size:11px; color:var(--text3);">${t.assignee === 'alfred' ? 'Alfred' : 'Nhat'}</span>
+              </div>
+            `).join('');
+          })()}
+        </div>
+      </div>
+    ` : ''}
     <div class="dash-two-col" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
       <div class="card" style="padding:20px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
@@ -1147,16 +1703,17 @@ function renderDashboard() {
     </div>`;
 }
 
-function statCard(label, value, icon, color, progressPct) {
+function statCard(label, value, icon, color, progressPct, statType) {
   const hasProgress = typeof progressPct === 'number';
-  return `<div class="card" style="padding:20px;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-      <span style="font-size:12px; color:var(--text3); font-weight:500;">${label}</span>
-      <i data-lucide="${icon}" style="width:16px; height:16px; color:${color};"></i>
-    </div>
-    <div class="mono" style="font-size:28px; font-weight:600; color:${color};">${value}</div>
-    ${hasProgress ? `<div class="progress-bar" style="margin-top:10px; height:4px;"><div class="progress-fill" style="width:${progressPct}%; background:${color};"></div></div>` : ''}
-  </div>`;
+  const isClickable = statType !== undefined;
+  return '<div class="card" onclick="' + (isClickable ? 'expandedStat = expandedStat === \'' + statType + '\' ? null : \'' + statType + '\'; renderPage();' : '') + '" style="padding:20px; ' + (isClickable ? 'cursor:pointer; transition:all 150ms ease;' : '') + '">' +
+    '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">' +
+      '<span style="font-size:12px; color:var(--text3); font-weight:500;">' + label + '</span>' +
+      '<i data-lucide="' + icon + '" style="width:16px; height:16px; color:' + color + ';"></i>' +
+    '</div>' +
+    '<div class="mono" style="font-size:28px; font-weight:600; color:' + color + ';">' + value + '</div>' +
+    (hasProgress ? '<div class="progress-bar" style="margin-top:10px; height:4px;"><div class="progress-fill" style="width:' + progressPct + '%; background:' + color + ';"></div></div>' : '') +
+  '</div>';
 }
 
 // ═══════════════ PAGE: TASKS ═══════════════
@@ -1167,7 +1724,12 @@ function renderTasks() {
     { key:'review', label:'Review', color:'var(--warn)' },
     { key:'done', label:'Done', color:'var(--success)' }
   ];
-  const filtered = DATA.tasks.filter(t => taskFilter === 'all' || t.assignee === taskFilter);
+  let filtered;
+  if (taskFilter === 'archived') {
+    filtered = DATA.tasks.filter(t => isTaskArchived(t));
+  } else {
+    filtered = DATA.tasks.filter(t => !isTaskArchived(t) && (taskFilter === 'all' || t.assignee === taskFilter));
+  }
   const mob = isMobile();
   // Validate mobileKanbanTab
   if (!cols.find(c => c.key === mobileKanbanTab)) mobileKanbanTab = 'backlog';
@@ -1179,15 +1741,24 @@ function renderTasks() {
       <div><h1 style="font-size:24px; font-weight:600; letter-spacing:-0.025em; margin-bottom:4px;">Tasks</h1><p style="font-size:13px; color:var(--text3);">${filtered.length} tasks</p></div>
       <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
         <div style="display:flex; gap:2px; background:var(--bg); border-radius:6px; padding:2px;">
-          <button class="filter-btn ${taskFilter==='all'?'active':''}" onclick="taskFilter='all';renderPage()">All</button>
-          <button class="filter-btn ${taskFilter==='alfred'?'active':''}" onclick="taskFilter='alfred';renderPage()">Alfred</button>
-          <button class="filter-btn ${taskFilter==='nhat'?'active':''}" onclick="taskFilter='nhat';renderPage()">Nhat</button>
+          <button class="filter-btn ${taskFilter==='all'?'active':''}" onclick="taskFilter='all';sessionStorage.setItem('taskFilter','all');navigate('tasks')">All</button>
+          <button class="filter-btn ${taskFilter==='alfred'?'active':''}" onclick="taskFilter='alfred';sessionStorage.setItem('taskFilter','alfred');navigate('tasks')">Alfred</button>
+          <button class="filter-btn ${taskFilter==='nhat'?'active':''}" onclick="taskFilter='nhat';sessionStorage.setItem('taskFilter','nhat');navigate('tasks')">Nhat</button>
+          <button class="filter-btn ${taskFilter==='archived'?'active':'inactive'}" style="${taskFilter==='archived'?'':'opacity:0.7'}" onclick="taskFilter='archived';sessionStorage.setItem('taskFilter','archived');navigate('tasks')">Archived</button>
         </div>
         <button class="btn-primary" onclick="openNewTask()"><i data-lucide="plus" style="width:14px; height:14px;"></i> New</button>
       </div>
     </div>
-    <!-- MOBILE: Tabbed kanban -->
-    <div class="mobile-kanban" style="display:none;">
+    <!-- MOBILE: Tabbed kanban or archived view -->
+    ${taskFilter === 'archived' ? `
+      <div class="mobile-kanban" style="display:none;">
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          ${filtered.length === 0 ? '<div style="padding:40px; text-align:center; color:var(--text3); font-size:14px;">No archived tasks</div>' : ''}
+          ${filtered.sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt)).map(t => '<div class="card priority-' + t.priority + '" onclick="openTaskDetail(\'' + t.id + '\')" style="padding:16px; cursor:pointer;"><div style="font-size:14px; font-weight:500; line-height:1.4; margin-bottom:6px; word-break:break-word;">' + esc(t.title) + '</div><p style="font-size:13px; color:var(--text3); margin-bottom:10px; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">' + esc(t.description||'') + '</p><div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;"><span class="badge" style="background:' + t.projectColor + '18; color:' + t.projectColor + ';">' + esc(t.project) + '</span><span style="font-size:12px; color:var(--text3);">Completed: ' + formatDate(t.completedAt) + '</span><span style="font-size:12px; color:var(--text3); margin-left:auto;">' + (t.assignee === 'alfred' ? 'Alfred' : 'Nhat') + '</span></div></div>').join('')}
+        </div>
+      </div>
+    ` : `
+      <div class="mobile-kanban" style="display:none;">
       <div style="display:flex; gap:6px; margin-bottom:14px; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:4px;">
         ${cols.map(c => {
           const cnt = filtered.filter(t => t.status === c.key).length;
@@ -1199,35 +1770,56 @@ function renderTasks() {
         ${mobileTasks.length === 0 ? '<div style=\"padding:40px; text-align:center; color:var(--text3); font-size:14px;\">No tasks in ' + mobileCol.label + '</div>' : ''}
       </div>
     </div>
-    <div class="kanban-wrap" style="display:flex; gap:16px; height:calc(100vh - 160px); overflow-x:auto;">
-      ${cols.map(col => {
-        const tasks = filtered.filter(t => t.status === col.key);
-        return `<div class="kanban-column" data-status="${col.key}" style="flex:1; min-width:220px; max-width:320px; display:flex; flex-direction:column; padding:4px; border-radius:8px; transition: background 150ms ease, outline 150ms ease;"
-          ondragover="kanbanDragOver(event)" ondragleave="kanbanDragLeave(event)" ondrop="kanbanDrop(event)">
-          <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px; padding:0 4px;">
-            <div style="width:8px; height:8px; border-radius:50%; background:${col.color};"></div>
-            <span style="font-size:13px; font-weight:600;">${col.label}</span>
-            <span class="mono" style="font-size:11px; color:var(--text3); background:var(--s2); padding:1px 6px; border-radius:4px;">${tasks.length}</span>
+    `}
+    ${taskFilter === 'archived' ? `
+      <!-- ARCHIVED VIEW -->
+      <div style="display:flex; flex-direction:column; gap:12px; height:calc(100vh - 160px); overflow-y:auto;">
+        ${filtered.length === 0 ? '<div style="padding:40px; text-align:center; color:var(--text3); font-size:14px;">No archived tasks</div>' : ''}
+        ${filtered.sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt)).map(t => `
+          <div class="card priority-${t.priority}" onclick="openTaskDetail('${t.id}')" style="padding:16px; cursor:pointer;">
+            <div style="font-size:14px; font-weight:500; line-height:1.4; margin-bottom:6px; word-break:break-word;">${esc(t.title)}</div>
+            <p style="font-size:13px; color:var(--text3); margin-bottom:10px; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${esc(t.description || '')}</p>
+            <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+              <span class="badge" style="background:${t.projectColor}18; color:${t.projectColor};">${esc(t.project)}</span>
+              <span style="font-size:12px; color:var(--text3);">Completed: ${formatDate(t.completedAt)}</span>
+              <span style="font-size:12px; color:var(--text3); margin-left:auto;">${t.assignee === 'alfred' ? 'Alfred' : 'Nhat'}</span>
+            </div>
           </div>
-          <div class="kanban-card-list" data-status="${col.key}" style="display:flex; flex-direction:column; gap:8px; overflow-y:auto; flex:1; padding-right:4px; min-height:40px;">
-            ${tasks.map(t => `
-              <div class="card kanban-card priority-${t.priority}" draggable="true" data-task-id="${t.id}" style="padding:14px;"
-                ondragstart="kanbanDragStart(event)" ondragend="kanbanDragEnd(event)"
-                ontouchstart="kanbanTouchStart(event)" onclick="kanbanCardClick(event, '${t.id}')">
-                <div style="font-size:13px; font-weight:500; line-height:1.4; margin-bottom:6px;">${esc(t.title)}</div>
-                <p style="font-size:12px; color:var(--text3); margin-bottom:10px; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${esc(t.description || '')}</p>
-                <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-                  <span class="badge" style="background:${t.projectColor}18; color:${t.projectColor};">${esc(t.project)}</span>
-                  <span class="badge" style="background:${priorityColor(t.priority)}18; color:${priorityColor(t.priority)};">${t.priority}</span>
-                  <span style="font-size:11px; color:var(--text3); margin-left:auto;">${t.assignee === 'alfred' ? 'Alfred' : 'Nhat'}</span>
-                </div>${t.createdAt ? `
-                <div style="font-size:10px; color:var(--text3); margin-top:8px; opacity:0.7;">${formatRelativeTime(t.createdAt)}</div>` : ''}
-              </div>
-            `).join('')}
-          </div>
-        </div>`;
-      }).join('')}
-    </div>`;
+        `).join('')}
+      </div>
+    ` : `
+      <!-- KANBAN VIEW -->
+      <div class="kanban-wrap" style="display:flex; gap:16px; height:calc(100vh - 160px); overflow-x:auto;">
+        ${cols.map(col => {
+          const tasks = filtered.filter(t => t.status === col.key);
+          return `<div class="kanban-column" data-status="${col.key}" style="flex:1; min-width:220px; max-width:320px; display:flex; flex-direction:column; padding:4px; border-radius:8px; transition: background 150ms ease, outline 150ms ease;"
+            ondragover="kanbanDragOver(event)" ondragleave="kanbanDragLeave(event)" ondrop="kanbanDrop(event)">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px; padding:0 4px;">
+              <div style="width:8px; height:8px; border-radius:50%; background:${col.color};"></div>
+              <span style="font-size:13px; font-weight:600;">${col.label}</span>
+              <span class="mono" style="font-size:11px; color:var(--text3); background:var(--s2); padding:1px 6px; border-radius:4px;">${tasks.length}</span>
+            </div>
+            <div class="kanban-card-list" data-status="${col.key}" style="display:flex; flex-direction:column; gap:8px; overflow-y:auto; flex:1; padding-right:4px; min-height:40px;">
+              ${tasks.map(t => `
+                <div class="card kanban-card priority-${t.priority}" draggable="true" data-task-id="${t.id}" style="padding:14px;"
+                  ondragstart="kanbanDragStart(event)" ondragend="kanbanDragEnd(event)"
+                  ontouchstart="kanbanTouchStart(event)" onclick="kanbanCardClick(event, '${t.id}')">
+                  <div style="font-size:13px; font-weight:500; line-height:1.4; margin-bottom:6px;">${esc(t.title)}</div>
+                  <p style="font-size:12px; color:var(--text3); margin-bottom:10px; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${esc(t.description || '')}</p>
+                  <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                    <span class="badge" style="background:${t.projectColor}18; color:${t.projectColor};">${esc(t.project)}</span>
+                    <span class="badge" style="background:${priorityColor(t.priority)}18; color:${priorityColor(t.priority)};">${t.priority}</span>
+                    <span style="font-size:11px; color:var(--text3); margin-left:auto;">${t.assignee === 'alfred' ? 'Alfred' : 'Nhat'}</span>
+                  </div>${t.createdAt ? `
+                  <div style="font-size:10px; color:var(--text3); margin-top:8px; opacity:0.7;">${formatRelativeTime(t.createdAt)}</div>` : ''}
+                </div>
+              `).join('')}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    `}
+  `;
 }
 
 // ═══════════════ PAGE: AGENTS ═══════════════
@@ -1260,20 +1852,39 @@ function renderCalendar() {
   const dow = pst.getDay();
   const monday = new Date(pst);
   monday.setDate(pst.getDate() - ((dow + 6) % 7));
+  monday.setDate(monday.getDate() + calWeekOffset * 7); // Apply offset
   const days = [], dayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   for (let i = 0; i < 7; i++) { const d = new Date(monday); d.setDate(monday.getDate() + i); days.push(d); }
-  const todayIdx = days.findIndex(d => d.getDate() === pst.getDate() && d.getMonth() === pst.getMonth());
+
+  // Check if current week is in view
+  const todayIdx = calWeekOffset === 0 ? days.findIndex(d => d.getDate() === pst.getDate() && d.getMonth() === pst.getMonth()) : -1;
   const hourH = 48;
   const currentTop = (pst.getHours() * hourH) + (pst.getMinutes() / 60 * hourH);
 
+  // Week label
+  let weekLabel = 'This Week';
+  if (calWeekOffset > 0) {
+    weekLabel = calWeekOffset === 1 ? '1 week ahead' : calWeekOffset + ' weeks ahead';
+  } else if (calWeekOffset < 0) {
+    weekLabel = calWeekOffset === -1 ? '1 week ago' : Math.abs(calWeekOffset) + ' weeks ago';
+  }
+
   return `
     <div style="margin-bottom:20px;"><h1 style="font-size:24px; font-weight:600; letter-spacing:-0.025em; margin-bottom:4px;">Calendar</h1><p style="font-size:13px; color:var(--text3);">${pst.toLocaleDateString('en-US',{month:'long',year:'numeric'})} &middot; Week View</p></div>
+
+    <!-- Week Navigation -->
+    <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px; justify-content:center;">
+      <button onclick="calWeekOffset--; renderPage();" style="background:var(--s2); color:var(--text2); border:1px solid var(--s3); border-radius:6px; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 150ms ease;"><i data-lucide="chevron-left" style="width:16px; height:16px;"></i></button>
+      <span style="font-size:13px; font-weight:500; min-width:120px; text-align:center;">${weekLabel}</span>
+      <button onclick="calWeekOffset++; renderPage();" style="background:var(--s2); color:var(--text2); border:1px solid var(--s3); border-radius:6px; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 150ms ease;"><i data-lucide="chevron-right" style="width:16px; height:16px;"></i></button>
+      ${calWeekOffset !== 0 ? '<button onclick="calWeekOffset=0; renderPage();" style="background:var(--accent); color:white; border:none; border-radius:6px; padding:6px 12px; font-size:12px; font-weight:500; cursor:pointer; margin-left:12px;">Today</button>' : ''}
+    </div>
     <div class="card cal-card" style="overflow:hidden; margin-bottom:24px;">
       <div style="display:grid; grid-template-columns:56px repeat(7,1fr); border-bottom:1px solid var(--border);">
         <div style="padding:12px 8px;"></div>
         ${days.map((d,i) => `<div style="padding:12px 8px; text-align:center; ${i===todayIdx?'background:rgba(139,92,246,0.05);':''} border-left:1px solid var(--border);">
           <div style="font-size:11px; font-weight:500; color:var(--text3); margin-bottom:2px;">${dayNames[i]}</div>
-          <div class="mono" style="font-size:14px; font-weight:600; ${i===todayIdx?'color:var(--accent);':'color:var(--text);'}">${d.getDate()}</div>
+          <div class="mono" style="font-size:14px; font-weight:600; ${i===todayIdx && calWeekOffset === 0 ? 'color:var(--accent);' : calWeekOffset !== 0 ? 'color:var(--text3);' : 'color:var(--text);'}">${d.getDate()}</div>
         </div>`).join('')}
       </div>
       <div id="cal-grid" style="position:relative; overflow-y:auto; max-height:520px;">
@@ -1281,7 +1892,7 @@ function renderCalendar() {
           ${Array.from({length:24},(_,h) => `<div style="position:absolute; top:${h*hourH}px; left:0; width:56px; height:${hourH}px; display:flex; align-items:flex-start; justify-content:flex-end; padding:2px 8px 0 0;"><span class="mono" style="font-size:10px; color:var(--text3);">${h===0?'12 AM':h<12?h+' AM':h===12?'12 PM':(h-12)+' PM'}</span></div><div style="position:absolute; top:${h*hourH}px; left:56px; right:0; height:1px; background:var(--border);"></div>`).join('')}
           ${days.map((d,i) => `<div style="position:absolute; top:0; bottom:0; left:calc(56px + (100% - 56px) * ${i}/7); width:calc((100% - 56px)/7); border-left:1px solid var(--border); ${i===todayIdx?'background:rgba(139,92,246,0.03);':''}"></div>`).join('')}
           <div id="cal-blocks"></div>
-          ${todayIdx>=0?`<div class="current-time-line" style="top:${currentTop}px; left:calc(56px + (100% - 56px) * ${todayIdx}/7); width:calc((100% - 56px)/7);"></div>`:''}
+          ${todayIdx>=0 && calWeekOffset === 0?`<div class="current-time-line" style="top:${currentTop}px; left:calc(56px + (100% - 56px) * ${todayIdx}/7); width:calc((100% - 56px)/7);"></div>`:''}
         </div>
       </div>
     </div>
@@ -1384,21 +1995,55 @@ function renderProjects() {
   return `
     <div style="margin-bottom:24px;"><h1 style="font-size:24px; font-weight:600; letter-spacing:-0.025em; margin-bottom:4px;">Projects</h1><p style="font-size:13px; color:var(--text3);">${DATA.projects.length} projects</p></div>
     <div class="projects-grid m-stack" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:16px;">
-      ${DATA.projects.map(p => `
-        <div class="card" style="padding:20px;">
-          <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:12px;">
-            <div style="display:flex; align-items:center; gap:10px;">
-              <div style="width:36px; height:36px; border-radius:8px; background:${p.color}15; display:flex; align-items:center; justify-content:center;"><i data-lucide="${p.icon}" style="width:18px; height:18px; color:${p.color};"></i></div>
-              <div><div style="font-size:14px; font-weight:600;">${esc(p.name)}</div><div style="font-size:12px; color:var(--text3);">${esc(p.phase)}</div></div>
+      ${DATA.projects.map(p => {
+        // Calculate dynamic progress
+        const projectTasks = DATA.tasks.filter(t => t.project === p.name);
+        const doneTasks = projectTasks.filter(t => t.status === 'done');
+        const dynamicProgress = projectTasks.length > 0 ? Math.round(doneTasks.length / projectTasks.length * 100) : 0;
+        const isExpanded = expandedProject === p.name;
+
+        return `
+          <div class="card" onclick="expandedProject = expandedProject === '${p.name}' ? null : '${p.name}'; renderPage();" style="padding:20px; cursor:pointer; transition:all 150ms ease;">
+            <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:12px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:36px; height:36px; border-radius:8px; background:${p.color}15; display:flex; align-items:center; justify-content:center;"><i data-lucide="${p.icon}" style="width:18px; height:18px; color:${p.color};"></i></div>
+                <div><div style="font-size:14px; font-weight:600;">${esc(p.name)}</div><div style="font-size:12px; color:var(--text3);">${esc(p.phase)}</div></div>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span class="badge" style="background:${sb[p.status]||sb.notStarted}; color:${st[p.status]||st.notStarted};">${sl[p.status]||p.status}</span>
+                <i data-lucide="${isExpanded ? 'chevron-up' : 'chevron-down'}" style="width:16px; height:16px; color:var(--text3);"></i>
+              </div>
             </div>
-            <span class="badge" style="background:${sb[p.status]||sb.notStarted}; color:${st[p.status]||st.notStarted};">${sl[p.status]||p.status}</span>
-          </div>
-          <p style="font-size:12px; color:var(--text2); margin-bottom:14px; line-height:1.5;">${esc(p.description)}</p>
-          <div>
-            <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="font-size:11px; color:var(--text3);">Progress</span><span class="mono" style="font-size:11px; color:var(--text2);">${p.progress}%</span></div>
-            <div class="progress-bar"><div class="progress-fill" style="width:${p.progress}%; background:${p.color};"></div></div>
-          </div>
-        </div>`).join('')}
+            <p style="font-size:12px; color:var(--text2); margin-bottom:14px; line-height:1.5;">${esc(p.description)}</p>
+            <div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="font-size:11px; color:var(--text3);">Progress</span><span class="mono" style="font-size:11px; color:var(--text2);">${dynamicProgress}%</span></div>
+              <div class="progress-bar"><div class="progress-fill" style="width:${dynamicProgress}%; background:${p.color};"></div></div>
+            </div>
+            ${isExpanded ? `
+              <div style="margin-top:16px; border-top:1px solid var(--border); padding-top:16px;">
+                ${['backlog', 'in-progress', 'review', 'done'].map(status => {
+                  const statusTasks = projectTasks.filter(t => t.status === status);
+                  const statusLabels = { 'backlog': 'Backlog', 'in-progress': 'In Progress', 'review': 'Review', 'done': 'Done' };
+                  const statusColors = { 'backlog': 'var(--text3)', 'in-progress': 'var(--info)', 'review': 'var(--warn)', 'done': 'var(--success)' };
+
+                  return statusTasks.length > 0 ? `
+                    <div style="margin-bottom:12px;">
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+                        <div style="width:6px; height:6px; border-radius:50%; background:${statusColors[status]};"></div>
+                        <span style="font-size:12px; font-weight:500; color:var(--text2);">${statusLabels[status]} (${statusTasks.length})</span>
+                      </div>
+                      <div style="margin-left:12px;">
+                        ${statusTasks.map(t => `
+                          <div onclick="event.stopPropagation(); openTaskDetail('${t.id}');" style="font-size:11px; color:var(--text3); margin-bottom:2px; cursor:pointer; hover:color:var(--text2); padding:2px 0;">${esc(t.title)}</div>
+                        `).join('')}
+                      </div>
+                    </div>
+                  ` : '';
+                }).join('')}
+              </div>
+            ` : ''}
+          </div>`;
+      }).join('')}
     </div>`;
 }
 
@@ -1567,6 +2212,7 @@ function renderTeam() {
         <div style="font-size:15px; font-weight:600;">${esc(a0.name)}</div>
         <div style="font-size:12px; color:var(--text3);">${esc(a0.role)}</div>
         <div style="font-size:10px; color:var(--text3); margin-top:4px; font-family:'JetBrains Mono',monospace;">${esc(a0.model||'')}</div>
+        ${a0.currentTask ? `<div style="font-size:11px; color:var(--info); margin-top:4px; display:flex; align-items:center; justify-content:center; gap:4px;"><i data-lucide="loader" style="width:12px; height:12px;"></i> ${esc(a0.currentTask)}</div>` : ''}
         <div style="display:flex; gap:6px; justify-content:center; margin-top:10px; flex-wrap:wrap;">${a0.skills.map(s => `<span class="badge" style="background:var(--s2); color:var(--text2);">${esc(s)}</span>`).join('')}</div>
       </div>
       <div style="width:2px; height:32px; background:var(--s3);"></div>
@@ -1581,6 +2227,7 @@ function renderTeam() {
               <div style="font-size:11px; color:var(--text3); margin-bottom:4px;">${esc(a.role)}</div>
               <div style="font-size:10px; color:var(--text3); margin-bottom:8px; font-family:'JetBrains Mono',monospace;">${esc(a.model||'')}</div>
               <div style="display:flex; align-items:center; gap:4px; justify-content:center; margin-bottom:8px;"><div class="status-dot status-${a.status}"></div><span style="font-size:11px; color:var(--text3); text-transform:capitalize;">${a.status}</span></div>
+              ${a.currentTask ? `<div style="font-size:10px; color:var(--info); margin-bottom:6px; text-align:center; display:flex; align-items:center; justify-content:center; gap:4px;"><i data-lucide="loader" style="width:10px; height:10px;"></i> ${esc(a.currentTask)}</div>` : ''}
               <div style="display:flex; gap:4px; justify-content:center; flex-wrap:wrap;">${a.skills.map(s => `<span class="badge" style="background:var(--s2); color:var(--text2); font-size:10px;">${esc(s)}</span>`).join('')}</div>
             </div>
           </div>

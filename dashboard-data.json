@@ -1132,6 +1132,20 @@
         "notes": "420+ Discord members. Neglected — need to revive and nurture.",
         "priority": "community",
         "icon": "message-circle"
+      },
+      {
+        "name": "Grandma",
+        "role": "Family",
+        "notes": "Matriarch. Visit regularly.",
+        "priority": "core",
+        "icon": "heart"
+      },
+      {
+        "name": "Friends Circle",
+        "role": "Community",
+        "notes": "Basketball crew, trading community.",
+        "priority": "community",
+        "icon": "users"
       }
     ],
     "places": [
