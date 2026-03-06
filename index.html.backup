@@ -1188,7 +1188,6 @@ function renderTasks() {
     { key:'done', label:'Done', color:'var(--success)' }
   ];
   const filtered = getFilteredTasks();
-  const archivedCount = DATA.tasks.filter(t => isTaskArchived(t)).length;
   const mob = isMobile();
   // Validate mobileKanbanTab
   if (!cols.find(c => c.key === mobileKanbanTab)) mobileKanbanTab = 'backlog';
@@ -1204,7 +1203,6 @@ function renderTasks() {
           <button class="filter-btn ${taskFilter==='alfred'?'active':''}" onclick="taskFilter='alfred';renderPage()">Alfred</button>
           <button class="filter-btn ${taskFilter==='nhat'?'active':''}" onclick="taskFilter='nhat';renderPage()">Nhat</button>
         </div>
-        <button class="filter-btn ${taskFilter==='archived'?'active':''}" onclick="taskFilter='archived';renderPage()" style="margin-left:8px; opacity:0.7;"><i data-lucide="archive" style="width:14px; height:14px; margin-right:4px;"></i> Archived (${archivedCount})</button>
         <button class="btn-primary" onclick="openNewTask()"><i data-lucide="plus" style="width:14px; height:14px;"></i> New</button>
       </div>
     </div>
@@ -1221,25 +1219,7 @@ function renderTasks() {
         ${mobileTasks.length === 0 ? '<div style=\"padding:40px; text-align:center; color:var(--text3); font-size:14px;\">No tasks in ' + mobileCol.label + '</div>' : ''}
       </div>
     </div>
-    <!-- ARCHIVED TASKS VIEW -->
-    ${taskFilter === 'archived' ? `<div style="display:flex; flex-direction:column; gap:12px;">
-      ${filtered.map(t => {
-        const completedDate = new Date(t.completedAt);
-        return `<div class="card" style="padding:16px; opacity:0.8;">
-          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
-            <span style="font-size:14px; font-weight:500;">${esc(t.title)}</span>
-            <span style="font-size:11px; color:var(--text3);">Completed ${completedDate.toLocaleDateString()}</span>
-          </div>
-          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-            <span class="badge" style="background:${t.projectColor}18; color:${t.projectColor};">${esc(t.project)}</span>
-            <span style="font-size:12px; color:var(--text3);">by ${t.assignee === 'alfred' ? 'Alfred' : 'Nhat'}</span>
-          </div>
-        </div>`;
-      }).join('')}
-      ${filtered.length === 0 ? '<div style="padding:40px; text-align:center; color:var(--text3); font-size:14px;">No archived tasks</div>' : ''}  
-    </div>` : ''}
-
-    ${taskFilter !== 'archived' ? `<div class="kanban-wrap" style="display:flex; gap:16px; height:calc(100vh - 160px); overflow-x:auto;">
+    <div class="kanban-wrap" style="display:flex; gap:16px; height:calc(100vh - 160px); overflow-x:auto;">
       ${cols.map(col => {
         const tasks = filtered.filter(t => t.status === col.key);
         return `<div class="kanban-column" data-status="${col.key}" style="flex:1; min-width:220px; max-width:320px; display:flex; flex-direction:column; padding:4px; border-radius:8px; transition: background 150ms ease, outline 150ms ease;"
@@ -1267,7 +1247,7 @@ function renderTasks() {
           </div>
         </div>`;
       }).join('')}
-    </div>` : ''}
+    </div>`;
 }
 
 // ═══════════════ PAGE: AGENTS ═══════════════
