@@ -1810,7 +1810,7 @@ function renderTasks() {
   // Validate mobileKanbanTab
   if (!cols.find(c => c.key === mobileKanbanTab)) mobileKanbanTab = 'backlog';
   const mobileCol = cols.find(c => c.key === mobileKanbanTab);
-  const mobileTasks = filtered.filter(t => t.status === mobileKanbanTab);
+  const mobileTasks = filtered.filter(t => t.status === mobileKanbanTab).sort((a, b) => new Date(a.createdAt || 0) - new Date(b.createdAt || 0));
 
   return `
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
@@ -1867,7 +1867,7 @@ function renderTasks() {
       <!-- KANBAN VIEW -->
       <div class="kanban-wrap" style="display:flex; gap:16px; height:calc(100vh - 160px); overflow-x:auto;">
         ${cols.map(col => {
-          const tasks = filtered.filter(t => t.status === col.key);
+          const tasks = filtered.filter(t => t.status === col.key).sort((a, b) => new Date(a.createdAt || 0) - new Date(b.createdAt || 0));
           return `<div class="kanban-column" data-status="${col.key}" style="flex:1; min-width:220px; max-width:320px; display:flex; flex-direction:column; padding:4px; border-radius:8px; transition: background 150ms ease, outline 150ms ease;"
             ondragover="kanbanDragOver(event)" ondragleave="kanbanDragLeave(event)" ondrop="kanbanDrop(event)">
             <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px; padding:0 4px;">
