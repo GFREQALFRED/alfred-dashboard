@@ -2088,7 +2088,7 @@ function renderProjects() {
   const st = { active:'var(--success)', planning:'var(--info)', notStarted:'var(--text3)' };
   return `
     <div style="margin-bottom:24px;"><h1 style="font-size:24px; font-weight:600; letter-spacing:-0.025em; margin-bottom:4px;">Projects</h1><p style="font-size:13px; color:var(--text3);">${DATA.projects.length} projects</p></div>
-    <div class="projects-grid m-stack" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:16px;">
+    <div class="projects-grid m-stack" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:16px; align-items:start;">
       ${DATA.projects.map(p => {
         // Calculate dynamic progress
         const projectTasks = DATA.tasks.filter(t => t.project === p.name);
@@ -2097,7 +2097,7 @@ function renderProjects() {
         const isExpanded = expandedProject === p.name;
 
         return `
-          <div class="card" onclick="expandedProject = expandedProject === '${p.name}' ? null : '${p.name}'; renderPage();" style="padding:20px; cursor:pointer; transition:all 150ms ease; ${isExpanded ? 'grid-column: 1 / -1;' : ''}">
+          <div class="card" onclick="expandedProject = expandedProject === '${p.name}' ? null : '${p.name}'; renderPage();" style="padding:20px; cursor:pointer; transition:all 150ms ease;">
             <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:12px;">
               <div style="display:flex; align-items:center; gap:10px;">
                 <div style="width:36px; height:36px; border-radius:8px; background:${p.color}15; display:flex; align-items:center; justify-content:center;"><i data-lucide="${p.icon}" style="width:18px; height:18px; color:${p.color};"></i></div>
