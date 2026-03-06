@@ -368,7 +368,7 @@ let currentPage = (() => {
   if (!hash) return 'dashboard';
   return hash.includes(':') ? hash.split(':')[0] : hash;
 })();
-let activityPanelVisible = true;
+let activityPanelVisible = localStorage.getItem('activityPanel') !== 'hidden';
 let isDark = (localStorage.getItem('theme') || 'dark') === 'dark';
 document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
 let searchSelectedIdx = 0;
@@ -1174,6 +1174,11 @@ async function loadData() {
     DATA = await r.json();
     loadLocalTasks();
     applyArchivedState();
+    if (!activityPanelVisible) {
+      document.getElementById('activity-panel').style.display = 'none';
+      const eb = document.getElementById('activity-expand-btn');
+      if (eb) { eb.style.display = 'flex'; lucide.createIcons(); }
+    }
     renderPage();
     renderActivity();
     populateProjectDropdown();
@@ -1375,6 +1380,7 @@ function renderSettings() {
 
 function toggleActivityPanel() {
   activityPanelVisible = !activityPanelVisible;
+  localStorage.setItem('activityPanel', activityPanelVisible ? 'visible' : 'hidden');
   document.getElementById('activity-panel').style.display = activityPanelVisible ? '' : 'none';
   const btn = document.getElementById('activity-expand-btn');
   if (btn) { btn.style.display = activityPanelVisible ? 'none' : 'flex'; lucide.createIcons(); }
