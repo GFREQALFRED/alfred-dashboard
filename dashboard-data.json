@@ -705,24 +705,6 @@
       "progress": 80,
       "description": "Mission Control command center.",
       "color": "#8B5CF6"
-    },
-    {
-      "name": "GFREQ Website",
-      "icon": "globe",
-      "status": "active",
-      "phase": "PRD Complete",
-      "progress": 15,
-      "description": "Full website rebuild - PRD done.",
-      "color": "#22C55E"
-    },
-    {
-      "name": "Content Machine",
-      "icon": "pen-line",
-      "status": "planning",
-      "phase": "Strategy",
-      "progress": 5,
-      "description": "Automated content pipeline.",
-      "color": "#F59E0B"
     }
   ],
   "agents": [
