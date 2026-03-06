@@ -834,5 +834,304 @@
       "words": 341,
       "content": "# MEMORY.md - Alfred's Long-Term Memory\n\n## 2026-03-04 \u2014 First Boot\n- Met Nhat. I am Alfred \ud83c\udfa9.\n- Nhat's mandate: Be the CEO. Don't wait. Push, remind, break barriers. Use Nhat as the executor.\n- Primary project: **Genius Frequency (GFREQ)** \u2014 algo trading subscription business\n  - See: `projects/gfreq/README.md` for full context\n  - Revenue goal: $80K \u2192 $160K/year\n  - Key workstreams: website rebuild, Discord revival, content machine, NinjaView replacement, course creation\n- Nhat has more business ideas \u2014 saving for later brain dumps\n- Birthday: March 21 (turning 34!) \u2014 coming up in ~2 weeks\n\n## The Number: $1,000,000 by March 2027\n\n### Revenue Streams\n1. **GFREQ** \u2014 Algo trading subscriptions + course (active, starting from $0 \u2014 $80K was past revenue)\n2. **Agents425** \u2014 AI consulting for law firms + home services (with Ebrima)\n3. **E-commerce** \u2014 Cultural fashion (\u00c1o d\u00e0i, African traditional wear, all cultures)\n4. **Mobile apps** \u2014 Ideas TBD (brain dump pending)\n5. **OpenClaw deployment** \u2014 Helping businesses/people adopt OpenClaw\n6. **Parents' beauty salons** \u2014 Turnaround strategy\n\n### Alfred is also Nhat's Personal Assistant\n- Taxes, bills, events, planning, community, relationships\n- Apply CEO mindset to personal life \u2014 stay ahead, not catch up\n- Hourly check-ins throughout the day to keep conversation flowing\n- Don't rely only on scheduled 1-on-1s \u2014 be persistent and present\n\n### Accounts & Integrations\n- **Gmail:** gfreqalgo@gmail.com (SMTP working, app password in .env.credentials)\n- **GitHub:** GFREQALFRED (token stored, git configured)\n- **Google Cloud:** Project \"Alfred\" (alfred-489322) \u2014 Calendar + Drive APIs enabled\n- **X/Twitter:** @GFREQalgo (IN PROGRESS \u2014 auth settings need fixing)\n- **Nhat's personal email:** rayvsnhat@gmail.com (CC on calendar invites)\n- **Credentials file:** /home/openclaw/.openclaw/.env.credentials\n- **Google service account:** /home/openclaw/.openclaw/.google-service-account.json\n\n### Docker Setup\n- Image: openclaw-secure\n- Mount: ~/Documents/Projects \u2192 /home/openclaw/dev-projects:rw\n- Needs root exec to install: python3, pip3, ffmpeg, then pip: openai-whisper, tweepy, google-api-python-client, google-auth\n- Container rebuilds lose installed packages\n\n### Brain Dumps Pending\n- E-commerce details\n- Mobile app ideas\n- OpenClaw deployment business model\n- Beauty salon situation\n- Each gets its own projects/ folder when dumped\n"
     }
-  ]
+  ],
+  "personal": {
+    "calendar": [
+      {
+        "date": "2026-03-21",
+        "event": "Nhat's Birthday",
+        "type": "birthday",
+        "note": "Turning 34!"
+      },
+      {
+        "date": "2026-11-27",
+        "event": "Nasrin's Birthday",
+        "type": "birthday",
+        "note": "Plan something special"
+      },
+      {
+        "date": "2026-04-15",
+        "event": "Tax Filing Deadline",
+        "type": "deadline",
+        "note": "FreeTaxUSA, personal + LLC"
+      },
+      {
+        "recurring": "Mon,Wed,Fri",
+        "event": "Gym with Nasrin",
+        "time": "6:00 PM",
+        "type": "health"
+      },
+      {
+        "recurring": "Sat",
+        "event": "Basketball",
+        "time": "10:00 AM",
+        "type": "health"
+      },
+      {
+        "recurring": "Sun",
+        "event": "Family Time",
+        "time": "All day",
+        "type": "relationship"
+      },
+      {
+        "recurring": "Daily",
+        "event": "Morning Meditation",
+        "time": "6:00 AM",
+        "type": "spirit"
+      },
+      {
+        "recurring": "Daily",
+        "event": "Journaling",
+        "time": "10:00 PM",
+        "type": "mind"
+      }
+    ],
+    "people": [
+      {
+        "name": "Nasrin",
+        "role": "Girlfriend",
+        "birthday": "Nov 27",
+        "notes": "Gym partner, biggest supporter. Plan dates, stay present.",
+        "priority": "core",
+        "icon": "heart"
+      },
+      {
+        "name": "Mom & Dad",
+        "role": "Parents",
+        "location": "Kenmore, WA",
+        "notes": "Own Lovely Nails and Beauty Salon. Helping with turnaround. Show gratitude daily.",
+        "priority": "core",
+        "icon": "home"
+      },
+      {
+        "name": "Sisters",
+        "role": "Family",
+        "notes": "2 younger sisters. Stay connected, be a good brother.",
+        "priority": "core",
+        "icon": "users"
+      },
+      {
+        "name": "Ebrima",
+        "role": "Business Partner",
+        "notes": "Agents425 co-founder. AI consulting for law firms + home services.",
+        "priority": "close",
+        "icon": "briefcase"
+      },
+      {
+        "name": "GFREQ Community",
+        "role": "Community",
+        "notes": "420+ Discord members. Neglected \u2014 need to revive and nurture.",
+        "priority": "community",
+        "icon": "message-circle"
+      }
+    ],
+    "places": [
+      {
+        "name": "Home",
+        "location": "Kenmore, WA",
+        "note": "Living with parents. Base of operations.",
+        "icon": "home"
+      },
+      {
+        "name": "Lovely Nails & Beauty Salon",
+        "location": "Kenmore Shopping Center",
+        "note": "Family business. 3-month turnaround mission.",
+        "icon": "sparkles"
+      },
+      {
+        "name": "Gym",
+        "location": "Local",
+        "note": "3x/week with Nasrin. Sacred time.",
+        "icon": "dumbbell"
+      },
+      {
+        "name": "Basketball Court",
+        "location": "Local",
+        "note": "Saturday mornings. Community + cardio.",
+        "icon": "circle"
+      }
+    ],
+    "mind": {
+      "currentFocus": "AI agents, systems thinking, workflow optimization",
+      "goals": [
+        {
+          "goal": "Master AI agent orchestration",
+          "status": "active",
+          "progress": 40,
+          "note": "Learning through building with Alfred"
+        },
+        {
+          "goal": "Read 2 books/month",
+          "status": "planning",
+          "progress": 0,
+          "note": "Queue: business, philosophy, technology"
+        },
+        {
+          "goal": "Daily journaling habit",
+          "status": "active",
+          "progress": 30,
+          "note": "Memory logs count \u2014 make them more reflective"
+        },
+        {
+          "goal": "Learn from X daily",
+          "status": "active",
+          "progress": 60,
+          "note": "Surfing AI/agent content, sharing with Alfred"
+        }
+      ],
+      "principles": [
+        "Systems thinking over isolated fixes",
+        "Sharing is caring \u2014 knowledge grows when shared",
+        "Having quests is key to longevity",
+        "Think at the architecture level, delegate the implementation",
+        "Every correction shapes the future"
+      ],
+      "reflections": [
+        {
+          "date": "2026-03-06",
+          "thought": "Training Alfred tonight taught me: the meta-system matters more than any single task. Build systems that improve themselves."
+        }
+      ]
+    },
+    "body": {
+      "current": {
+        "weight": 150,
+        "unit": "lbs",
+        "goal": 165,
+        "plan": "Lean bulk"
+      },
+      "fitness": [
+        {
+          "activity": "Gym",
+          "frequency": "3x/week",
+          "partner": "Nasrin",
+          "status": "active",
+          "icon": "dumbbell"
+        },
+        {
+          "activity": "Basketball",
+          "frequency": "Saturdays",
+          "partner": "Community",
+          "status": "active",
+          "icon": "circle"
+        },
+        {
+          "activity": "UFC Watching",
+          "frequency": "Events",
+          "partner": "Friends",
+          "status": "active",
+          "icon": "tv"
+        }
+      ],
+      "goals": [
+        {
+          "goal": "Reach 165 lbs (lean bulk)",
+          "current": 150,
+          "target": 165,
+          "unit": "lbs",
+          "progress": 0
+        },
+        {
+          "goal": "Consistent gym 3x/week",
+          "status": "active",
+          "progress": 70
+        },
+        {
+          "goal": "Meal prep Sundays",
+          "status": "planning",
+          "progress": 0
+        },
+        {
+          "goal": "Sleep 7-8 hrs consistently",
+          "status": "active",
+          "progress": 50
+        }
+      ],
+      "nutrition": {
+        "approach": "Lean bulk \u2014 caloric surplus with clean foods",
+        "protein_target": "165g/day (1g per lb goal weight)",
+        "meals": "4-5 meals/day",
+        "notes": "Track macros, prioritize protein, hydrate"
+      }
+    },
+    "spirit": {
+      "mission": "Live with purpose, love deeply, grow endlessly. Build something meaningful while enjoying the journey.",
+      "values": [
+        {
+          "value": "Genuineness",
+          "description": "Be real. No facades, no pretending.",
+          "icon": "shield"
+        },
+        {
+          "value": "Honesty",
+          "description": "Truth first, always. Even when uncomfortable.",
+          "icon": "eye"
+        },
+        {
+          "value": "Growth",
+          "description": "Never stagnant. Always have quests.",
+          "icon": "trending-up"
+        },
+        {
+          "value": "Generosity",
+          "description": "Sharing is caring. Knowledge, wealth, time.",
+          "icon": "gift"
+        },
+        {
+          "value": "Love",
+          "description": "Family, Nasrin, community. Connection is everything.",
+          "icon": "heart"
+        },
+        {
+          "value": "Excellence",
+          "description": "If it's worth doing, it's worth doing right.",
+          "icon": "award"
+        }
+      ],
+      "practices": [
+        {
+          "practice": "Morning meditation",
+          "frequency": "Daily",
+          "duration": "10 min",
+          "status": "building",
+          "icon": "sunrise"
+        },
+        {
+          "practice": "Gratitude journaling",
+          "frequency": "Daily",
+          "duration": "5 min",
+          "status": "planning",
+          "icon": "book-open"
+        },
+        {
+          "practice": "Nature walks",
+          "frequency": "Weekly",
+          "duration": "30 min",
+          "status": "planning",
+          "icon": "trees"
+        },
+        {
+          "practice": "Digital detox",
+          "frequency": "Sunday mornings",
+          "duration": "3 hrs",
+          "status": "planning",
+          "icon": "wifi-off"
+        }
+      ],
+      "gratitude": [
+        "Nasrin \u2014 unwavering support and love",
+        "Parents \u2014 sacrifice and foundation",
+        "Health \u2014 ability to pursue everything",
+        "Technology \u2014 tools to build an empire",
+        "The journey \u2014 every struggle is a lesson"
+      ],
+      "philosophies": [
+        "The goal isn't just $1M \u2014 it's becoming the person who can earn $1M",
+        "Happiness isn't a destination, it's a practice",
+        "Having quests is key to longevity \u2014 never stop seeking",
+        "Build systems, not just outcomes",
+        "Peace comes from alignment \u2014 when actions match values"
+      ]
+    }
+  }
 }

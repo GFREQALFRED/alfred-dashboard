@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mission Control</title>
+<title>Life Navigator</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -119,7 +119,7 @@
   <div style="display:flex; align-items:center; gap:10px;">
     <button class="mobile-menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')" style="background:none;border:none;color:var(--text2);cursor:pointer;display:flex;align-items:center;margin-right:8px;"><i data-lucide="menu" style="width:20px;height:20px;"></i></button>
     <i data-lucide="layout-grid" style="width:18px; height:18px; color:var(--accent);"></i>
-    <span style="font-size:15px; font-weight:600; color:var(--text);">Mission Control</span>
+    <span style="font-size:15px; font-weight:600; color:var(--text);">Life Navigator</span>
   </div>
   <div style="flex:1;"></div>
   <div id="search-trigger" onclick="openSearch()" style="display:flex; align-items:center; gap:8px; background:var(--bg); border:1px solid var(--s3); border-radius:6px; padding:0 12px; height:32px; cursor:pointer; min-width:240px; margin-right:16px; transition:border-color 150ms ease;" onmouseover="this.style.borderColor='var(--border-h)'" onmouseout="this.style.borderColor='var(--s3)'">
@@ -145,6 +145,13 @@
     <div class="sidebar-item" data-page="docs" onclick="navigate('docs')"><i data-lucide="file-text" style="width:16px; height:16px;"></i> Docs</div>
     <div class="sidebar-item" data-page="team" onclick="navigate('team')"><i data-lucide="users" style="width:16px; height:16px;"></i> Team</div>
     <div class="sidebar-item" data-page="system" onclick="navigate('system')"><i data-lucide="settings" style="width:16px; height:16px;"></i> System</div>
+    <div style="height:1px; background:var(--border); margin:8px 16px;"></div>
+    <div style="padding:0 16px; margin-bottom:4px;"><span style="font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text3);">Personal</span></div>
+    <div class="sidebar-item" data-page="p-calendar" onclick="navigate('p-calendar')"><i data-lucide="calendar-heart" style="width:16px; height:16px;"></i> Calendar</div>
+    <div class="sidebar-item" data-page="people" onclick="navigate('people')"><i data-lucide="heart-handshake" style="width:16px; height:16px;"></i> People & Places</div>
+    <div class="sidebar-item" data-page="mind" onclick="navigate('mind')"><i data-lucide="lightbulb" style="width:16px; height:16px;"></i> Mind</div>
+    <div class="sidebar-item" data-page="body" onclick="navigate('body')"><i data-lucide="dumbbell" style="width:16px; height:16px;"></i> Body</div>
+    <div class="sidebar-item" data-page="spirit" onclick="navigate('spirit')"><i data-lucide="flame" style="width:16px; height:16px;"></i> Spirit</div>
   </nav>
   <div style="padding:12px 16px; border-top:1px solid var(--border); display:flex; align-items:center; gap:10px;">
     <div style="width:28px; height:28px; border-radius:50%; background:var(--s2); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; color:var(--text2);">NL</div>
@@ -227,6 +234,247 @@ let docsFilter = '';
 let docsCategory = 'all';
 let selectedDocPath = null;
 
+// ═══════════════ PERSONAL PAGES ═══════════════
+
+function renderPCalendar() {
+  const p = DATA.personal || {};
+  const cal = p.calendar || [];
+  const upcoming = cal.filter(c => c.date).sort((a,b) => (a.date||'').localeCompare(b.date||''));
+  const recurring = cal.filter(c => c.recurring);
+  const typeColors = { birthday:'var(--danger)', deadline:'var(--warn)', health:'var(--success)', spirit:'var(--accent)', mind:'var(--info)', relationship:'var(--danger)' };
+  return `
+    <div style="margin-bottom:24px;"><h1 style="font-size:24px; font-weight:600; letter-spacing:-0.025em; margin-bottom:4px;">Personal Calendar</h1><p style="font-size:13px; color:var(--text3);">Life events, rituals, and milestones</p></div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+      <div class="card" style="padding:20px;">
+        <h3 style="font-size:15px; font-weight:600; margin-bottom:16px;">Upcoming Events</h3>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          ${upcoming.map(e => {
+            const daysUntil = Math.ceil((new Date(e.date) - new Date()) / 86400000);
+            return `<div style="display:flex; align-items:start; gap:12px; padding:12px; border-radius:6px; background:var(--bg);">
+              <div style="width:8px; height:8px; border-radius:50%; margin-top:5px; flex-shrink:0; background:${typeColors[e.type]||'var(--text3)'};"></div>
+              <div style="flex:1;">
+                <div style="font-size:14px; font-weight:500;">${esc(e.event)}</div>
+                <div style="font-size:12px; color:var(--text3); margin-top:2px;">${esc(e.note||'')}</div>
+              </div>
+              <div style="text-align:right; flex-shrink:0;">
+                <div class="mono" style="font-size:12px; color:var(--text2);">${e.date}</div>
+                <div class="mono" style="font-size:11px; color:${daysUntil<=7?'var(--warn)':'var(--text3)'};">${daysUntil} days</div>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+      <div class="card" style="padding:20px;">
+        <h3 style="font-size:15px; font-weight:600; margin-bottom:16px;">Weekly Rituals</h3>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          ${recurring.map(e => `<div style="display:flex; align-items:center; gap:12px; padding:10px; border-radius:6px; background:var(--bg);">
+            <div style="width:8px; height:8px; border-radius:50%; flex-shrink:0; background:${typeColors[e.type]||'var(--text3)'};"></div>
+            <div style="flex:1;">
+              <div style="font-size:13px; font-weight:500;">${esc(e.event)}</div>
+              <div style="font-size:11px; color:var(--text3);">${esc(e.recurring)} at ${esc(e.time||'')}</div>
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderPeople() {
+  const p = DATA.personal || {};
+  const people = p.people || [];
+  const places = p.places || [];
+  const priorityOrder = { core:0, close:1, community:2 };
+  const sorted = [...people].sort((a,b) => (priorityOrder[a.priority]||9) - (priorityOrder[b.priority]||9));
+  const prioColors = { core:'var(--danger)', close:'var(--info)', community:'var(--success)' };
+  return `
+    <div style="margin-bottom:24px;"><h1 style="font-size:24px; font-weight:600; letter-spacing:-0.025em; margin-bottom:4px;">People & Places</h1><p style="font-size:13px; color:var(--text3);">The humans and spaces that matter most</p></div>
+    <h3 style="font-size:15px; font-weight:600; margin-bottom:12px;">People</h3>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:12px; margin-bottom:32px;">
+      ${sorted.map(p => `<div class="card" style="padding:16px; border-left:3px solid ${prioColors[p.priority]||'var(--text3)'};">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+          <div style="width:32px; height:32px; border-radius:8px; background:var(--s2); display:flex; align-items:center; justify-content:center;"><i data-lucide="${p.icon||'user'}" style="width:16px; height:16px; color:${prioColors[p.priority]||'var(--text3)'};"></i></div>
+          <div>
+            <div style="font-size:14px; font-weight:600;">${esc(p.name)}</div>
+            <div style="font-size:11px; color:var(--text3);">${esc(p.role)}${p.birthday?' · '+esc(p.birthday):''}</div>
+          </div>
+        </div>
+        <p style="font-size:12px; color:var(--text2); line-height:1.5;">${esc(p.notes)}</p>
+      </div>`).join('')}
+    </div>
+    <h3 style="font-size:15px; font-weight:600; margin-bottom:12px;">Places</h3>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:12px;">
+      ${places.map(pl => `<div class="card" style="padding:16px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+          <i data-lucide="${pl.icon||'map-pin'}" style="width:16px; height:16px; color:var(--text3);"></i>
+          <div style="font-size:14px; font-weight:500;">${esc(pl.name)}</div>
+        </div>
+        <div style="font-size:12px; color:var(--text3); margin-bottom:4px;">${esc(pl.location||'')}</div>
+        <p style="font-size:12px; color:var(--text2);">${esc(pl.note)}</p>
+      </div>`).join('')}
+    </div>`;
+}
+
+function renderMind() {
+  const m = (DATA.personal || {}).mind || {};
+  const goals = m.goals || [];
+  const principles = m.principles || [];
+  const reflections = m.reflections || [];
+  return `
+    <div style="margin-bottom:24px;"><h1 style="font-size:24px; font-weight:600; letter-spacing:-0.025em; margin-bottom:4px;">Mind</h1><p style="font-size:13px; color:var(--text3);">Learning, clarity, and intellectual growth</p></div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
+      <div class="card" style="padding:20px;">
+        <h3 style="font-size:15px; font-weight:600; margin-bottom:4px;">Current Focus</h3>
+        <p style="font-size:13px; color:var(--text2); margin-bottom:16px;">${esc(m.currentFocus||'')}</p>
+        <h3 style="font-size:14px; font-weight:600; margin-bottom:12px;">Growth Goals</h3>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          ${goals.map(g => `<div style="padding:10px; border-radius:6px; background:var(--bg);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <span style="font-size:13px; font-weight:500;">${esc(g.goal)}</span>
+              <span class="badge" style="background:${g.status==='active'?'var(--success)':'var(--s3)'}22; color:${g.status==='active'?'var(--success)':'var(--text3)'};">${g.status}</span>
+            </div>
+            <div class="progress-bar" style="margin-bottom:4px;"><div class="progress-fill" style="width:${g.progress}%; background:var(--accent);"></div></div>
+            <div style="font-size:11px; color:var(--text3);">${esc(g.note||'')}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div>
+        <div class="card" style="padding:20px; margin-bottom:16px;">
+          <h3 style="font-size:15px; font-weight:600; margin-bottom:12px;">Guiding Principles</h3>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            ${principles.map(p => `<div style="display:flex; align-items:start; gap:8px; font-size:13px; color:var(--text2); line-height:1.5;">
+              <i data-lucide="compass" style="width:14px; height:14px; color:var(--accent); flex-shrink:0; margin-top:3px;"></i>
+              ${esc(p)}
+            </div>`).join('')}
+          </div>
+        </div>
+        <div class="card" style="padding:20px;">
+          <h3 style="font-size:15px; font-weight:600; margin-bottom:12px;">Recent Reflections</h3>
+          ${reflections.length ? reflections.map(r => `<div style="padding:12px; border-radius:6px; background:var(--bg); border-left:2px solid var(--accent);">
+            <div class="mono" style="font-size:11px; color:var(--text3); margin-bottom:4px;">${esc(r.date)}</div>
+            <p style="font-size:13px; color:var(--text2); line-height:1.5; font-style:italic;">"${esc(r.thought)}"</p>
+          </div>`).join('') : '<p style="font-size:13px; color:var(--text3);">No reflections yet. Start journaling.</p>'}
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderBody() {
+  const b = (DATA.personal || {}).body || {};
+  const cur = b.current || {};
+  const fitness = b.fitness || [];
+  const goals = b.goals || [];
+  const nutr = b.nutrition || {};
+  const weightPct = cur.goal ? Math.round(((cur.weight - 130) / (cur.goal - 130)) * 100) : 0; // 130 as baseline
+  return `
+    <div style="margin-bottom:24px;"><h1 style="font-size:24px; font-weight:600; letter-spacing:-0.025em; margin-bottom:4px;">Body</h1><p style="font-size:13px; color:var(--text3);">Fitness, nutrition, and physical health</p></div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
+      <div class="card" style="padding:20px;">
+        <h3 style="font-size:15px; font-weight:600; margin-bottom:16px;">Weight Progress</h3>
+        <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:8px;">
+          <span class="mono" style="font-size:36px; font-weight:700; color:var(--text);">${cur.weight}</span>
+          <span style="font-size:14px; color:var(--text3);">${cur.unit} / ${cur.goal} ${cur.unit} goal</span>
+        </div>
+        <div class="progress-bar" style="margin-bottom:8px; height:10px;"><div class="progress-fill" style="width:${weightPct}%; background:var(--success);"></div></div>
+        <div style="font-size:12px; color:var(--text3);">${cur.goal - cur.weight} ${cur.unit} to go · ${esc(cur.plan)}</div>
+        <div style="margin-top:20px;">
+          <h4 style="font-size:13px; font-weight:600; margin-bottom:10px;">Active Routines</h4>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            ${fitness.map(f => `<div style="display:flex; align-items:center; gap:10px; padding:8px; border-radius:6px; background:var(--bg);">
+              <div style="width:28px; height:28px; border-radius:6px; background:var(--success)15; display:flex; align-items:center; justify-content:center;"><i data-lucide="${f.icon||'activity'}" style="width:14px; height:14px; color:var(--success);"></i></div>
+              <div style="flex:1;"><div style="font-size:13px; font-weight:500;">${esc(f.activity)}</div><div style="font-size:11px; color:var(--text3);">${esc(f.frequency)} · ${esc(f.partner||'')}</div></div>
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="padding:20px; margin-bottom:16px;">
+          <h3 style="font-size:15px; font-weight:600; margin-bottom:12px;">Goals</h3>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            ${goals.map(g => `<div style="padding:10px; border-radius:6px; background:var(--bg);">
+              <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                <span style="font-size:13px; font-weight:500;">${esc(g.goal)}</span>
+                <span class="mono" style="font-size:12px; color:var(--text3);">${g.progress}%</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width:${g.progress}%; background:var(--success);"></div></div>
+            </div>`).join('')}
+          </div>
+        </div>
+        <div class="card" style="padding:20px;">
+          <h3 style="font-size:15px; font-weight:600; margin-bottom:12px;">Nutrition Plan</h3>
+          <div style="font-size:13px; color:var(--text2); line-height:1.7;">
+            <div style="margin-bottom:6px;"><strong style="color:var(--text);">Approach:</strong> ${esc(nutr.approach||'')}</div>
+            <div style="margin-bottom:6px;"><strong style="color:var(--text);">Protein:</strong> ${esc(nutr.protein_target||'')}</div>
+            <div style="margin-bottom:6px;"><strong style="color:var(--text);">Meals:</strong> ${esc(nutr.meals||'')}</div>
+            <div><strong style="color:var(--text);">Notes:</strong> ${esc(nutr.notes||'')}</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderSpirit() {
+  const s = (DATA.personal || {}).spirit || {};
+  const values = s.values || [];
+  const practices = s.practices || [];
+  const gratitude = s.gratitude || [];
+  const philosophies = s.philosophies || [];
+  const statusColors = { active:'var(--success)', building:'var(--warn)', planning:'var(--text3)' };
+  return `
+    <div style="margin-bottom:24px;"><h1 style="font-size:24px; font-weight:600; letter-spacing:-0.025em; margin-bottom:4px;">Spirit</h1><p style="font-size:13px; color:var(--text3);">Purpose, peace, and the inner journey</p></div>
+    <div class="card" style="padding:24px; margin-bottom:24px; text-align:center; border:1px solid rgba(139,92,246,0.15); background:linear-gradient(135deg, rgba(139,92,246,0.05), rgba(236,72,153,0.05));">
+      <i data-lucide="flame" style="width:24px; height:24px; color:var(--accent); margin-bottom:8px;"></i>
+      <p style="font-size:16px; font-weight:500; color:var(--text); line-height:1.6; font-style:italic; max-width:640px; margin:0 auto;">"${esc(s.mission||'')}"</p>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
+      <div class="card" style="padding:20px;">
+        <h3 style="font-size:15px; font-weight:600; margin-bottom:16px;">Core Values</h3>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          ${values.map(v => `<div style="display:flex; align-items:start; gap:12px;">
+            <div style="width:32px; height:32px; border-radius:8px; background:var(--accent)10; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i data-lucide="${v.icon||'star'}" style="width:16px; height:16px; color:var(--accent);"></i></div>
+            <div>
+              <div style="font-size:14px; font-weight:600; color:var(--text);">${esc(v.value)}</div>
+              <div style="font-size:12px; color:var(--text2); line-height:1.4;">${esc(v.description)}</div>
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div>
+        <div class="card" style="padding:20px; margin-bottom:16px;">
+          <h3 style="font-size:15px; font-weight:600; margin-bottom:12px;">Daily Practices</h3>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            ${practices.map(p => `<div style="display:flex; align-items:center; justify-content:space-between; padding:10px; border-radius:6px; background:var(--bg);">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <i data-lucide="${p.icon||'circle'}" style="width:14px; height:14px; color:${statusColors[p.status]||'var(--text3)'};"></i>
+                <div>
+                  <div style="font-size:13px; font-weight:500;">${esc(p.practice)}</div>
+                  <div style="font-size:11px; color:var(--text3);">${esc(p.frequency)} · ${esc(p.duration)}</div>
+                </div>
+              </div>
+              <span class="badge" style="background:${statusColors[p.status]||'var(--text3)'}15; color:${statusColors[p.status]||'var(--text3)'};">${p.status}</span>
+            </div>`).join('')}
+          </div>
+        </div>
+        <div class="card" style="padding:20px;">
+          <h3 style="font-size:15px; font-weight:600; margin-bottom:12px;">Gratitude</h3>
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            ${gratitude.map(g => `<div style="display:flex; align-items:start; gap:8px; font-size:13px; color:var(--text2); line-height:1.4;">
+              <i data-lucide="heart" style="width:12px; height:12px; color:var(--danger); flex-shrink:0; margin-top:3px;"></i>
+              ${esc(g)}
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="padding:20px;">
+      <h3 style="font-size:15px; font-weight:600; margin-bottom:12px;">Philosophies</h3>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        ${philosophies.map(p => `<div style="padding:12px; border-radius:6px; background:var(--bg); border-left:2px solid var(--accent);">
+          <p style="font-size:13px; color:var(--text2); line-height:1.5; font-style:italic;">"${esc(p)}"</p>
+        </div>`).join('')}
+      </div>
+    </div>`;
+}
+
 // ═══════════════ LOAD DATA ═══════════════
 async function loadData() {
   try {
@@ -273,7 +521,7 @@ window.addEventListener('hashchange', () => { const p = window.location.hash.sli
 function renderPage() {
   if (!DATA) return;
   const mc = document.getElementById('main-content');
-  const renderers = { dashboard:renderDashboard, tasks:renderTasks, agents:renderAgents, calendar:renderCalendar, projects:renderProjects, memory:renderMemory, docs:renderDocs, team:renderTeam, system:renderSystem };
+  const renderers = { dashboard:renderDashboard, tasks:renderTasks, agents:renderAgents, calendar:renderCalendar, projects:renderProjects, memory:renderMemory, docs:renderDocs, team:renderTeam, system:renderSystem, 'p-calendar':renderPCalendar, people:renderPeople, mind:renderMind, body:renderBody, spirit:renderSpirit };
   mc.innerHTML = (renderers[currentPage] || renderDashboard)();
   lucide.createIcons();
   if (currentPage === 'calendar') positionCalendarBlocks();
