@@ -1,0 +1,4 @@
+node_modules/
+screenshots/
+package.json
+package-lock.json
