@@ -286,17 +286,6 @@
         "marketing",
         "blog"
       ]
-    },
-    {
-      "title": "Test task from Alfred",
-      "description": "Testing GitHub sync",
-      "status": "backlog",
-      "priority": "medium",
-      "assignee": "alfred",
-      "project": "Dashboard",
-      "id": "t1772763332408",
-      "createdAt": "2026-03-06T02:15:32.408Z",
-      "source": "ui"
     }
   ],
   "agents": [
@@ -469,7 +458,7 @@
       "nextMilestone": "Supplier Outreach",
       "milestoneDate": "2026-03-25",
       "revenue": 200000,
-      "description": "Sell traditional cultural fashion starting with Vietnamese Áo dài."
+      "description": "Sell traditional cultural fashion starting with Vietnamese \u00c1o d\u00e0i."
     },
     {
       "id": "mobile-apps",
@@ -1003,7 +992,7 @@
     },
     {
       "date": "2026-03-21",
-      "title": "Nhat's 34th Birthday 🎉",
+      "title": "Nhat's 34th Birthday \ud83c\udf89",
       "type": "birthday",
       "priority": "high"
     },
