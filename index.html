@@ -1535,7 +1535,7 @@ function openTaskDetail(id) {
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;">
       <div><span style="font-size:11px; color:var(--text3); display:block; margin-bottom:4px;">Status</span><span class="badge" style="background:var(--s2); color:var(--text2);">${sl[t.status] || t.status}</span></div>
       <div><span style="font-size:11px; color:var(--text3); display:block; margin-bottom:4px;">Priority</span><span class="badge" style="background:${pc[t.priority]}18; color:${pc[t.priority]};">${t.priority}</span></div>
-      <div><span style="font-size:11px; color:var(--text3); display:block; margin-bottom:4px;">Assignee</span><span style="font-size:13px;">${t.assignee === 'alfred' ? 'Alfred' : 'Nhat'}</span></div>
+      <div><span style="font-size:11px; color:var(--text3); display:block; margin-bottom:4px;">Assignee</span><span style="font-size:13px;">${t.assignee === 'alfred' ? 'Alfred' : 'Nhat'}</span>${t.assignee === 'alfred' && t.delegatedTo ? `<div style="font-size:11px; color:var(--info); margin-top:4px;">${esc(t.delegatedTo)}</div>` : ''}</div>
       <div><span style="font-size:11px; color:var(--text3); display:block; margin-bottom:4px;">Project</span><span style="font-size:13px; color:${t.projectColor};">${esc(t.project)}</span></div>
     </div>
     <div style="display:flex; gap:24px; margin-bottom:20px;">
@@ -1899,8 +1899,9 @@ function renderTasks() {
                     <span class="badge" style="background:${t.projectColor}18; color:${t.projectColor};">${esc(t.project)}</span>
                     <span class="badge" style="background:${priorityColor(t.priority)}18; color:${priorityColor(t.priority)};">${t.priority}</span>
                     <span style="font-size:11px; color:var(--text3); margin-left:auto;">${t.assignee === 'alfred' ? 'Alfred' : 'Nhat'}</span>
-                  </div>${t.createdAt ? `
-                  <div style="font-size:10px; color:var(--text3); margin-top:8px; opacity:0.7;">${formatRelativeTime(t.createdAt)}</div>` : ''}
+                  </div>${t.assignee === 'alfred' && t.delegatedTo ? `
+                  <div style="display:flex; align-items:center; gap:4px; margin-top:6px;"><i data-lucide="cpu" style="width:10px; height:10px; color:var(--text3);"></i><span style="font-size:10px; color:var(--text3);">${esc(t.delegatedTo)}</span></div>` : ''}${t.createdAt ? `
+                  <div style="font-size:10px; color:var(--text3); margin-top:4px; opacity:0.7;">${formatRelativeTime(t.createdAt)}</div>` : ''}
                 </div>
               `).join('')}
             </div>
