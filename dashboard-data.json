@@ -5,7 +5,7 @@
   "stats": {
     "tasksThisWeek": 12,
     "inProgress": 4,
-    "totalTasks": 31,
+    "totalTasks": 36,
     "completionPct": 42
   },
   "revenue": {
@@ -584,6 +584,18 @@
       "project": "E-commerce",
       "projectColor": "#F59E0B",
       "createdAt": "2026-03-06T22:47:00Z"
+    },
+    {
+      "id": "t37",
+      "title": "Create website for Beauty Salons",
+      "description": "Build a website for Lovely Nails & Beauty Salon in Kenmore, WA. Landing page, services, booking, reviews, Google Business integration.",
+      "status": "backlog",
+      "priority": "medium",
+      "assignee": "alfred",
+      "delegatedTo": "Unassigned",
+      "project": "Beauty Salons",
+      "projectColor": "#EC4899",
+      "createdAt": "2026-03-06T23:01:00Z"
     }
   ],
   "integrations": [
