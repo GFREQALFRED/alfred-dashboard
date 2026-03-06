@@ -214,7 +214,7 @@
 <script>
 // ═══════════════ STATE ═══════════════
 let DATA = null;
-let currentPage = 'dashboard';
+let currentPage = window.location.hash.slice(1) || localStorage.getItem('mc-page') || 'dashboard';
 let activityPanelVisible = true;
 let isDark = (localStorage.getItem('theme') || 'dark') === 'dark';
 document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
@@ -260,10 +260,13 @@ updateClock();
 // ═══════════════ NAVIGATION ═══════════════
 function navigate(page) {
   currentPage = page;
+  window.location.hash = page;
+  localStorage.setItem('mc-page', page);
   document.querySelectorAll('.sidebar-item').forEach(el => el.classList.toggle('active', el.dataset.page === page));
   document.getElementById('sidebar').classList.remove('open');
   renderPage();
 }
+window.addEventListener('hashchange', () => { const p = window.location.hash.slice(1); if (p) navigate(p); });
 
 // ═══════════════ RENDER DISPATCH ═══════════════
 function renderPage() {
@@ -941,6 +944,9 @@ function renderSystem() {
 // ═══════════════ INIT ═══════════════
 loadData();
 setInterval(loadData, 60000);
+// Restore page on load
+document.querySelectorAll('.sidebar-item').forEach(el => el.classList.toggle('active', el.dataset.page === currentPage));
+document.querySelector('.sidebar-item.active')?.scrollIntoView({block:'nearest'});
 </script>
 </body>
 </html>
