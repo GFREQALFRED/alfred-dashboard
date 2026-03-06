@@ -1069,7 +1069,7 @@ function renderDashboard() {
       <div class="card" style="padding:20px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
           <h2 style="font-size:15px; font-weight:600;">Revenue Tracker</h2>
-          <span class="mono" style="font-size:13px; color:var(--text3);">$${rev.current.toLocaleString()} / $${(rev.target/1000).toLocaleString()}K</span>
+          <span class="mono" style="font-size:13px; color:var(--text3);">$${rev.current.toLocaleString()} / $1Milly</span>
         </div>
         ${rev.current > 0 ? `<div class="progress-bar" style="margin-bottom:20px; height:8px;">
           <div class="progress-fill" style="width:${Math.max(revPct, 1)}%; background:var(--accent);"></div>
