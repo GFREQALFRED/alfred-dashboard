@@ -310,7 +310,10 @@
 <div id="main-area" style="position:fixed; top:48px; left:200px; right:0; bottom:0; display:flex;">
   <div id="main-content" style="flex:1; overflow-y:auto; overflow-x:hidden; padding:24px; min-width:0;"></div>
   <div id="activity-panel" style="width:260px; border-left:1px solid var(--border); background:var(--s1); overflow-y:auto; padding:16px; flex-shrink:0;">
-    <h3 style="font-size:14px; font-weight:600; margin-bottom:16px; color:var(--text);">Activity</h3>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h3 style="font-size:14px; font-weight:600; color:var(--text); margin:0;">Activity</h3>
+      <button onclick="toggleActivityPanel()" style="background:none; border:none; cursor:pointer; padding:4px; border-radius:4px; display:flex; align-items:center; justify-content:center;" onmouseover="this.style.background='var(--s2)'" onmouseout="this.style.background='none'" title="Collapse sidebar"><i data-lucide="panel-right-close" style="width:16px; height:16px; color:var(--text3);"></i></button>
+    </div>
     <div id="activity-feed"></div>
     <div style="padding:12px 0; text-align:center; border-top:1px solid var(--border); margin-top:8px;">
       <a href="#" id="activity-toggle" onclick="allActivityExpanded=!allActivityExpanded;renderActivity();updateActivityToggleText();return false;" style="font-size:12px; color:var(--accent); text-decoration:none; font-weight:500;">View all activity →</a>
