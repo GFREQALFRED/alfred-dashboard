@@ -550,7 +550,7 @@
       "icon": "shopping-cart",
       "status": "planning",
       "phase": "Market Research",
-      "progress": 15,
+      "progress": 5,
       "description": "Cultural fashion - celebrating all cultures worldwide.",
       "color": "#F59E0B"
     },
@@ -595,7 +595,7 @@
       "icon": "globe",
       "status": "active",
       "phase": "PRD Complete",
-      "progress": 20,
+      "progress": 15,
       "description": "Full website rebuild - PRD done.",
       "color": "#22C55E"
     },
