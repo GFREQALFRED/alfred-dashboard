@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0F0F1A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Life Navigator</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -104,8 +107,8 @@
 
   /* ═══════════ MOBILE ≤768px ═══════════ */
   @media (max-width:768px) {
-    /* Compact header */
-    #topbar { height:44px !important; padding:0 12px !important; }
+    /* Compact header — extend behind status bar */
+    #topbar { height:44px !important; padding:0 12px !important; padding-top:env(safe-area-inset-top) !important; }
 
     /* Hide search bar on mobile */
     #search-trigger { display:none !important; }
