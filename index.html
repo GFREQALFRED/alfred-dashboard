@@ -1043,7 +1043,7 @@ function renderBriefing() {
       <button onclick="briefingDate.setDate(briefingDate.getDate() - 1); renderPage();" style="background:var(--s2); color:var(--text2); border:1px solid var(--s3); border-radius:6px; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 150ms ease;"><i data-lucide="chevron-left" style="width:16px; height:16px;"></i></button>
       <span style="font-size:14px; font-weight:500; min-width:200px; text-align:center;">${dateLabel}</span>
       <button onclick="briefingDate.setDate(briefingDate.getDate() + 1); renderPage();" style="background:var(--s2); color:var(--text2); border:1px solid var(--s3); border-radius:6px; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 150ms ease;"><i data-lucide="chevron-right" style="width:16px; height:16px;"></i></button>
-      ${!isToday ? '<button onclick="briefingDate = new Date(); renderPage();" style="background:var(--accent); color:white; border:none; border-radius:6px; padding:6px 12px; font-size:12px; font-weight:500; cursor:pointer; margin-left:12px;">Today</button>' : ''}
+      <button onclick="briefingDate = new Date(); renderPage();" style="background:var(--accent); color:white; border:none; border-radius:6px; padding:6px 12px; font-size:12px; font-weight:500; cursor:pointer; margin-left:12px; visibility:${!isToday ? 'visible' : 'hidden'};">Today</button>
     </div>
 
     <!-- Quick Stats -->
@@ -2006,7 +2006,7 @@ function renderCalendar() {
       <button onclick="calWeekOffset--; renderPage();" style="background:var(--s2); color:var(--text2); border:1px solid var(--s3); border-radius:6px; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 150ms ease;"><i data-lucide="chevron-left" style="width:16px; height:16px;"></i></button>
       <span style="font-size:13px; font-weight:500; min-width:120px; text-align:center;">${weekLabel}</span>
       <button onclick="calWeekOffset++; renderPage();" style="background:var(--s2); color:var(--text2); border:1px solid var(--s3); border-radius:6px; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 150ms ease;"><i data-lucide="chevron-right" style="width:16px; height:16px;"></i></button>
-      ${calWeekOffset !== 0 ? '<button onclick="calWeekOffset=0; renderPage();" style="background:var(--accent); color:white; border:none; border-radius:6px; padding:6px 12px; font-size:12px; font-weight:500; cursor:pointer; margin-left:12px;">Today</button>' : ''}
+      <button onclick="calWeekOffset=0; renderPage();" style="background:var(--accent); color:white; border:none; border-radius:6px; padding:6px 12px; font-size:12px; font-weight:500; cursor:pointer; margin-left:12px; visibility:${calWeekOffset !== 0 ? 'visible' : 'hidden'};">Today</button>
     </div>
     <div class="card cal-card" style="overflow:hidden; margin-bottom:24px;">
       <div style="display:grid; grid-template-columns:56px repeat(7,1fr); border-bottom:1px solid var(--border);">
