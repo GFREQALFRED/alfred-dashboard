@@ -14,42 +14,42 @@
     "streams": [
       {
         "name": "GFREQ",
-        "icon": "\ud83d\udcb9",
+        "icon": "trending-up",
         "target": 160000,
         "current": 0,
         "color": "#22C55E"
       },
       {
         "name": "Agents425",
-        "icon": "\ud83e\udd16",
+        "icon": "bot",
         "target": 200000,
         "current": 0,
         "color": "#8B5CF6"
       },
       {
         "name": "E-commerce",
-        "icon": "\ud83d\uded2",
+        "icon": "shopping-cart",
         "target": 200000,
         "current": 0,
         "color": "#F59E0B"
       },
       {
         "name": "Mobile Apps",
-        "icon": "\ud83d\udcf1",
+        "icon": "smartphone",
         "target": 150000,
         "current": 0,
         "color": "#6366F1"
       },
       {
         "name": "OpenClaw Deploy",
-        "icon": "\ud83d\udc3e",
+        "icon": "paw-print",
         "target": 150000,
         "current": 0,
         "color": "#14B8A6"
       },
       {
         "name": "Beauty Salons",
-        "icon": "\ud83d\udc84",
+        "icon": "sparkles",
         "target": 140000,
         "current": 0,
         "color": "#EC4899"
@@ -289,61 +289,61 @@
       "name": "Gmail",
       "detail": "gfreqalgo@gmail.com",
       "status": "active",
-      "icon": "\ud83d\udce7"
+      "icon": "mail"
     },
     {
       "name": "GitHub",
       "detail": "GFREQALFRED",
       "status": "active",
-      "icon": "\ud83d\udc19"
+      "icon": "github"
     },
     {
       "name": "X/Twitter",
       "detail": "@GFREQalgo",
       "status": "pending",
-      "icon": "\ud83d\udc26"
+      "icon": "twitter"
     },
     {
       "name": "Google Calendar",
       "detail": "ICS/SMTP method",
       "status": "active",
-      "icon": "\ud83d\udcc5"
+      "icon": "calendar"
     },
     {
       "name": "Google Drive",
       "detail": "Service account",
       "status": "active",
-      "icon": "\ud83d\udcc1"
+      "icon": "folder"
     },
     {
       "name": "Reddit",
       "detail": "Not created yet",
       "status": "inactive",
-      "icon": "\ud83d\udd34"
+      "icon": "circle"
     },
     {
       "name": "Discord Bot",
       "detail": "Not created yet",
       "status": "inactive",
-      "icon": "\ud83d\udcac"
+      "icon": "message-circle"
     },
     {
       "name": "Vercel",
       "detail": "alfred-dashboard",
       "status": "active",
-      "icon": "\u25b2"
+      "icon": "triangle"
     },
     {
       "name": "Whisper",
       "detail": "Local transcription",
       "status": "active",
-      "icon": "\ud83c\udfa4"
+      "icon": "mic"
     }
   ],
   "projects": [
     {
       "name": "GFREQ",
-      "icon": "\ud83d\udcb9",
+      "icon": "trending-up",
       "status": "active",
       "phase": "Website Build",
       "progress": 25,
@@ -352,7 +352,7 @@
     },
     {
       "name": "Agents425",
-      "icon": "\ud83e\udd16",
+      "icon": "bot",
       "status": "planning",
       "phase": "Research",
       "progress": 10,
@@ -361,7 +361,7 @@
     },
     {
       "name": "E-commerce",
-      "icon": "\ud83d\uded2",
+      "icon": "shopping-cart",
       "status": "planning",
       "phase": "Market Research",
       "progress": 15,
@@ -370,7 +370,7 @@
     },
     {
       "name": "Mobile Apps",
-      "icon": "\ud83d\udcf1",
+      "icon": "smartphone",
       "status": "notStarted",
       "phase": "Brain Dump Pending",
       "progress": 0,
@@ -379,7 +379,7 @@
     },
     {
       "name": "OpenClaw Deploy",
-      "icon": "\ud83d\udc3e",
+      "icon": "paw-print",
       "status": "notStarted",
       "phase": "Business Model TBD",
       "progress": 0,
@@ -388,7 +388,7 @@
     },
     {
       "name": "Beauty Salons",
-      "icon": "\ud83d\udc84",
+      "icon": "sparkles",
       "status": "planning",
       "phase": "Turnaround Strategy",
       "progress": 20,
@@ -397,7 +397,7 @@
     },
     {
       "name": "Dashboard",
-      "icon": "\ud83d\udda5\ufe0f",
+      "icon": "monitor",
       "status": "active",
       "phase": "v2 Rebuild",
       "progress": 40,
@@ -406,7 +406,7 @@
     },
     {
       "name": "GFREQ Website",
-      "icon": "\ud83c\udf10",
+      "icon": "globe",
       "status": "active",
       "phase": "PRD Complete",
       "progress": 20,
@@ -415,7 +415,7 @@
     },
     {
       "name": "Content Machine",
-      "icon": "\u270d\ufe0f",
+      "icon": "pen-line",
       "status": "planning",
       "phase": "Strategy",
       "progress": 5,
@@ -427,7 +427,7 @@
     {
       "name": "Alfred",
       "role": "Chief of Staff / CEO",
-      "icon": "\ud83c\udfa9",
+      "icon": "crown",
       "description": "Coordinates, delegates, and drives the $1M mission.",
       "skills": [
         "Orchestration",
@@ -441,7 +441,7 @@
     {
       "name": "Research Agent",
       "role": "Trend Analyst",
-      "icon": "\ud83d\udd0d",
+      "icon": "search",
       "description": "Finds leads, tracks signals, analyzes markets.",
       "skills": [
         "Speed",
@@ -455,7 +455,7 @@
     {
       "name": "Coding Agent",
       "role": "Lead Engineer",
-      "icon": "\ud83d\udcbb",
+      "icon": "code",
       "description": "Builds, ships, automates. Makes everything work.",
       "skills": [
         "Code",
@@ -469,7 +469,7 @@
     {
       "name": "Content Agent",
       "role": "Content Writer",
-      "icon": "\u270d\ufe0f",
+      "icon": "pen-line",
       "description": "Writes copy, designs content strategy.",
       "skills": [
         "Voice",
@@ -483,7 +483,7 @@
     {
       "name": "SEO Agent",
       "role": "Growth Specialist",
-      "icon": "\ud83d\udcc8",
+      "icon": "trending-up",
       "description": "Keywords, rankings, LLM optimization.",
       "skills": [
         "Keywords",
