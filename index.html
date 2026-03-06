@@ -793,34 +793,54 @@ function toggleSettings() {
   else { backdrop.style.display = 'block'; panel.classList.add('open'); renderSettings(); }
 }
 
+let settingsShowAdvanced = false;
 function renderSettings() {
+  const toggleStyle = (on) => `width:44px;height:24px;border-radius:12px;border:none;cursor:pointer;position:relative;transition:background 200ms ease;background:${on?'var(--accent)':'var(--s3)'};`;
+  const toggleDot = (on) => `width:18px;height:18px;border-radius:50%;background:white;position:absolute;top:3px;transition:left 200ms ease;left:${on?'23px':'3px'};box-shadow:0 1px 3px rgba(0,0,0,0.2);`;
+  const settingRow = (label, control) => `<div style="display:flex; justify-content:space-between; align-items:center; min-height:44px; padding:4px 0;">${label}${control}</div>`;
+
   document.getElementById('settings-content').innerHTML = `
-    <div class="card" style="padding:16px; margin-bottom:16px;">
-      <h3 style="font-size:13px; font-weight:600; margin-bottom:12px; color:var(--text2);">System Info</h3>
-      <div style="display:flex; flex-direction:column; gap:8px; font-size:12px;">
-        ${[['Model',DATA.system.model],['Container',DATA.system.container],['OS',DATA.system.os],['Node',DATA.system.node],['Version',DATA.system.openclawVersion],['Hostname',DATA.system.hostname]].map(([k,v]) =>
-          `<div style="display:flex; justify-content:space-between;"><span style="color:var(--text3);">${k}</span><span class="mono" style="color:var(--text2); font-size:11px;">${esc(v)}</span></div>`
-        ).join('')}
-      </div>
+    <div class="card" style="padding:16px; margin-bottom:12px;">
+      <h3 style="font-size:11px; font-weight:600; margin-bottom:12px; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">Appearance</h3>
+      ${settingRow(
+        '<span style="font-size:14px;">Theme</span>',
+        `<div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:12px; color:var(--text3); min-width:32px; text-align:right;">${isDark?'Dark':'Light'}</span>
+          <button onclick="toggleTheme()" style="${toggleStyle(!isDark)}"><div style="${toggleDot(!isDark)}"></div></button>
+        </div>`
+      )}
+      ${settingRow(
+        '<span style="font-size:14px;">Activity Panel</span>',
+        `<button onclick="toggleActivityPanel()" style="${toggleStyle(activityPanelVisible)}"><div style="${toggleDot(activityPanelVisible)}"></div></button>`
+      )}
     </div>
-    <div class="card" style="padding:16px; margin-bottom:16px;">
-      <h3 style="font-size:13px; font-weight:600; margin-bottom:12px; color:var(--text2);">Preferences</h3>
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-        <span style="font-size:13px;">Activity Panel</span>
-        <button class="btn-secondary" style="height:28px; font-size:12px;" onclick="toggleActivityPanel()">${activityPanelVisible ? 'Hide' : 'Show'}</button>
-      </div>
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <span style="font-size:13px;">Theme</span>
-        <button id="theme-toggle" onclick="toggleTheme()" style="width:44px;height:24px;border-radius:12px;border:none;cursor:pointer;position:relative;transition:background 200ms ease;background:${isDark?'var(--s3)':'var(--accent)'};">
-          <div style="width:18px;height:18px;border-radius:50%;background:white;position:absolute;top:3px;transition:left 200ms ease;left:${isDark?'3px':'23px'};box-shadow:0 1px 3px rgba(0,0,0,0.2);"></div>
-        </button>
-        <span style="font-size:12px;color:var(--text3);margin-left:8px;">${isDark?'Dark':'Light'}</span>
-      </div>
+    <div class="card" style="padding:16px; margin-bottom:12px;">
+      <h3 style="font-size:11px; font-weight:600; margin-bottom:12px; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">Data</h3>
+      ${settingRow(
+        `<div><span style="font-size:14px;">Last synced</span><div class="mono" style="font-size:11px; color:var(--text3); margin-top:2px;">${formatDate(DATA.lastUpdated)}</div></div>`,
+        `<button onclick="loadData()" class="btn-secondary" style="height:32px; padding:0 12px; font-size:12px; display:flex; align-items:center; gap:4px; cursor:pointer;">↻ Refresh</button>`
+      )}
+      <div style="font-size:12px; color:var(--text3); padding:4px 0;">Auto-refresh: every 60s</div>
     </div>
     <div class="card" style="padding:16px;">
-      <h3 style="font-size:13px; font-weight:600; margin-bottom:12px; color:var(--text2);">Data</h3>
-      <div style="font-size:12px; color:var(--text3);">Last updated: <span class="mono">${formatDate(DATA.lastUpdated)}</span></div>
-      <div style="font-size:12px; color:var(--text3); margin-top:4px;">Auto-refresh: every 60s</div>
+      <h3 style="font-size:11px; font-weight:600; margin-bottom:12px; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">About</h3>
+      ${settingRow(
+        '<span style="font-size:14px;">AI Model</span>',
+        `<span class="mono" style="font-size:12px; color:var(--text2);">${esc(DATA.system.model)}</span>`
+      )}
+      ${settingRow(
+        '<span style="font-size:14px;">Version</span>',
+        `<span class="mono" style="font-size:12px; color:var(--text2);">${esc(DATA.system.openclawVersion)}</span>`
+      )}
+      <div onclick="settingsShowAdvanced=!settingsShowAdvanced;renderSettings();" style="display:flex; justify-content:space-between; align-items:center; min-height:44px; padding:4px 0; cursor:pointer; border-top:1px solid var(--border); margin-top:4px;">
+        <span style="font-size:14px; color:var(--text2);">System Details</span>
+        <span style="font-size:12px; color:var(--text3);">${settingsShowAdvanced?'▲':'▼'}</span>
+      </div>
+      ${settingsShowAdvanced ? `<div style="display:flex; flex-direction:column; gap:8px; font-size:12px; padding:8px 0; border-top:1px solid var(--border);">
+        ${[['Container',DATA.system.container],['OS',DATA.system.os],['Node',DATA.system.node],['Hostname',DATA.system.hostname]].map(([k,v]) =>
+          `<div style="display:flex; justify-content:space-between; align-items:center; min-height:32px;"><span style="color:var(--text3);">${k}</span><span class="mono" style="color:var(--text2); font-size:11px; text-align:right; max-width:60%; word-break:break-all;">${esc(v)}</span></div>`
+        ).join('')}
+      </div>` : ''}
     </div>`;
 }
 
