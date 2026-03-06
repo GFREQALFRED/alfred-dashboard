@@ -288,12 +288,26 @@
       "id": "t13",
       "title": "Fix dashboard auto-update cron (patch-based)",
       "description": "Rebuild auto-update to merge/patch existing JSON instead of regenerating from scratch. Add schema validation to reject updates that drop required fields. Re-enable cron after verified.",
-      "status": "backlog",
+      "status": "done",
       "priority": "medium",
       "assignee": "alfred",
       "project": "Dashboard",
       "projectColor": "#8B5CF6",
-      "createdAt": "2026-03-06T04:29:00Z"
+      "createdAt": "2026-03-06T04:29:00Z",
+      "completedAt": "2026-03-06T09:05:00Z"
+    },
+    {
+      "id": "t14",
+      "title": "Remove Cron Jobs from System page",
+      "description": "Remove the cron jobs section from the system page",
+      "status": "done",
+      "priority": "medium",
+      "assignee": "alfred",
+      "project": "Dashboard",
+      "projectColor": "#8B5CF6",
+      "createdAt": "2026-03-06T13:58:00Z",
+      "completedAt": "2026-03-06T14:12:00Z",
+      "source": "ui"
     }
   ],
   "integrations": [
