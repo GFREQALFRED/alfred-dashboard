@@ -74,6 +74,7 @@
   .kanban-drop-placeholder { height: 4px; border-radius: 2px; background: var(--accent); margin: 4px 0; transition: height 150ms ease; pointer-events: none; }
   .kanban-card.drop-animate { animation: dropIn 300ms cubic-bezier(0.22, 1, 0.36, 1); }
   @keyframes dropIn { 0% { opacity: 0; transform: scale(0.95) translateY(-8px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+  @keyframes slideDown { 0% { opacity: 0; max-height:0; transform:translateY(-8px); } 100% { opacity: 1; max-height:500px; transform:translateY(0); } }
   .touch-drag-ghost { position: fixed; z-index: 9999; pointer-events: none; opacity: 0.85; transform: rotate(2deg) scale(1.04); box-shadow: 0 12px 32px rgba(0,0,0,0.3); transition: none; }
   .status-dot { width:8px; height:8px; border-radius:50%; display:inline-block; flex-shrink:0; }
   .status-active { background:var(--success); }
@@ -86,6 +87,8 @@
   .filter-btn { padding:4px 12px; font-size:12px; font-weight:500; border-radius:4px; cursor:pointer; transition:all 150ms ease; border:none; background:transparent; color:var(--text3); }
   .filter-btn.active { background:var(--s2); color:var(--text); }
   .filter-btn:hover:not(.active) { color:var(--text2); }
+  .stat-card-interactive:hover { border-color:var(--border-h) !important; transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,0.15); }
+  .stat-card-interactive:active { transform:translateY(0); }
   .progress-bar { height:6px; border-radius:3px; background:var(--s2); overflow:hidden; }
   .progress-fill { height:100%; border-radius:3px; transition:width 500ms ease; }
   .tab-btn { padding:6px 16px; font-size:13px; font-weight:500; border:none; cursor:pointer; border-radius:6px; transition:all 150ms ease; }
@@ -1693,19 +1696,30 @@ function renderDashboard() {
   return `
     <div style="margin-bottom:24px;"><h1 style="font-size:24px; font-weight:600; letter-spacing:-0.025em; margin-bottom:4px;">Dashboard</h1><p style="font-size:13px; color:var(--text3);">Mission overview and daily operations</p></div>
     <div class="dash-stats-grid" style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
-      ${statCard('Tasks This Week', thisWeekTasks.length, 'check-square', 'var(--accent)', null, 'thisWeek')}
-      ${statCard('In Progress', inProgressTasks.length, 'loader', 'var(--info)', null, 'inProgress')}
-      ${statCard('Total Tasks', totalTasks, 'list', 'var(--text2)', null, 'total')}
-      ${statCard('Completion', completionPct + '%', 'trending-up', 'var(--success)', completionPct, 'completion')}
+      ${statCard('Tasks This Week', thisWeekTasks.length, 'check-square', 'var(--accent)', null, 'thisWeek', 'completed in last 7 days')}
+      ${statCard('In Progress', inProgressTasks.length, 'loader', 'var(--info)', null, 'inProgress', inProgressTasks.length === 1 ? '1 active task' : inProgressTasks.length + ' active tasks')}
+      ${statCard('Total Tasks', totalTasks, 'list', 'var(--text2)', null, 'total', completedTasks.length + ' done, ' + (totalTasks - completedTasks.length) + ' remaining')}
+      ${statCard('Completion', completionPct + '%', 'trending-up', 'var(--success)', completionPct, 'completion', completedTasks.length + ' of ' + totalTasks + ' tasks')}
     </div>
     ${expandedStat ? `
-      <div class="card" style="padding:20px; margin-bottom:24px;">
-        <h3 style="font-size:16px; font-weight:600; margin-bottom:16px;">
-          ${expandedStat === 'thisWeek' ? 'Tasks Completed This Week' :
-            expandedStat === 'inProgress' ? 'In Progress Tasks' :
-            expandedStat === 'total' ? 'All Tasks' : 'Completed Tasks'}
-        </h3>
-        <div style="display:flex; flex-direction:column; gap:8px; max-height:300px; overflow-y:auto;">
+      <div class="card" style="padding:20px; margin-bottom:24px; border-color:var(--accent); animation:slideDown 200ms ease;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <h3 style="font-size:16px; font-weight:600;">
+            ${expandedStat === 'thisWeek' ? 'Tasks Completed This Week' :
+              expandedStat === 'inProgress' ? 'In Progress Tasks' :
+              expandedStat === 'total' ? 'All Tasks' : 'Completed Tasks'}
+            <span style="font-size:13px; font-weight:400; color:var(--text3); margin-left:8px;">${(() => {
+              let tasks = [];
+              if (expandedStat === 'thisWeek') tasks = thisWeekTasks;
+              else if (expandedStat === 'inProgress') tasks = inProgressTasks;
+              else if (expandedStat === 'total') tasks = DATA.tasks;
+              else if (expandedStat === 'completion') tasks = completedTasks;
+              return tasks.length + ' task' + (tasks.length !== 1 ? 's' : '');
+            })()}</span>
+          </h3>
+          <button onclick="expandedStat=null;renderPage();" style="background:var(--s2); border:none; width:28px; height:28px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center;"><i data-lucide="x" style="width:14px; height:14px; color:var(--text3);"></i></button>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:6px; max-height:300px; overflow-y:auto;">
           ${(() => {
             let tasks = [];
             if (expandedStat === 'thisWeek') tasks = thisWeekTasks;
@@ -1713,8 +1727,10 @@ function renderDashboard() {
             else if (expandedStat === 'total') tasks = DATA.tasks;
             else if (expandedStat === 'completion') tasks = completedTasks;
 
+            if (tasks.length === 0) return '<div style="padding:20px; text-align:center; color:var(--text3); font-size:13px;">No tasks in this category</div>';
+
             return tasks.map(t => `
-              <div onclick="openTaskDetail('${t.id}')" style="display:flex; align-items:center; gap:10px; padding:8px; border-radius:6px; background:var(--bg); cursor:pointer; transition:background 150ms ease;" onmouseover="this.style.background='var(--s2)'" onmouseout="this.style.background='var(--bg)'">
+              <div onclick="openTaskDetail('${t.id}')" style="display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:6px; background:var(--bg); cursor:pointer; transition:background 150ms ease;" onmouseover="this.style.background='var(--s2)'" onmouseout="this.style.background='var(--bg)'">
                 <span class="badge" style="background:${t.projectColor}18; color:${t.projectColor};">${esc(t.project)}</span>
                 <span style="flex:1; font-size:13px;">${esc(t.title)}</span>
                 <span class="badge" style="background:${t.status === 'done' ? 'var(--success)' : t.status === 'in-progress' ? 'var(--info)' : t.status === 'review' ? 'var(--warn)' : 'var(--text3)'}18; color:${t.status === 'done' ? 'var(--success)' : t.status === 'in-progress' ? 'var(--info)' : t.status === 'review' ? 'var(--warn)' : 'var(--text3)'}">${t.status}</span>
@@ -1796,15 +1812,22 @@ function renderDashboard() {
     </div>`;
 }
 
-function statCard(label, value, icon, color, progressPct, statType) {
+function statCard(label, value, icon, color, progressPct, statType, subtitle) {
   const hasProgress = typeof progressPct === 'number';
   const isClickable = statType !== undefined;
-  return '<div class="card" onclick="' + (isClickable ? 'expandedStat = expandedStat === \'' + statType + '\' ? null : \'' + statType + '\'; renderPage();' : '') + '" style="padding:20px; ' + (isClickable ? 'cursor:pointer; transition:all 150ms ease;' : '') + '">' +
+  const isActive = expandedStat === statType;
+  const activeBorder = isActive ? 'border-color:' + color + ';' : '';
+  const activeGlow = isActive ? 'box-shadow:0 0 0 1px ' + color + '33;' : '';
+  return '<div class="card stat-card-interactive" onclick="' + (isClickable ? 'expandedStat = expandedStat === \'' + statType + '\' ? null : \'' + statType + '\'; renderPage();' : '') + '" style="padding:20px; ' + (isClickable ? 'cursor:pointer; transition:all 150ms ease;' : '') + activeBorder + activeGlow + '">' +
     '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">' +
       '<span style="font-size:12px; color:var(--text3); font-weight:500;">' + label + '</span>' +
-      '<i data-lucide="' + icon + '" style="width:16px; height:16px; color:' + color + ';"></i>' +
+      '<div style="display:flex; align-items:center; gap:6px;">' +
+        '<i data-lucide="' + icon + '" style="width:16px; height:16px; color:' + color + ';"></i>' +
+        (isClickable ? '<i data-lucide="' + (isActive ? 'chevron-up' : 'chevron-down') + '" style="width:14px; height:14px; color:var(--text3); opacity:0.6;"></i>' : '') +
+      '</div>' +
     '</div>' +
     '<div class="mono" style="font-size:28px; font-weight:600; color:' + color + ';">' + value + '</div>' +
+    (subtitle ? '<div style="font-size:11px; color:var(--text3); margin-top:4px;">' + subtitle + '</div>' : '') +
     (hasProgress ? '<div class="progress-bar" style="margin-top:10px; height:4px;"><div class="progress-fill" style="width:' + progressPct + '%; background:' + color + ';"></div></div>' : '') +
   '</div>';
 }
@@ -2105,11 +2128,14 @@ function renderProjects() {
         // Calculate dynamic progress
         const projectTasks = DATA.tasks.filter(t => t.project === p.name);
         const doneTasks = projectTasks.filter(t => t.status === 'done');
+        const inProgTasks = projectTasks.filter(t => t.status === 'in-progress');
+        const backlogTasks = projectTasks.filter(t => t.status === 'backlog');
+        const reviewTasks = projectTasks.filter(t => t.status === 'review');
         const dynamicProgress = projectTasks.length > 0 ? Math.round(doneTasks.length / projectTasks.length * 100) : 0;
         const isExpanded = expandedProjects.has(p.name);
 
         return `
-          <div class="card" onclick="if(expandedProjects.has('${p.name}')) expandedProjects.delete('${p.name}'); else expandedProjects.add('${p.name}'); renderPage();" style="padding:20px; cursor:pointer; transition:all 150ms ease;">
+          <div class="card" onclick="if(expandedProjects.has('${p.name}')) expandedProjects.delete('${p.name}'); else expandedProjects.add('${p.name}'); renderPage();" style="padding:20px; cursor:pointer; transition:all 150ms ease; ${isExpanded ? 'border-color:' + p.color + '33;' : ''}">
             <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:12px;">
               <div style="display:flex; align-items:center; gap:10px;">
                 <div style="width:36px; height:36px; border-radius:8px; background:${p.color}15; display:flex; align-items:center; justify-content:center;"><i data-lucide="${p.icon}" style="width:18px; height:18px; color:${p.color};"></i></div>
@@ -2117,30 +2143,48 @@ function renderProjects() {
               </div>
               <div style="display:flex; align-items:center; gap:8px;">
                 <span class="badge" style="background:${sb[p.status]||sb.notStarted}; color:${st[p.status]||st.notStarted};">${sl[p.status]||p.status}</span>
-                <i data-lucide="${isExpanded ? 'chevron-up' : 'chevron-down'}" style="width:16px; height:16px; color:var(--text3);"></i>
+                <i data-lucide="${isExpanded ? 'chevron-up' : 'chevron-down'}" style="width:16px; height:16px; color:var(--text3); transition:transform 150ms ease;"></i>
               </div>
             </div>
             <p style="font-size:12px; color:var(--text2); margin-bottom:14px; line-height:1.5;">${esc(p.description)}</p>
             <div>
-              <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="font-size:11px; color:var(--text3);">Progress</span><span class="mono" style="font-size:11px; color:var(--text2);">${dynamicProgress}%</span></div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                <span style="font-size:11px; color:var(--text3);">Progress</span>
+                <span class="mono" style="font-size:11px; color:var(--text2);">${doneTasks.length}/${projectTasks.length} tasks · ${dynamicProgress}%</span>
+              </div>
               <div class="progress-bar"><div class="progress-fill" style="width:${dynamicProgress}%; background:${p.color};"></div></div>
             </div>
+            ${!isExpanded && projectTasks.length > 0 ? `
+              <div style="display:flex; gap:12px; margin-top:10px; flex-wrap:wrap;">
+                ${doneTasks.length > 0 ? '<span style="font-size:11px; color:var(--success);">✓ ' + doneTasks.length + ' done</span>' : ''}
+                ${inProgTasks.length > 0 ? '<span style="font-size:11px; color:var(--info);">● ' + inProgTasks.length + ' in progress</span>' : ''}
+                ${backlogTasks.length > 0 ? '<span style="font-size:11px; color:var(--text3);">○ ' + backlogTasks.length + ' backlog</span>' : ''}
+              </div>
+            ` : ''}
             ${isExpanded ? `
-              <div style="margin-top:16px; border-top:1px solid var(--border); padding-top:16px;">
-                ${['backlog', 'in-progress', 'review', 'done'].map(status => {
+              <div style="margin-top:16px; border-top:1px solid var(--border); padding-top:16px; animation:slideDown 200ms ease;">
+                ${projectTasks.length === 0 ? '<div style="padding:12px; text-align:center; color:var(--text3); font-size:13px;">No tasks yet for this project</div>' : ''}
+                ${['in-progress', 'review', 'backlog', 'done'].map(status => {
                   const statusTasks = projectTasks.filter(t => t.status === status);
-                  const statusLabels = { 'backlog': 'Backlog', 'in-progress': 'In Progress', 'review': 'Review', 'done': 'Done' };
+                  const statusLabels = { 'backlog': 'Backlog', 'in-progress': 'In Progress', 'review': 'Review', 'done': 'Completed' };
                   const statusColors = { 'backlog': 'var(--text3)', 'in-progress': 'var(--info)', 'review': 'var(--warn)', 'done': 'var(--success)' };
+                  const statusIcons = { 'backlog': 'circle', 'in-progress': 'loader', 'review': 'eye', 'done': 'check-circle' };
 
                   return statusTasks.length > 0 ? `
-                    <div style="margin-bottom:12px;">
-                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
-                        <div style="width:6px; height:6px; border-radius:50%; background:${statusColors[status]};"></div>
-                        <span style="font-size:12px; font-weight:500; color:var(--text2);">${statusLabels[status]} (${statusTasks.length})</span>
+                    <div style="margin-bottom:14px;">
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:8px;">
+                        <i data-lucide="${statusIcons[status]}" style="width:12px; height:12px; color:${statusColors[status]};"></i>
+                        <span style="font-size:12px; font-weight:600; color:${statusColors[status]};">${statusLabels[status]}</span>
+                        <span style="font-size:11px; color:var(--text3);">(${statusTasks.length})</span>
                       </div>
-                      <div style="margin-left:12px;">
+                      <div style="display:flex; flex-direction:column; gap:4px; margin-left:18px;">
                         ${statusTasks.map(t => `
-                          <div onclick="event.stopPropagation(); openTaskDetail('${t.id}');" style="font-size:12px; color:var(--text3); margin-bottom:2px; cursor:pointer; padding:4px 8px; border-radius:4px; transition:background 150ms ease;" onmouseover="this.style.background='var(--s2)';this.style.color='var(--text)'" onmouseout="this.style.background='transparent';this.style.color='var(--text3)'">${esc(t.title)}</div>
+                          <div onclick="event.stopPropagation(); openTaskDetail('${t.id}');" style="display:flex; align-items:center; gap:8px; font-size:12px; color:${status === 'done' ? 'var(--text3)' : 'var(--text2)'}; cursor:pointer; padding:6px 10px; border-radius:6px; background:var(--bg); transition:all 150ms ease; ${status === 'done' ? 'text-decoration:line-through; opacity:0.7;' : ''}" onmouseover="this.style.background='var(--s2)';this.style.color='var(--text)';this.style.opacity='1'" onmouseout="this.style.background='var(--bg)';this.style.color='${status === 'done' ? 'var(--text3)' : 'var(--text2)'}';this.style.opacity='${status === 'done' ? '0.7' : '1'}'">
+                            <span style="flex:1;">${esc(t.title)}</span>
+                            ${t.assignee ? '<span style="font-size:10px; color:var(--text3);">' + (t.assignee === 'alfred' ? 'Alfred' : 'Nhat') + '</span>' : ''}
+                            ${t.priority === 'urgent' ? '<span class="badge" style="background:rgba(239,68,68,0.15); color:var(--danger); font-size:9px;">URGENT</span>' : ''}
+                            ${t.priority === 'high' ? '<span class="badge" style="background:rgba(245,158,11,0.15); color:var(--warn); font-size:9px;">HIGH</span>' : ''}
+                          </div>
                         `).join('')}
                       </div>
                     </div>
