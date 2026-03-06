@@ -47,8 +47,6 @@
   .card:hover { border-color:var(--border-h); }
   .btn-primary { background:var(--accent); color:#fff; border:none; border-radius:6px; height:32px; font-size:13px; font-weight:500; padding:0 14px; cursor:pointer; transition:all 150ms ease; display:inline-flex; align-items:center; gap:6px; }
   .btn-primary:hover { background:#7C3AED; }
-  .btn-primary:disabled { opacity:0.6; cursor:not-allowed; }
-  .btn-primary:disabled:hover { background:var(--accent); }
   .btn-secondary { background:var(--s2); color:var(--text2); border:1px solid var(--s3); border-radius:6px; height:32px; font-size:13px; font-weight:500; padding:0 14px; cursor:pointer; transition:all 150ms ease; display:inline-flex; align-items:center; gap:6px; }
   .btn-secondary:hover { background:var(--s3); color:var(--text); }
   .badge { border-radius:4px; padding:2px 8px; font-size:11px; font-weight:500; display:inline-flex; align-items:center; }
@@ -76,7 +74,6 @@
   .kanban-drop-placeholder { height: 4px; border-radius: 2px; background: var(--accent); margin: 4px 0; transition: height 150ms ease; pointer-events: none; }
   .kanban-card.drop-animate { animation: dropIn 300ms cubic-bezier(0.22, 1, 0.36, 1); }
   @keyframes dropIn { 0% { opacity: 0; transform: scale(0.95) translateY(-8px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
-  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   .touch-drag-ghost { position: fixed; z-index: 9999; pointer-events: none; opacity: 0.85; transform: rotate(2deg) scale(1.04); box-shadow: 0 12px 32px rgba(0,0,0,0.3); transition: none; }
   .status-dot { width:8px; height:8px; border-radius:50%; display:inline-block; flex-shrink:0; }
   .status-active { background:var(--success); }
@@ -193,7 +190,16 @@
     /* Calendar: hide week grid, show mobile agenda */
     .cal-card { display:none !important; }
     .cal-mobile { display:block !important; }
-
+    .cal-cron-table { min-width:auto !important; table-layout:fixed !important; }
+    .cal-cron-table colgroup { display:table-column-group; }
+    .cal-cron-table th:nth-child(3), .cal-cron-table td:nth-child(3),
+    .cal-cron-table th:nth-child(4), .cal-cron-table td:nth-child(4) { display:none; }
+    .cal-cron-table td:last-child div { white-space:nowrap; }
+    .cal-cron-table td { font-size:12px !important; padding:8px 6px !important; overflow:hidden; text-overflow:ellipsis; }
+    .cal-cron-table th { font-size:10px !important; padding:8px 6px !important; }
+    .cal-cron-table th:nth-child(1), .cal-cron-table td:nth-child(1) { width:40%; }
+    .cal-cron-table th:nth-child(2), .cal-cron-table td:nth-child(2) { width:38%; }
+    .cal-cron-table th:last-child, .cal-cron-table td:last-child { width:22%; }
 
     /* Team tree: scrollable */
     .team-tree { overflow-x:auto !important; -webkit-overflow-scrolling:touch; padding-bottom:16px; }
@@ -784,54 +790,34 @@ function toggleSettings() {
   else { backdrop.style.display = 'block'; panel.classList.add('open'); renderSettings(); }
 }
 
-let settingsShowAdvanced = false;
 function renderSettings() {
-  const toggleStyle = (on) => `width:44px;height:24px;border-radius:12px;border:none;cursor:pointer;position:relative;transition:background 200ms ease;background:${on?'var(--accent)':'var(--s3)'};`;
-  const toggleDot = (on) => `width:18px;height:18px;border-radius:50%;background:white;position:absolute;top:3px;transition:left 200ms ease;left:${on?'23px':'3px'};box-shadow:0 1px 3px rgba(0,0,0,0.2);`;
-  const settingRow = (label, control) => `<div style="display:flex; justify-content:space-between; align-items:center; min-height:44px; padding:4px 0;">${label}${control}</div>`;
-
   document.getElementById('settings-content').innerHTML = `
-    <div class="card" style="padding:16px; margin-bottom:12px;">
-      <h3 style="font-size:11px; font-weight:600; margin-bottom:12px; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">Appearance</h3>
-      ${settingRow(
-        '<span style="font-size:14px;">Theme</span>',
-        `<div style="display:flex; align-items:center; gap:8px;">
-          <span style="font-size:12px; color:var(--text3); min-width:32px; text-align:right;">${isDark?'Dark':'Light'}</span>
-          <button onclick="toggleTheme()" style="${toggleStyle(isDark)}"><div style="${toggleDot(isDark)}"></div></button>
-        </div>`
-      )}
-      ${settingRow(
-        '<span style="font-size:14px;">Activity Panel</span>',
-        `<button onclick="toggleActivityPanel()" style="${toggleStyle(activityPanelVisible)}"><div style="${toggleDot(activityPanelVisible)}"></div></button>`
-      )}
+    <div class="card" style="padding:16px; margin-bottom:16px;">
+      <h3 style="font-size:13px; font-weight:600; margin-bottom:12px; color:var(--text2);">System Info</h3>
+      <div style="display:flex; flex-direction:column; gap:8px; font-size:12px;">
+        ${[['Model',DATA.system.model],['Container',DATA.system.container],['OS',DATA.system.os],['Node',DATA.system.node],['Version',DATA.system.openclawVersion],['Hostname',DATA.system.hostname]].map(([k,v]) =>
+          `<div style="display:flex; justify-content:space-between;"><span style="color:var(--text3);">${k}</span><span class="mono" style="color:var(--text2); font-size:11px;">${esc(v)}</span></div>`
+        ).join('')}
+      </div>
     </div>
-    <div class="card" style="padding:16px; margin-bottom:12px;">
-      <h3 style="font-size:11px; font-weight:600; margin-bottom:12px; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">Data</h3>
-      ${settingRow(
-        `<div><span style="font-size:14px;">Last synced</span><div class="mono" style="font-size:11px; color:var(--text3); margin-top:2px;">${formatDate(DATA.lastUpdated)}</div></div>`,
-        `<button onclick="loadData()" class="btn-secondary" style="height:32px; padding:0 12px; font-size:12px; display:flex; align-items:center; gap:4px; cursor:pointer;">↻ Refresh</button>`
-      )}
-      <div style="font-size:12px; color:var(--text3); padding:4px 0;">Auto-refresh: every 60s</div>
+    <div class="card" style="padding:16px; margin-bottom:16px;">
+      <h3 style="font-size:13px; font-weight:600; margin-bottom:12px; color:var(--text2);">Preferences</h3>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <span style="font-size:13px;">Activity Panel</span>
+        <button class="btn-secondary" style="height:28px; font-size:12px;" onclick="toggleActivityPanel()">${activityPanelVisible ? 'Hide' : 'Show'}</button>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:13px;">Theme</span>
+        <button id="theme-toggle" onclick="toggleTheme()" style="width:44px;height:24px;border-radius:12px;border:none;cursor:pointer;position:relative;transition:background 200ms ease;background:${isDark?'var(--s3)':'var(--accent)'};">
+          <div style="width:18px;height:18px;border-radius:50%;background:white;position:absolute;top:3px;transition:left 200ms ease;left:${isDark?'3px':'23px'};box-shadow:0 1px 3px rgba(0,0,0,0.2);"></div>
+        </button>
+        <span style="font-size:12px;color:var(--text3);margin-left:8px;">${isDark?'Dark':'Light'}</span>
+      </div>
     </div>
     <div class="card" style="padding:16px;">
-      <h3 style="font-size:11px; font-weight:600; margin-bottom:12px; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">About</h3>
-      ${settingRow(
-        '<span style="font-size:14px;">AI Model</span>',
-        `<span class="mono" style="font-size:12px; color:var(--text2);">${esc(DATA.system.model)}</span>`
-      )}
-      ${settingRow(
-        '<span style="font-size:14px;">Version</span>',
-        `<span class="mono" style="font-size:12px; color:var(--text2);">${esc(DATA.system.openclawVersion)}</span>`
-      )}
-      <div onclick="settingsShowAdvanced=!settingsShowAdvanced;renderSettings();" style="display:flex; justify-content:space-between; align-items:center; min-height:44px; padding:8px 0; cursor:pointer; border-top:1px solid var(--border); margin-top:8px; border-radius:4px;" onmouseover="this.style.background='var(--s1)'" onmouseout="this.style.background='transparent'">
-        <span style="font-size:14px; color:var(--text2);">System Details</span>
-        <span style="font-size:14px; color:var(--text3); transition:transform 200ms ease; transform:rotate(${settingsShowAdvanced?'180':'0'}deg);">▼</span>
-      </div>
-      ${settingsShowAdvanced ? `<div style="display:flex; flex-direction:column; gap:8px; font-size:12px; padding:8px 0; border-top:1px solid var(--border);">
-        ${[['Container',DATA.system.container],['OS',DATA.system.os],['Node',DATA.system.node],['Hostname',DATA.system.hostname]].map(([k,v]) =>
-          `<div style="display:flex; justify-content:space-between; align-items:center; min-height:32px;"><span style="color:var(--text3);">${k}</span><span class="mono" style="color:var(--text2); font-size:11px; text-align:right; max-width:60%; word-break:break-all;">${esc(v)}</span></div>`
-        ).join('')}
-      </div>` : ''}
+      <h3 style="font-size:13px; font-weight:600; margin-bottom:12px; color:var(--text2);">Data</h3>
+      <div style="font-size:12px; color:var(--text3);">Last updated: <span class="mono">${formatDate(DATA.lastUpdated)}</span></div>
+      <div style="font-size:12px; color:var(--text3); margin-top:4px;">Auto-refresh: every 60s</div>
     </div>`;
 }
 
@@ -902,73 +888,6 @@ function selectSearchResult(i) {
 
 document.addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearch(); } });
 
-// ═══════════════ API HELPERS ═══════════════
-async function apiRequest(endpoint, options = {}) {
-  const baseUrl = window.location.origin;
-  const response = await fetch(`${baseUrl}${endpoint}`, {
-    headers: { 'Content-Type': 'application/json' },
-    ...options
-  });
-  
-  if (!response.ok) {
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
-  }
-  
-  return response.json();
-}
-
-function showApiLoading(taskId = null) {
-  // Show loading indicator - if taskId provided, show on specific card
-  if (taskId) {
-    const card = document.querySelector(`.kanban-card[data-task-id="${taskId}"]`);
-    if (card) card.style.opacity = '0.6';
-  }
-}
-
-function hideApiLoading(taskId = null) {
-  // Hide loading indicator
-  if (taskId) {
-    const card = document.querySelector(`.kanban-card[data-task-id="${taskId}"]`);
-    if (card) card.style.opacity = '';
-  }
-}
-
-async function createTaskApi(taskData) {
-  try {
-    const result = await apiRequest('/api/tasks', {
-      method: 'POST',
-      body: JSON.stringify({ task: taskData })
-    });
-    return result;
-  } catch (error) {
-    console.error('Failed to create task via API:', error);
-    // Fallback to localStorage
-    DATA.tasks.push(taskData);
-    saveLocalTasks();
-    return { success: true, task: taskData, fallback: true };
-  }
-}
-
-async function updateTaskApi(taskId, updates) {
-  try {
-    showApiLoading(taskId);
-    const result = await apiRequest('/api/tasks', {
-      method: 'PATCH',
-      body: JSON.stringify({ id: taskId, updates })
-    });
-    hideApiLoading(taskId);
-    return result;
-  } catch (error) {
-    console.error('Failed to update task via API:', error);
-    hideApiLoading(taskId);
-    // Fallback to localStorage - task is already updated locally
-    if (DATA.tasks.find(t => t.id === taskId && t.source === 'ui')) {
-      saveLocalTasks();
-    }
-    return { success: true, fallback: true };
-  }
-}
-
 // ═══════════════ NEW TASK ═══════════════
 function openNewTask() {
   document.getElementById('new-task-overlay').style.display = 'flex';
@@ -979,10 +898,9 @@ function openNewTask() {
   setTimeout(() => document.getElementById('nt-title').focus(), 50);
 }
 function closeNewTask() { document.getElementById('new-task-overlay').style.display = 'none'; }
-async function createTask() {
+function createTask() {
   const title = document.getElementById('nt-title').value.trim();
   if (!title) { document.getElementById('nt-title').style.borderColor = 'var(--danger)'; return; }
-  
   const proj = document.getElementById('nt-project').value;
   const projData = DATA.projects.find(p => p.name === proj);
   const task = {
@@ -997,39 +915,22 @@ async function createTask() {
     createdAt: new Date().toISOString(),
     source: 'ui'
   };
-
-  // Show creating indicator
-  const createBtn = document.querySelector('#new-task-overlay .btn-primary');
-  const originalText = createBtn.innerHTML;
-  createBtn.innerHTML = '<i data-lucide="loader-2" style="width:14px; height:14px; animation:spin 1s linear infinite;"></i> Creating...';
-  createBtn.disabled = true;
-
-  try {
-    const result = await createTaskApi(task);
-    
-    // Update local data
-    if (!result.fallback) {
-      // API succeeded, use returned task data
-      DATA.tasks.push(result.task);
-    }
-    
-    closeNewTask();
-    if (currentPage === 'tasks') renderPage();
-    
-    // Notify Alfred via webhook (API already handles this, but keep for fallback)
-    if (result.fallback) {
-      fireWebhook('task_created', task, null, task.status);
-    }
-  } catch (error) {
-    console.error('Failed to create task:', error);
-    // Reset button state
-    createBtn.innerHTML = originalText;
-    createBtn.disabled = false;
-    // Could show error message to user here
-  }
+  DATA.tasks.push(task);
+  saveLocalTasks();
+  closeNewTask();
+  if (currentPage === 'tasks') renderPage();
+  // Sync to GitHub via serverless function so Alfred can see it
+  syncTaskToGitHub(task);
+  // Notify Alfred via webhook
+  fireWebhook('task_created', task, null, task.status);
 }
 
-
+// Sync task to GitHub via API so Alfred can pick it up
+async function syncTaskToGitHub(task) {
+  try {
+    await fetch('/api/tasks', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({task}) });
+  } catch(e) { console.log('Task sync pending — will sync on next dashboard update'); }
+}
 
 // Fire webhook to notify Alfred (OpenClaw) of task changes
 async function fireWebhook(event, task, previousStatus, newStatus) {
@@ -1059,28 +960,16 @@ function loadLocalTasks() {
 }
 
 // Update task status and persist
-async function updateTaskStatus(id, newStatus) {
+function updateTaskStatus(id, newStatus) {
   const t = DATA.tasks.find(x => x.id === id);
   if (t) {
     const previousStatus = t.status;
-    
-    // Update locally first for immediate UI feedback
     t.status = newStatus;
     if (newStatus === 'done') t.completedAt = new Date().toISOString();
+    if (t.source === 'ui') saveLocalTasks();
     renderPage();
-    
-    // Sync to API
-    const updates = { status: newStatus };
-    if (newStatus === 'done' && !t.completedAt) {
-      updates.completedAt = new Date().toISOString();
-    }
-    
-    const result = await updateTaskApi(id, updates);
-    
-    // Notify Alfred via webhook (API already handles this, but keep for fallback)
-    if (result.fallback && t.source === 'ui') {
-      fireWebhook('task_updated', t, previousStatus, newStatus);
-    }
+    // Notify Alfred via webhook
+    fireWebhook('task_updated', t, previousStatus, newStatus);
   }
   document.getElementById('task-detail-overlay').style.display = 'none';
 }
@@ -1117,27 +1006,15 @@ function openTaskDetail(id) {
   lucide.createIcons();
 }
 function closeTaskDetail() { document.getElementById('task-detail-overlay').style.display = 'none'; }
-async function moveTask(id, status) {
+function moveTask(id, status) {
   const t = DATA.tasks.find(x => x.id === id);
   if (t) { 
     const previousStatus = t.status;
-    
-    // Update locally first for immediate UI feedback
     t.status = status; 
-    if (status === 'done' && !t.completedAt) t.completedAt = new Date().toISOString();
-    
-    // Sync to API
-    const updates = { status: status };
-    if (status === 'done' && !t.completedAt) {
-      updates.completedAt = new Date().toISOString();
-    }
-    
-    const result = await updateTaskApi(id, updates);
-    
-    // Notify Alfred via webhook (API already handles this, but keep for fallback)
-    if (result.fallback && t.source === 'ui') {
-      fireWebhook('task_updated', t, previousStatus, status);
-    }
+    if (status === 'done' && !t.completedAt) t.completedAt = new Date().toISOString(); 
+    if (t.source === 'ui') saveLocalTasks();
+    // Notify Alfred via webhook
+    fireWebhook('task_updated', t, previousStatus, status);
   }
   closeTaskDetail();
   if (currentPage === 'tasks') renderPage();
@@ -1455,7 +1332,25 @@ function renderCalendar() {
         }).join('')}
       </div>
     </div>
-`;
+    <div class="card" style="padding:20px;">
+      <h2 style="font-size:15px; font-weight:600; margin-bottom:16px;">Scheduled Jobs</h2>
+      <div style="overflow-x:auto; -webkit-overflow-scrolling:touch;"><table class="cal-cron-table" style="width:100%; font-size:13px; border-collapse:collapse;">
+        <thead><tr style="border-bottom:1px solid var(--border);">
+          <th style="text-align:left; padding:8px 12px; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">Name</th>
+          <th style="text-align:left; padding:8px 12px; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">Schedule</th>
+          <th style="text-align:left; padding:8px 12px; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">Last Run</th>
+          <th style="text-align:left; padding:8px 12px; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">Next Run</th>
+          <th style="text-align:left; padding:8px 12px; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">Status</th>
+        </tr></thead>
+        <tbody>${DATA.cronJobs.map(cj => `<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+          <td style="padding:10px 12px; font-weight:500;">${esc(cj.name)}</td>
+          <td style="padding:10px 12px; color:var(--text2);" class="mono">${esc(cj.schedule)}</td>
+          <td style="padding:10px 12px; color:var(--text3);" class="mono">${cj.lastRun ? formatDate(cj.lastRun) : 'Never'}</td>
+          <td style="padding:10px 12px; color:var(--text3);" class="mono">${cj.nextRun ? formatDate(cj.nextRun) : 'TBD'}</td>
+          <td style="padding:10px 12px;"><div style="display:flex; align-items:center; gap:6px;"><div class="status-dot status-${cj.status}"></div><span style="font-size:12px; color:var(--text2); text-transform:capitalize;">${cj.status}</span></div></td>
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>`;
 }
 
 function positionCalendarBlocks() {
@@ -1720,7 +1615,27 @@ function renderSystem() {
         }).join('')}
       </div>
     </div>
-
+    <div class="card" style="padding:20px;">
+      <h2 style="font-size:15px; font-weight:600; margin-bottom:16px;">Cron Jobs</h2>
+      <div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
+      <table style="width:100%; font-size:13px; border-collapse:collapse; min-width:600px;">
+        <thead><tr style="border-bottom:1px solid var(--border);">
+          <th style="text-align:left; padding:8px 12px; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">Name</th>
+          <th style="text-align:left; padding:8px 12px; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">Schedule</th>
+          <th style="text-align:left; padding:8px 12px; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">Last Run</th>
+          <th style="text-align:left; padding:8px 12px; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">Next Run</th>
+          <th style="text-align:left; padding:8px 12px; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em;">Status</th>
+        </tr></thead>
+        <tbody>${DATA.cronJobs.map(cj => `<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+          <td style="padding:10px 12px; font-weight:500;">${esc(cj.name)}</td>
+          <td style="padding:10px 12px; color:var(--text2);" class="mono">${esc(cj.schedule)}</td>
+          <td style="padding:10px 12px; color:var(--text3);" class="mono">${cj.lastRun ? formatDate(cj.lastRun) : 'Never'}</td>
+          <td style="padding:10px 12px; color:var(--text3);" class="mono">${cj.nextRun ? formatDate(cj.nextRun) : 'TBD'}</td>
+          <td style="padding:10px 12px;"><div style="display:flex; align-items:center; gap:6px;"><div class="status-dot status-${cj.status}"></div><span style="font-size:12px; color:var(--text2); text-transform:capitalize;">${cj.status}</span></div></td>
+        </tr>`).join('')}</tbody>
+      </table>
+      </div>
+    </div>`;
 }
 
 // ═══════════════ KANBAN DRAG & DROP ═══════════════
@@ -1801,24 +1716,11 @@ function kanbanDrop(e) {
   if (!t) return;
   const previousStatus = t.status;
   if (previousStatus === newStatus) return;
-  // Update locally first for immediate UI feedback
+  // Update
   t.status = newStatus;
   if (newStatus === 'done' && !t.completedAt) t.completedAt = new Date().toISOString();
-  
-  // Sync to API
-  const updates = { status: newStatus };
-  if (newStatus === 'done' && !t.completedAt) {
-    updates.completedAt = new Date().toISOString();
-  }
-  
-  // Don't await this so drag feels immediate
-  updateTaskApi(taskId, updates).then(result => {
-    // Notify Alfred via webhook (API already handles this, but keep for fallback)
-    if (result.fallback && t.source === 'ui') {
-      fireWebhook('task_updated', t, previousStatus, newStatus);
-    }
-  });
-  
+  if (t.source === 'ui') saveLocalTasks();
+  fireWebhook('task_updated', t, previousStatus, newStatus);
   // Re-render with animation
   renderPage();
   // Animate the dropped card
@@ -1903,24 +1805,10 @@ function kanbanTouchStart(e) {
       const task = DATA.tasks.find(x => x.id === touchDragTaskId);
       if (task && task.status !== newStatus) {
         const previousStatus = task.status;
-        
-        // Update locally first for immediate UI feedback
         task.status = newStatus;
         if (newStatus === 'done' && !task.completedAt) task.completedAt = new Date().toISOString();
-        
-        // Sync to API
-        const updates = { status: newStatus };
-        if (newStatus === 'done' && !task.completedAt) {
-          updates.completedAt = new Date().toISOString();
-        }
-        
-        // Don't await this so touch drag feels immediate
-        updateTaskApi(touchDragTaskId, updates).then(result => {
-          // Notify Alfred via webhook (API already handles this, but keep for fallback)
-          if (result.fallback && task.source === 'ui') {
-            fireWebhook('task_updated', task, previousStatus, newStatus);
-          }
-        });
+        if (task.source === 'ui') saveLocalTasks();
+        fireWebhook('task_updated', task, previousStatus, newStatus);
         renderPage();
         requestAnimationFrame(() => {
           const droppedCard = document.querySelector(`.kanban-card[data-task-id="${touchDragTaskId}"]`);
