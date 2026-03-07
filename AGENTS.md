@@ -3,25 +3,10 @@
 Single-file SPA. JSON-driven. Dark theme default.
 
 ## Workflow
-Every coding task follows this pipeline. No skipping steps.
-
-### 1. Research
-- Read this file and understand the architecture
-- `grep` the codebase for existing patterns related to the task
-- Check `tasks/` folder for prior research on similar work
-- Output: `tasks/<task-slug>/research.md` — findings, existing patterns, relevant code snippets
-
-### 2. Plan
-- Read your research.md
-- Design the implementation: what changes, where, how, edge cases, mobile
-- Reuse existing patterns and code where possible
-- Output: `tasks/<task-slug>/plan.md` — complete spec, step-by-step, no gaps
-
-### 3. Implement
-- Read your plan.md, create a todo list, execute
-- Work on a new branch, never master
-- Commit frequently with conventional commits
-- If ambiguous, group questions for the end
+Every task follows: research → plan → implement. No skipping.
+- **Research**: read this file, `grep` codebase for patterns, check `tasks/` for prior work. Output: `tasks/<task-slug>/research.md`.
+- **Plan**: read research.md, design implementation (what/where/how/edge cases/mobile). Output: `tasks/<task-slug>/plan.md`.
+- **Implement**: read plan.md, create todo list, execute. Branch, never master. Commit frequently. Group questions for the end.
 
 ## Architecture
 - `index.html` — entire app (HTML + CSS + JS). No frameworks, no build step.
