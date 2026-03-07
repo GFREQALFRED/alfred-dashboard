@@ -654,6 +654,18 @@
       "createdAt": "2026-03-07T03:49:05.598Z",
       "delegatedTo": "Claude Code CLI",
       "completedAt": "2026-03-07T04:10:00Z"
+    },
+    {
+      "id": "t42",
+      "title": "Implement Ralph-style supervisor agent for coding tasks",
+      "description": "Research and implement a supervisor loop (inspired by steipete/Ralph) that monitors coding agent sessions, tracks progress, and can steer/restart agents. Uses tmux for persistent sessions. See: github.com/steipete/agent-scripts docs/subagent.md",
+      "status": "backlog",
+      "priority": "medium",
+      "assignee": "alfred",
+      "project": "Infrastructure",
+      "projectColor": "#6366F1",
+      "createdAt": "2026-03-07T16:11:00Z",
+      "delegatedTo": "Unassigned"
     }
   ],
   "integrations": [
