@@ -116,6 +116,14 @@
       "label": "Blog Article (Evening)",
       "description": "Writing agent drafts next article from field guide",
       "type": "content"
+    },
+    {
+      "id": "ecommerce-weekly",
+      "title": "E-Commerce Project Meeting \u2014 Nhat & Nasrin",
+      "day": "Saturday",
+      "time": "2:00 PM PST",
+      "recurring": true,
+      "type": "meeting"
     }
   ],
   "sprint": {
