@@ -30,6 +30,16 @@ Every task follows: research → plan → implement. No skipping.
 - Change the dark theme defaults.
 - Use markdown tables in any rendered content.
 
+## Document Schema (CRITICAL — breaks docs page if wrong)
+When adding to the `documents` array in dashboard-data.json, EVERY doc must have:
+```json
+{"name": "Title Here", "path": "unique-slug", "category": "Category", "size": 1234, "words": 200, "content": "full content..."}
+```
+- `name` and `path` are REQUIRED. Not `title`, not `id`. The renderer uses `doc.name` and `doc.path`.
+- `category` must match existing categories or be new.
+- `words` = word count of content.
+- `size` = character count of content.
+
 ## Git
 - Work on branches, not master.
 - Conventional commits: `feat:`, `fix:`, `refactor:`, `style:`.
