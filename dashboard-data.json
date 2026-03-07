@@ -401,7 +401,7 @@
       "id": "t21",
       "title": "People & Places - expanded cards with schedules",
       "description": "People: expandable cards with scheduled events, suggestions, ideas. Add Grandma, cousins, Friends. Places: synced to calendar (gym M/W/F 5:30, basketball schedule).",
-      "status": "backlog",
+      "status": "done",
       "priority": "medium",
       "assignee": "alfred",
       "project": "Dashboard",
