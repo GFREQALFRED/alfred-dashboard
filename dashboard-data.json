@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-07T03:32:15.916Z",
+  "lastUpdated": "2026-03-07T03:49:05.598Z",
   "mission": "Build an empire of 6 revenue streams generating $1,000,000 by March 2027, powered by AI agents that work 24/7",
   "targetDate": "2027-03-01",
   "stats": {
@@ -324,13 +324,14 @@
       "id": "t15",
       "title": "Calendar redesign - day-specific events + Google Calendar sync",
       "description": "Dashboard calendar needs to support individual date events and pull from Google Calendar API. Not just repeating daily schedule.",
-      "status": "backlog",
+      "status": "done",
       "priority": "medium",
       "assignee": "alfred",
       "project": "Dashboard",
       "projectColor": "#8B5CF6",
       "createdAt": "2026-03-06T15:13:00Z",
-      "delegatedTo": "Sub-agent (Sonnet)"
+      "delegatedTo": "Sub-agent (Sonnet)",
+      "completedAt": "2026-03-07T03:49:05.598Z"
     },
     {
       "id": "t16",
@@ -374,13 +375,14 @@
       "id": "t19",
       "title": "Calendar - week navigation + grey out non-today dates",
       "description": "Add prev/next week buttons. Grey out dates that are not today. Show day-specific events from Google Calendar.",
-      "status": "backlog",
+      "status": "done",
       "priority": "medium",
       "assignee": "alfred",
       "project": "Dashboard",
       "projectColor": "#8B5CF6",
       "createdAt": "2026-03-06T15:36:00Z",
-      "delegatedTo": "Claude Code CLI"
+      "delegatedTo": "Claude Code CLI",
+      "completedAt": "2026-03-07T03:49:05.598Z"
     },
     {
       "id": "t20",
@@ -600,6 +602,54 @@
       "project": "Beauty Salons",
       "projectColor": "#EC4899",
       "createdAt": "2026-03-06T23:01:00Z"
+    },
+    {
+      "id": "t38",
+      "title": "Calendar: cron jobs on correct days only",
+      "description": "Parse cron expressions to show cron jobs on their actual scheduled days instead of repeating across all 7 days. Regular events already fixed in t33.",
+      "status": "backlog",
+      "priority": "medium",
+      "assignee": "alfred",
+      "project": "Dashboard",
+      "projectColor": "#8b5cf6",
+      "createdAt": "2026-03-07T03:49:05.598Z",
+      "delegatedTo": "Claude Code CLI"
+    },
+    {
+      "id": "t39",
+      "title": "Activity feed: live relative timestamps",
+      "description": "Store raw ISO timestamps in DOM data attributes, run setInterval every 30s to recalculate relative times. Currently only updates on 60s JSON refresh.",
+      "status": "backlog",
+      "priority": "low",
+      "assignee": "alfred",
+      "project": "Dashboard",
+      "projectColor": "#8b5cf6",
+      "createdAt": "2026-03-07T03:49:05.598Z",
+      "delegatedTo": "Claude Code CLI"
+    },
+    {
+      "id": "t40",
+      "title": "Agent status: derive from activity timestamps",
+      "description": "Agent status cards show static \"idle\". Should derive from liveActivity — if agent acted in last 5 min, show \"active\".",
+      "status": "backlog",
+      "priority": "low",
+      "assignee": "alfred",
+      "project": "Dashboard",
+      "projectColor": "#8b5cf6",
+      "createdAt": "2026-03-07T03:49:05.598Z",
+      "delegatedTo": "Claude Code CLI"
+    },
+    {
+      "id": "t41",
+      "title": "Dashboard JSON schema validation",
+      "description": "Create JSON Schema file and validate against it before every write. Prevent corrupted pushes from breaking the site.",
+      "status": "backlog",
+      "priority": "medium",
+      "assignee": "alfred",
+      "project": "Dashboard",
+      "projectColor": "#8b5cf6",
+      "createdAt": "2026-03-07T03:49:05.598Z",
+      "delegatedTo": "Claude Code CLI"
     }
   ],
   "integrations": [
