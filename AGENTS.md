@@ -41,7 +41,20 @@ Every task follows: research → plan → implement. No skipping.
 - Dynamic progress: calculate from actual task completion, not hardcoded.
 - Stat cards: clickable with filtered task lists, chevron indicators.
 
-## Testing
-- Refresh every page after changes — hash routing can break silently.
-- Check both desktop (1440px) and mobile (390px).
-- Verify sidebar collapse/expand survives refresh.
+## QA (every change, no exceptions)
+- After implementing, verify BEFORE committing:
+  1. Open `index.html` in browser (or use screenshot tool if available)
+  2. Check every affected page at desktop (1440px) AND mobile (390px)
+  3. Ask yourself: "What looks wrong?" — alignment, spacing, clipping, overflow, missing data, broken layout
+  4. Refresh the page — does hash routing survive? Does state persist?
+  5. Check browser console for JS errors
+  6. `grep` for every element you changed — does it appear in other render functions? Change ALL instances.
+  7. If you changed a card/component template, check ALL pages that render similar components
+  8. Fix everything found, re-verify, loop until clean
+- Common gotchas:
+  - Hash parsing: `#tasks:nhat` splits on `:` — don't break this
+  - Sidebar collapse state uses localStorage — test collapse + refresh
+  - Grid layouts: `align-items: start` prevents row stretching
+  - Time format: always 12-hour AM/PM, never military
+  - Mobile: check text doesn't overflow, buttons are tappable, tables scroll horizontally
+- Only commit when you cannot find a single issue.
