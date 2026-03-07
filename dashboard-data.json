@@ -674,6 +674,66 @@
       "projectColor": "#6366F1",
       "createdAt": "2026-03-07T16:11:00Z",
       "delegatedTo": "Unassigned"
+    },
+    {
+      "id": "t43",
+      "title": "Calendar page: parse cron expressions to show jobs on correct days only",
+      "description": "Cron jobs currently repeat across all days. Parse cron schedule strings to map each job to the days it actually runs (e.g. weekly Monday only shows on Monday column).",
+      "status": "backlog",
+      "priority": "medium",
+      "assignee": "alfred",
+      "project": "Dashboard",
+      "projectColor": "#6366F1",
+      "createdAt": "2026-03-07T19:10:00Z",
+      "delegatedTo": "Unassigned"
+    },
+    {
+      "id": "t44",
+      "title": "Activity feed: live-update relative timestamps between JSON refreshes",
+      "description": "Relative timestamps (\"8m ago\") only recalculate on JSON fetch (every 60s). Store raw ISO timestamps in DOM data attributes, run setInterval every 30s to recalculate.",
+      "status": "backlog",
+      "priority": "low",
+      "assignee": "alfred",
+      "project": "Dashboard",
+      "projectColor": "#6366F1",
+      "createdAt": "2026-03-07T19:10:00Z",
+      "delegatedTo": "Unassigned"
+    },
+    {
+      "id": "t45",
+      "title": "Agent status: derive active/idle from liveActivity timestamps",
+      "description": "Agent status cards say \"idle\" even when activity feed shows recent work. Derive status from liveActivity timestamps \u2014 if agent acted in last 5 min, show \"active\".",
+      "status": "backlog",
+      "priority": "low",
+      "assignee": "alfred",
+      "project": "Dashboard",
+      "projectColor": "#6366F1",
+      "createdAt": "2026-03-07T19:10:00Z",
+      "delegatedTo": "Unassigned"
+    },
+    {
+      "id": "t46",
+      "title": "Dashboard JSON schema validation on every write",
+      "description": "Any script modifying dashboard-data.json can break the site with malformed data. Create a JSON Schema and validate before every write. Add pre-commit hook or validation script.",
+      "status": "backlog",
+      "priority": "medium",
+      "assignee": "alfred",
+      "project": "Dashboard",
+      "projectColor": "#6366F1",
+      "createdAt": "2026-03-07T19:10:00Z",
+      "delegatedTo": "Unassigned"
+    },
+    {
+      "id": "t47",
+      "title": "Field guide: add timestamps to each section for blog content freshness tracking",
+      "description": "The blog content queue feeds off the field guide. Each section needs created/updated timestamps so blog writer cron knows if source material changed since article was written.",
+      "status": "backlog",
+      "priority": "medium",
+      "assignee": "alfred",
+      "project": "Infrastructure",
+      "projectColor": "#6366F1",
+      "createdAt": "2026-03-07T19:10:00Z",
+      "delegatedTo": "Unassigned"
     }
   ],
   "integrations": [
