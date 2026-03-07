@@ -2,12 +2,33 @@
 
 Single-file SPA. JSON-driven. Dark theme default.
 
+## Workflow
+Every coding task follows this pipeline. No skipping steps.
+
+### 1. Research
+- Read this file and understand the architecture
+- `grep` the codebase for existing patterns related to the task
+- Check `tasks/` folder for prior research on similar work
+- Output: `tasks/<task-slug>/research.md` — findings, existing patterns, relevant code snippets
+
+### 2. Plan
+- Read your research.md
+- Design the implementation: what changes, where, how, edge cases, mobile
+- Reuse existing patterns and code where possible
+- Output: `tasks/<task-slug>/plan.md` — complete spec, step-by-step, no gaps
+
+### 3. Implement
+- Read your plan.md, create a todo list, execute
+- Work on a new branch, never master
+- Commit frequently with conventional commits
+- If ambiguous, group questions for the end
+
 ## Architecture
 - `index.html` — entire app (HTML + CSS + JS). No frameworks, no build step.
 - `dashboard-data.json` — all data (tasks, projects, schedule, agents, docs, people, etc.)
 - Client-side rendering: JS reads JSON, renders pages via `render<Page>()` functions.
 - Page routing: URL hash (`#dashboard`, `#tasks`, `#calendar`, etc.)
-- Renderer registry: `const renderers = { dashboard:renderDashboard, ... }` — add new pages here.
+- Renderer registry: `const renderers = { ... }` — add new pages here.
 
 ## Conventions
 - CSS variables for theming: `var(--bg1)`, `var(--text1)`, `var(--accent)`, etc.
